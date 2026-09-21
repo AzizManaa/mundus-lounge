@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { MenuAtlas } from "../components/menu-atlas";
 import { MundusMoments } from "../components/mundus-moments";
 import { SiteFooter } from "../components/site-footer";
@@ -52,12 +53,12 @@ export default function Home() {
             ))}
           </nav>
 
-          <a
+          <Link
             className="mundus-button mundus-button--outline"
             href="/menu"
           >
             View Menu
-          </a>
+          </Link>
         </div>
       </header>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { MenuBrowser } from "../../components/menu-browser";
 import { SiteFooter } from "../../components/site-footer";
 import { menuCategories, menuCurrency } from "../../data/mundus-menu";
@@ -16,7 +17,7 @@ export default function MenuPage() {
       <main id="top">
         <header className="border-b border-ivory/10 bg-onyx py-6">
           <div className="mundus-container flex items-center justify-between gap-6">
-            <a
+            <Link
               aria-label="Back to Mundus Lounge homepage"
               className="inline-flex size-11 items-center justify-center"
               href="/"
@@ -29,10 +30,10 @@ export default function MenuPage() {
                 unoptimized
                 width={36}
               />
-            </a>
-            <a className="mundus-button mundus-button--outline" href="/">
+            </Link>
+            <Link className="mundus-button mundus-button--outline" href="/">
               Back to homepage
-            </a>
+            </Link>
           </div>
         </header>
 

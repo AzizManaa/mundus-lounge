@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import cocktailImage from "../../public/images/mundus-menu-drinks.png";
 import foodImage from "../../public/images/mundus-menu-food.png";
 import shishaImage from "../../public/images/mundus-menu-shisha.png";
@@ -53,47 +54,45 @@ export function MenuAtlas() {
         <ul className="mt-12 grid gap-4 md:grid-cols-3 sm:mt-16">
           {menuFeatures.map((feature) => (
             <li key={feature.title}>
-              <a
+              <Link
                 aria-label={`View the ${feature.title} menu`}
                 className="mundus-menu-card group block focus-visible:outline-none"
                 href="/menu"
               >
-                <span className="mundus-menu-card__inner">
-                  <span className="mundus-menu-card__image">
-                    <Image
-                      alt=""
-                      className="object-cover"
-                      fill
-                      placeholder="blur"
-                      sizes="(min-width: 768px) 30vw, 100vw"
-                      src={feature.image}
-                    />
-                    <span className="absolute inset-0 bg-gradient-to-t from-onyx/90 via-onyx/20 to-onyx/30" />
-                    <span className="relative z-10 mt-auto p-7 sm:p-8">
-                      <span className="block text-xs font-bold tracking-[0.14em] text-emerald">
-                        {feature.number}
-                      </span>
-                      <span className="mt-3 block font-display text-4xl font-[200] tracking-[-0.05em] text-ivory">
-                        {feature.title}
-                      </span>
+                <span className="mundus-menu-card__image">
+                  <Image
+                    alt=""
+                    className="object-cover"
+                    fill
+                    placeholder="blur"
+                    sizes="(min-width: 768px) 30vw, 100vw"
+                    src={feature.image}
+                  />
+                  <span className="absolute inset-0 bg-gradient-to-t from-onyx/90 via-onyx/20 to-onyx/30" />
+                  <span className="relative z-10 mt-auto p-7 sm:p-8">
+                    <span className="block text-xs font-bold tracking-[0.14em] text-emerald">
+                      {feature.number}
                     </span>
-                  </span>
-
-                  <span className="mundus-menu-card__details">
-                    <span className="text-sm leading-6 text-ivory/65">
-                      {feature.description}
+                    <span className="mt-3 block font-display text-4xl font-[200] tracking-[-0.05em] text-ivory">
+                      {feature.title}
                     </span>
                   </span>
                 </span>
-              </a>
+
+                <span className="mundus-menu-card__details">
+                  <span className="text-sm leading-6 text-ivory/65">
+                    {feature.description}
+                  </span>
+                </span>
+              </Link>
             </li>
           ))}
         </ul>
 
         <div className="mt-10 flex justify-center">
-          <a className="mundus-button mundus-button--outline" href="/menu">
+          <Link className="mundus-button mundus-button--outline" href="/menu">
             Explore the full menu
-          </a>
+          </Link>
         </div>
       </div>
     </section>

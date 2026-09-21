@@ -18,7 +18,6 @@
 
 :root {
   --page-max-width: 72rem;
-  --content-max-width: 42rem;
   --border-subtle: color-mix(in srgb, var(--color-ivory) 16%, transparent);
   --focus-ring: color-mix(in srgb, var(--color-emerald) 80%, white);
 }
@@ -34,7 +33,6 @@ html {
 
 body {
   min-width: 20rem;
-  font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   background: var(--color-onyx);
   color: var(--color-ivory);
@@ -71,10 +69,6 @@ a:focus-visible {
     font-weight: 400;
     letter-spacing: 0;
     line-height: 0.8;
-  }
-
-  .mundus-detail {
-    font-family: Arial, Helvetica, sans-serif;
   }
 
   .mundus-button {
@@ -182,10 +176,6 @@ a:focus-visible {
 
 .mundus-menu-card {
   display: block;
-}
-
-.mundus-menu-card__inner {
-  display: block;
   overflow: hidden;
 }
 
@@ -195,10 +185,6 @@ a:focus-visible {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  position: absolute;
-}
-
-.mundus-menu-card__image {
   position: relative;
 }
 
@@ -220,7 +206,6 @@ a:focus-visible {
   .mundus-menu-card:focus-visible {
     transform: translateY(-0.25rem);
   }
-
 }
 
 @media (min-width: 48rem) {
