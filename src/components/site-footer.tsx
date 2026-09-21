@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { business } from "../data/mundus-business";
 
 export function SiteFooter() {
   const currentYear = new Date().getFullYear();
@@ -25,8 +26,10 @@ export function SiteFooter() {
             <p className="text-xs font-bold tracking-[0.14em] text-emerald">
               FIND US
             </p>
-            <p className="mt-4 text-lg text-ivory">C/ de Padilla, 177</p>
-            <p className="mt-1 text-sm text-ivory/60">08013 Barcelona</p>
+            <p className="mt-4 text-lg text-ivory">{business.address.streetAddress}</p>
+            <p className="mt-1 text-sm text-ivory/60">
+              {business.address.postalCode} {business.address.city}
+            </p>
           </div>
 
           <div>
@@ -35,9 +38,9 @@ export function SiteFooter() {
             </p>
             <a
               className="mt-4 inline-block font-display text-2xl font-medium tracking-[-0.04em] text-ivory no-underline transition-colors hover:text-emerald"
-              href="tel:+34931058358"
+              href={business.telephoneUrl}
             >
-              +34 931 05 83 58
+              {business.phone}
             </a>
             <p className="mt-2 text-sm text-ivory/60">Call Mundus</p>
           </div>

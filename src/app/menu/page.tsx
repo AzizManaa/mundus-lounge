@@ -3,12 +3,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { MenuBrowser } from "../../components/menu-browser";
 import { SiteFooter } from "../../components/site-footer";
+import { siteUrl } from "../../data/mundus-business";
 import { menuCategories, menuCurrency } from "../../data/mundus-menu";
 
 export const metadata: Metadata = {
-  title: "Menu | Mundus Lounge",
-  description:
-    "Explore the current Mundus Lounge menu: shisha, cocktails, spirits, food, coffee, tea, desserts, beer, wine, and more.",
+  ...(siteUrl ? { alternates: { canonical: "/menu" } } : {}),
+  description: "Explore the current Mundus Lounge menu: shisha, cocktails, spirits, food, coffee, tea, desserts, beer, wine, and more.",
+  openGraph: {
+    description: "Explore the current Mundus Lounge menu: shisha, cocktails, spirits, food, coffee, tea, desserts, beer, wine, and more.",
+    title: "Menu | Mundus Lounge",
+  },
+  title: "Menu",
+  twitter: {
+    description: "Explore the current Mundus Lounge menu: shisha, cocktails, spirits, food, coffee, tea, desserts, beer, wine, and more.",
+    title: "Menu | Mundus Lounge",
+  },
 };
 
 export default function MenuPage() {

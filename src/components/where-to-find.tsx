@@ -1,12 +1,4 @@
-const openingHours = [
-  ["Monday", "Closed"],
-  ["Tuesday", "16:00–01:00"],
-  ["Wednesday", "16:00–01:00"],
-  ["Thursday", "16:00–01:00"],
-  ["Friday", "17:00–02:00"],
-  ["Saturday", "17:00–02:00"],
-  ["Sunday", "16:00–01:00"],
-];
+import { business } from "../data/mundus-business";
 
 export function WhereToFind() {
   return (
@@ -39,12 +31,12 @@ export function WhereToFind() {
                 MUNDUS LOUNGE
               </p>
               <p className="mt-6 font-display text-3xl font-[200] leading-tight tracking-[-0.04em] text-ivory">
-                C/ de Padilla, 177
+                {business.address.streetAddress}
                 <br />
-                08013 Barcelona
+                {business.address.postalCode} {business.address.city}
               </p>
               <p className="mt-4 text-base text-ivory/65">
-                Eixample, near Sagrada Família
+                {business.neighbourhood}
               </p>
             </div>
 
@@ -57,7 +49,7 @@ export function WhereToFind() {
               >
                 Get directions
               </a>
-              <a className="mundus-button mundus-button--quiet" href="tel:+34931058358">
+              <a className="mundus-button mundus-button--quiet" href={business.telephoneUrl}>
                 Call Mundus
               </a>
             </div>
@@ -68,11 +60,11 @@ export function WhereToFind() {
               Opening hours
             </h3>
             <dl className="mt-7 divide-y divide-ivory/15">
-              {openingHours.map(([day, hours]) => (
-                <div className="flex items-center justify-between gap-6 py-3" key={day}>
-                  <dt className="text-sm text-ivory/80 sm:text-base">{day}</dt>
+              {business.openingHours.map((hours) => (
+                <div className="flex items-center justify-between gap-6 py-3" key={hours.day}>
+                  <dt className="text-sm text-ivory/80 sm:text-base">{hours.day}</dt>
                   <dd className="text-right text-sm font-medium text-ivory sm:text-base">
-                    {hours}
+                    {hours.display}
                   </dd>
                 </div>
               ))}
