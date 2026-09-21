@@ -1,0 +1,823 @@
+{
+  "restaurant": "Mundus Lounge",
+  "currency": "EUR",
+  "categories": [
+    {
+      "name": "SHISHA EXPERIENCE",
+      "items": [
+        {
+          "name": "ROYAL DARK INTENSE",
+          "description": "Mezcla premium creada por hookahmaster",
+          "price": 25.0
+        },
+        {
+          "name": "ROYAL DARK",
+          "description": "Infinidad de sabores, para sorprender todos tus sentidos.",
+          "price": 22.0
+        },
+        {
+          "name": "DARK ESSENCE",
+          "description": "Nivel Medio, con amplia variedad de sabores.",
+          "price": 20.0
+        },
+        {
+          "name": "OLD SCHOOL",
+          "description": null,
+          "price": 18.0
+        }
+      ]
+    },
+    {
+      "name": "CÓCTELES",
+      "subcategories": [
+        {
+          "name": "CÓCTELES",
+          "items": [
+            {
+              "name": "Daikiri",
+              "description": "Ron blanco, jugo de limón, azúcar.",
+              "price": 10.0
+            },
+            {
+              "name": "Piña Colada",
+              "description": "Jugo de piña, coco y Ron blanco.",
+              "price": 10.0
+            },
+            {
+              "name": "Long Island",
+              "description": "Jugo de limón, toque de coca cola, tequila blanco, vodka, ron blanco, triple seco, y ginebra",
+              "price": 11.0
+            },
+            {
+              "name": "Isla Bonita",
+              "description": "Vodka, granadina, piña, mango, naranja y una pizca de limón.",
+              "price": 10.0
+            },
+            {
+              "name": "The Mundus",
+              "description": "Vodka Absolut, zumo de pomelo y zumo de arándanos, junto con un chorrito de limón.",
+              "price": 10.5
+            },
+            {
+              "name": "Cubalibre",
+              "description": "Ron, limón y cola",
+              "price": 9.5
+            },
+            {
+              "name": "Negroni",
+              "description": "Clásico con vermut rojo, ginebra y campari.",
+              "price": 10.0
+            },
+            {
+              "name": "Dry Martini",
+              "description": "Martini vermut seco, Gin, aceituna y toque de lima.",
+              "price": 10.0
+            },
+            {
+              "name": "Tequila Sunrise",
+              "description": "Tequila, zumo naranja y granadina.",
+              "price": 10.0
+            },
+            {
+              "name": "Blue Hawai",
+              "description": "Base de zumo de piña, curacao, lima, vodka y ron blanco.",
+              "price": 10.0
+            },
+            {
+              "name": "The Sunset",
+              "description": "Exquisita combinación de piña, lima, sirope casero, Aperol y Ron.",
+              "price": 10.5
+            },
+            {
+              "name": "Margarita",
+              "description": "Tequila blanco, lima fresca y triple seco.",
+              "price": 10.0
+            },
+            {
+              "name": "Mojito",
+              "description": "Opciones: Fresa, Frutos Rojos y Mango con fruta de la Pasión. Ron, jugo de limón, azúcar, y hojas de menta (o hierbabuena).",
+              "price": 10.0
+            },
+            {
+              "name": "Expresso Martini",
+              "description": "Café expresso, licor de café, Vodka y sirope de azúcar.",
+              "price": 11.0
+            },
+            {
+              "name": "San Francisco",
+              "description": "Ron blanco, Granadina, jugo de melocotón, naranja y piña.",
+              "price": 10.0
+            },
+            {
+              "name": "Red Temptations",
+              "description": "Ron venezolano, lima fresca, fresas y zumo de piña.",
+              "price": 10.5
+            }
+          ]
+        },
+        {
+          "name": "MÓKCTEL'S",
+          "description": "Cócteles sin alcohol",
+          "items": [
+            {
+              "name": "San Francisco",
+              "description": "Granadina, jugo de melocotón, naranja y piña.",
+              "price": 9.0
+            },
+            {
+              "name": "Red Temptations",
+              "description": "Lima fresca, fresa y zumo de piña",
+              "price": 9.0
+            },
+            {
+              "name": "Mundus",
+              "description": "Zumo de pomelo y zumo de arándanos, junto con un chorrito de limón",
+              "price": 9.0
+            },
+            {
+              "name": "Blue Hawai",
+              "description": "Blue Curasao, toque de coco y piña.",
+              "price": 9.0
+            },
+            {
+              "name": "Mojitos",
+              "description": "Fresa o frutos rojos, normal o maracuyá",
+              "price": 9.0
+            },
+            {
+              "name": "Piña colada",
+              "description": "Clásico infalible: piña, ron blanco, coco.",
+              "price": 9.0
+            },
+            {
+              "name": "Isla Bonita",
+              "description": "Granadina, piña, mango, naranja y una pizca de limón.",
+              "price": 9.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "COMBINADOS",
+      "subcategories": [
+        {
+          "name": "LICORES",
+          "items": [
+            {
+              "name": "Jägermeister",
+              "price": 9.0
+            },
+            {
+              "name": "Malibu",
+              "price": 8.0
+            },
+            {
+              "name": "Jose Cuervo",
+              "price": 8.0
+            },
+            {
+              "name": "Licor",
+              "description": "Hierbas, Crema, Torres 10",
+              "price": 7.0
+            },
+            {
+              "name": "Four Roses",
+              "price": 8.0
+            },
+            {
+              "name": "Chupitos basic",
+              "price": 4.0
+            },
+            {
+              "name": "Baileys",
+              "price": 6.0
+            },
+            {
+              "name": "Aperol Spritz",
+              "price": 7.0
+            }
+          ]
+        },
+        {
+          "name": "GIN",
+          "items": [
+            {
+              "name": "Bombay Dry",
+              "price": 9.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Tanqueray",
+              "price": 9.0,
+              "bottle_price": 80.0
+            },
+            {
+              "name": "Beefeater",
+              "price": 9.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Puerto de Indias",
+              "description": "Fresa",
+              "price": 10.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Seagrams",
+              "price": 9.0,
+              "bottle_price": 70.0
+            }
+          ]
+        },
+        {
+          "name": "GIN PREMIUM",
+          "items": [
+            {
+              "name": "Bombay Sapphire",
+              "price": 9.0,
+              "bottle_price": 80.0
+            },
+            {
+              "name": "BullDog",
+              "price": 10.0,
+              "bottle_price": 80.0
+            },
+            {
+              "name": "Formentera",
+              "price": 10.0,
+              "bottle_price": 90.0
+            },
+            {
+              "name": "Martin Miller",
+              "price": 12.0,
+              "bottle_price": 100.0
+            },
+            {
+              "name": "G´vine",
+              "price": 12.0,
+              "bottle_price": 100.0
+            },
+            {
+              "name": "Hendrik´s",
+              "price": 12.0,
+              "bottle_price": 90.0
+            },
+            {
+              "name": "Nordes",
+              "price": 12.0,
+              "bottle_price": 90.0
+            },
+            {
+              "name": "ROKU GIN",
+              "price": 12.0
+            }
+          ]
+        },
+        {
+          "name": "VODKA",
+          "modifier": "Redbull +1€",
+          "items": [
+            {
+              "name": "Absolut",
+              "price": 9.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Eristoff",
+              "price": 8.0,
+              "bottle_price": 70.0
+            }
+          ]
+        },
+        {
+          "name": "VODKA PREMIUM",
+          "modifier": "Redbull +1€",
+          "items": [
+            {
+              "name": "Ciroc piña",
+              "price": 12.0,
+              "bottle_price": 100.0
+            },
+            {
+              "name": "Grey Goose",
+              "price": 14.0,
+              "bottle_price": null
+            },
+            {
+              "name": "Ciroc",
+              "price": 12.0,
+              "bottle_price": 100.0,
+              "shot_price": 6.0
+            },
+            {
+              "name": "Belvedere",
+              "price": 14.0
+            }
+          ]
+        },
+        {
+          "name": "RON PREMIUM",
+          "items": [
+            {
+              "name": "Caney",
+              "description": "Ron cubano",
+              "price": 11.0
+            },
+            {
+              "name": "Habana 7",
+              "price": 10.0,
+              "bottle_price": 90.0,
+              "shot_price": 5.0
+            }
+          ]
+        },
+        {
+          "name": "RON",
+          "items": [
+            {
+              "name": "Barceló",
+              "price": 9.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Brugal",
+              "price": 9.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Habana 3",
+              "price": 8.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Cacique",
+              "price": 9.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Habana Añejo Especial",
+              "description": "Doble añejado",
+              "price": 9.0
+            }
+          ]
+        },
+        {
+          "name": "WHISKY",
+          "modifier": "Redbull +1€",
+          "items": [
+            {
+              "name": "Fireball",
+              "price": 8.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Red Label",
+              "price": 9.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Cutty Shark",
+              "price": 9.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Ballantines",
+              "price": 9.0,
+              "bottle_price": 70.0
+            }
+          ]
+        },
+        {
+          "name": "WHISKY PREMIUM",
+          "modifier": "Redbull +1€",
+          "items": [
+            {
+              "name": "Hibiki Subtory",
+              "description": "Japanese Harmony 52ml",
+              "price": 18.0
+            },
+            {
+              "name": "Green Label 15",
+              "price": 13.0,
+              "bottle_price": 100.0
+            },
+            {
+              "name": "Gold Label",
+              "price": 13.5,
+              "bottle_price": 100.0
+            },
+            {
+              "name": "The Macallan 12 años",
+              "description": "Whisky escocés de malta, equilibrio perfecto entre barricas europeas y americanas 100% añejadas en Jerez. Nariz: Caramelo, naranja confitada, vainilla y roble fresco. Retrogusto: El roble persiste, cálido, dulce y seco. Paladar: Especias de madera (jengibre y nuez moscada) cítricos, caramelo, pasas y resina.",
+              "price": 16.0,
+              "shot_price": 15.0
+            },
+            {
+              "name": "CHIVAS",
+              "price": 10.0
+            },
+            {
+              "name": "Jack Daniel´s",
+              "price": 10.0,
+              "bottle_price": 70.0
+            },
+            {
+              "name": "Black Label",
+              "price": 10.0,
+              "bottle_price": 90.0,
+              "shot_price": 5.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FOOD",
+      "subcategories": [
+        {
+          "name": "ENTRANTES",
+          "items": [
+            {
+              "name": "Aceitunas",
+              "price": 3.0
+            },
+            {
+              "name": "Patatas fritas Bolsa",
+              "description": "Ración bolsa de patatas fritas.",
+              "price": 2.5
+            },
+            {
+              "name": "Calamares Romana",
+              "price": 7.5
+            },
+            {
+              "name": "Alitas de Pollo 4 und",
+              "price": 6.0
+            },
+            {
+              "name": "Gyozas 5 unidades",
+              "price": 6.0
+            },
+            {
+              "name": "Nuggers 10 und",
+              "price": 9.5
+            },
+            {
+              "name": "Nuggers 5 und",
+              "price": 6.0
+            },
+            {
+              "name": "Fingers de Pollo 6 und",
+              "price": 9.0
+            },
+            {
+              "name": "Fingers de Pollo 4 und",
+              "price": 7.0
+            },
+            {
+              "name": "French fries",
+              "description": "Patatas fritas rústicas.",
+              "price": 5.0
+            },
+            {
+              "name": "Patatas Bravas Mundus",
+              "description": "No las típicas, patatas estilo rústicas con salsa brava mundus",
+              "price": 7.0
+            },
+            {
+              "name": "Gyozas 10 unidades",
+              "price": 9.9
+            },
+            {
+              "name": "Alitas de Pollo 8 und",
+              "price": 9.9
+            },
+            {
+              "name": "Tequeños",
+              "description": "5 unidades",
+              "price": 7.0
+            }
+          ]
+        },
+        {
+          "name": "BURGERS",
+          "items": [
+            {
+              "name": "Burger Pollo corral con patatas",
+              "description": "Burger de pollo de corral con Patatas rústicas y pan brioche Juanito Baker.",
+              "price": 12.95
+            },
+            {
+              "name": "Burger Gallega con patatas",
+              "description": "Burger ternera Gallega más patatas Gajo. Pan de brioche Juanito Baker.",
+              "price": 12.95
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CERVEZAS",
+      "items": [
+        {
+          "name": "Paulaner Munchen",
+          "price": 4.8
+        },
+        {
+          "name": "18/70",
+          "price": 3.5,
+          "options": [
+            {
+              "name": "50 cl",
+              "price": 5.2
+            }
+          ]
+        },
+        {
+          "name": "Radler Clara",
+          "price": 3.0
+        },
+        {
+          "name": "Alhambra",
+          "price": 3.9
+        },
+        {
+          "name": "Águila Dorada",
+          "price": 3.0,
+          "options": [
+            {
+              "name": "50 cl",
+              "price": 4.8
+            }
+          ]
+        },
+        {
+          "name": "Amstel oro",
+          "description": "Tostada",
+          "price": 3.5
+        },
+        {
+          "name": "Ladrón de verano",
+          "price": 3.5
+        }
+      ]
+    },
+    {
+      "name": "VINOS",
+      "subcategories": [
+        {
+          "name": "Tintos",
+          "items": [
+            {
+              "name": "SANGRIA",
+              "price": 4.5,
+              "options": [
+                {
+                  "name": "Jarra",
+                  "price": 18.0
+                }
+              ]
+            },
+            {
+              "name": "VALQUEMAO",
+              "description": "Ribera de Duero",
+              "price": 4.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BATIDOS & ZUMOS",
+      "subcategories": [
+        {
+          "name": "BATIDOS",
+          "items": [
+            {
+              "name": "Batido Oreo",
+              "description": "Deliciosa crema de nata, chocolate y galletas Oreo.",
+              "price": 7.0
+            },
+            {
+              "name": "Batido Lotus",
+              "description": "Deliciosa crema de vainilla, caramelo y auténtica galleta Lotus.",
+              "price": 7.0
+            },
+            {
+              "name": "Batido Vainilla",
+              "price": 7.0
+            },
+            {
+              "name": "Smothies",
+              "description": "Fresa, frutos rojos o mango",
+              "price": 7.0
+            },
+            {
+              "name": "Batido Fresa",
+              "price": 7.0
+            },
+            {
+              "name": "Batido Nocilla",
+              "price": 7.0
+            }
+          ]
+        },
+        {
+          "name": "Zumos PAGO",
+          "items": [
+            {
+              "name": "Melocotón",
+              "price": 3.0
+            },
+            {
+              "name": "Naranja",
+              "price": 3.0
+            },
+            {
+              "name": "Piña",
+              "price": 3.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CAFÉS & TÉS",
+      "subcategories": [
+        {
+          "name": "Cafés",
+          "modifier": "Suplemento de hielo 0.20€",
+          "items": [
+            {
+              "name": "Caramel Frappuccino",
+              "price": 5.5
+            },
+            {
+              "name": "Café solo",
+              "price": 1.8
+            },
+            {
+              "name": "Café cortado",
+              "price": 2.0
+            },
+            {
+              "name": "Café con leche",
+              "price": 2.4
+            },
+            {
+              "name": "Capuccino",
+              "price": 2.6
+            },
+            {
+              "name": "Café Americano",
+              "price": 2.4
+            },
+            {
+              "name": "Carajillo",
+              "price": 3.0
+            },
+            {
+              "name": "Moca Café",
+              "description": "Expresso, leche y cacao.",
+              "price": 5.0
+            }
+          ]
+        },
+        {
+          "name": "TÉ ECOLÓGICOS",
+          "serving_sizes": "600 ml / 250 ml",
+          "items": [
+            {
+              "name": "Verde",
+              "description": "Jazmín\nYin Xiang",
+              "price": 3.5
+            },
+            {
+              "name": "Negro Ceilán",
+              "price": 3.5
+            },
+            {
+              "name": "TE de temporada",
+              "description": "Ask for the flavors",
+              "size": "650ml",
+              "price": 7.0
+            },
+            {
+              "name": "Rojo Pu-erh",
+              "price": 3.5
+            },
+            {
+              "name": "Ice tea Forest berries",
+              "description": "Té frío infusionado con frutos rojos.",
+              "price": 7.0
+            }
+          ]
+        },
+        {
+          "name": "INFUSIONES ECOLÓGICOS",
+          "serving_sizes": "600ml / 250ml",
+          "items": [
+            {
+              "name": "Manzanilla",
+              "price": 3.0
+            },
+            {
+              "name": "Rooiboos Komland",
+              "price": 3.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "POSTRES",
+      "subcategories": [
+        {
+          "name": "Tartas",
+          "items": [
+            {
+              "name": "Brownie",
+              "description": "Brownie caliente con helado de vainilla",
+              "price": 6.5
+            },
+            {
+              "name": "Coulant de chocolate",
+              "description": "Delicioso Coulant de chocolate negro con una bola de helado.",
+              "price": 6.5
+            },
+            {
+              "name": "The brioche",
+              "description": "Brioche de mantequilla con harina de patata. Elige entre Chocolate o Crema de lotus cubierto de una espesa nata.",
+              "price": 6.5
+            },
+            {
+              "name": "Donut cuadrado relleno de frutos secos y chocolate",
+              "description": "Deliciosos donuts cuadrados con recubrimiento de chocolate y relleno de crema de frutos secos. Se sirven con un toque caliente, como si fueran recién hechos.",
+              "price": 4.5
+            },
+            {
+              "name": "Donut cuadrado de chocolate",
+              "description": "Deliciosos donuts cuadrados con recubrimiento de chocolate. Se sirven con un toque caliente, como si fueran recién hechos.",
+              "price": 4.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "REFRESCOS",
+      "subcategories": [
+        {
+          "name": "Refrescos & Aguas",
+          "items": [
+            {
+              "name": "Agua",
+              "price": 2.5
+            },
+            {
+              "name": "Royal Bliss Tónica",
+              "description": "Berrys, Grapefruit",
+              "price": 3.2
+            },
+            {
+              "name": "Redbull",
+              "description": "Classic, Sandia, Coco arandanos, melocotón, pomelo, limón y saúco, cereza.",
+              "price": 3.5
+            },
+            {
+              "name": "MONSTER",
+              "description": "Ultra white, Classic, Mango loco, Ultra Rosa",
+              "price": 3.5
+            },
+            {
+              "name": "Perrier / Vichy Catalan",
+              "description": "Sparkling water",
+              "price": 3.2
+            },
+            {
+              "name": "Cocacola/Zero/Fanta/Sprite",
+              "price": 3.0
+            },
+            {
+              "name": "Cacaolat",
+              "price": 3.0
+            },
+            {
+              "name": "AQUARIUS LIMON/MELOCOTÓN",
+              "price": 3.2
+            },
+            {
+              "name": "Limonada",
+              "price": 6.5
+            },
+            {
+              "name": "FUSE TEA/Maracuyá/Limón",
+              "price": 3.2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

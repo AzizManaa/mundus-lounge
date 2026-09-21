@@ -1,0 +1,44 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import { MenuBrowser } from "../../components/menu-browser";
+import { SiteFooter } from "../../components/site-footer";
+import { menuCategories, menuCurrency } from "../../data/mundus-menu";
+
+export const metadata: Metadata = {
+  title: "Menu | Mundus Lounge",
+  description:
+    "Explore the current Mundus Lounge menu: shisha, cocktails, spirits, food, coffee, tea, desserts, beer, wine, and more.",
+};
+
+export default function MenuPage() {
+  return (
+    <>
+      <main id="top">
+        <header className="border-b border-ivory/10 bg-onyx py-6">
+          <div className="mundus-container flex items-center justify-between gap-6">
+            <a
+              aria-label="Back to Mundus Lounge homepage"
+              className="inline-flex size-11 items-center justify-center"
+              href="/"
+            >
+              <Image
+                alt=""
+                className="size-9"
+                height={36}
+                src="/brand/mundus-mark.svg"
+                unoptimized
+                width={36}
+              />
+            </a>
+            <a className="mundus-button mundus-button--outline" href="/">
+              Back to homepage
+            </a>
+          </div>
+        </header>
+
+        <MenuBrowser categories={menuCategories} currency={menuCurrency} />
+      </main>
+      <SiteFooter />
+    </>
+  );
+}

@@ -1,26 +1,239 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-onyx: #0b0d0c;
+  --color-jade: #0b6b45;
+  --color-emerald: #18a565;
+  --color-brass: #b88a42;
+  --color-ivory: #f3ebdd;
+  --color-olive: #202723;
+
+  --font-sans: var(--font-bricolage), Arial, Helvetica, sans-serif;
+  --font-display: var(--font-bricolage), Arial, Helvetica, sans-serif;
+  --font-script: var(--font-timberline), cursive;
+
+  --spacing-page: clamp(1.25rem, 4vw, 4rem);
+  --spacing-section: clamp(4.5rem, 10vw, 8rem);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --page-max-width: 72rem;
+  --content-max-width: 42rem;
+  --border-subtle: color-mix(in srgb, var(--color-ivory) 16%, transparent);
+  --focus-ring: color-mix(in srgb, var(--color-emerald) 80%, white);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-onyx);
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  min-width: 20rem;
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--color-onyx);
+  color: var(--color-ivory);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  line-height: 1.5;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
+@layer components {
+  .mundus-container {
+    width: min(100% - (var(--spacing-page) * 2), var(--page-max-width));
+    margin-inline: auto;
+  }
+
+  .mundus-section {
+    padding-block: var(--spacing-section);
+  }
+
+  .mundus-eyebrow {
+    color: var(--color-emerald);
+    font-family: var(--font-script);
+    font-size: clamp(2rem, 3vw, 3.75rem);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 0.8;
+  }
+
+  .mundus-detail {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .mundus-button {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-emerald);
+    background: var(--color-jade);
+    color: var(--color-ivory);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding-inline: 1.25rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 160ms ease, border-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .mundus-button:hover {
+    background: var(--color-emerald);
+    border-color: var(--color-emerald);
+    color: var(--color-onyx);
+  }
+
+  .mundus-button--quiet {
+    background: transparent;
+    border-color: var(--border-subtle);
+  }
+
+  .mundus-button--quiet:hover {
+    background: var(--color-olive);
+    border-color: var(--color-brass);
+    color: var(--color-ivory);
+  }
+
+  .mundus-button--outline {
+    background: transparent;
+    border-color: var(--color-emerald);
+    color: var(--color-emerald);
+  }
+
+  .mundus-button--outline:hover {
+    background: var(--color-jade);
+    border-color: var(--color-emerald);
+    color: var(--color-ivory);
+  }
+
+  .mundus-hero-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(11, 13, 12, 0.58) 0%,
+      rgba(11, 13, 12, 0.48) 40%,
+      rgba(11, 13, 12, 0.92) 100%
+    );
+  }
+
+  .mundus-image-frame {
+    position: relative;
+  }
+
+  .mundus-image-frame::before {
+    position: absolute;
+    inset: -1.25rem 1.25rem 1.25rem -1.25rem;
+    z-index: -1;
+    border: 2px solid var(--color-emerald);
+    content: "";
+  }
+}
+
+@media (min-width: 40rem) {
+  .mundus-hero-overlay {
+    background: linear-gradient(
+      90deg,
+      var(--color-onyx) 0%,
+      rgba(11, 13, 12, 0.94) 32%,
+      rgba(11, 13, 12, 0.46) 64%,
+      rgba(11, 13, 12, 0.76) 100%
+    );
+  }
+}
+
+@media (min-width: 40rem) {
+  .mundus-image-frame::before {
+    inset: -2rem 2rem 2rem -2rem;
+  }
+}
+
+.mundus-parallax-background {
+  background-color: var(--color-onyx);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.mundus-where-to-find {
+  padding-block: clamp(3rem, 5vw, 4.5rem);
+}
+
+.mundus-testimonials {
+  background: linear-gradient(135deg, #111914 0%, var(--color-onyx) 72%);
+  border-block: 1px solid color-mix(in srgb, var(--color-emerald) 20%, transparent);
+}
+
+.mundus-menu-card {
+  display: block;
+}
+
+.mundus-menu-card__inner {
+  display: block;
+  overflow: hidden;
+}
+
+.mundus-menu-card__image {
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--color-emerald);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: absolute;
+}
+
+.mundus-menu-card__image {
+  position: relative;
+}
+
+.mundus-menu-card__details {
+  background: var(--color-olive);
+  border: 1px solid var(--border-subtle);
+  border-top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .mundus-menu-card {
+    transition: transform 220ms ease;
+  }
+
+  .mundus-menu-card:hover,
+  .mundus-menu-card:focus-visible {
+    transform: translateY(-0.25rem);
+  }
+
+}
+
+@media (min-width: 48rem) {
+  .mundus-parallax-background {
+    background-attachment: fixed;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
