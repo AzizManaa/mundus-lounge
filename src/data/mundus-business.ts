@@ -24,6 +24,8 @@ export const business = {
     postalCode: "08013",
     streetAddress: "C/ de Padilla, 177",
   },
+  directionsUrl:
+    "https://www.google.com/maps/search/?api=1&query=C%2F%20de%20Padilla%2C%20177%2C%2008013%20Barcelona",
   name: "Mundus Lounge",
   neighbourhood: "Eixample, near Sagrada Família",
   openingHours,

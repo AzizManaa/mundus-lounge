@@ -43,7 +43,7 @@ export function WhereToFind() {
             <div className="flex flex-wrap gap-3">
               <a
                 className="mundus-button mundus-button--outline"
-                href="https://www.google.com/maps/search/?api=1&query=C%2F%20de%20Padilla%2C%20177%2C%2008013%20Barcelona"
+                href={business.directionsUrl}
                 rel="noreferrer"
                 target="_blank"
               >

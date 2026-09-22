@@ -31,19 +31,19 @@ function formatPrice(price: number | null | undefined, currency: string) {
 
 function MenuItemRow({ item, currency }: { item: MenuItem; currency: string }) {
   return (
-    <li className="border-b border-ivory/10 py-5 last:border-b-0">
-      <div className="flex items-baseline justify-between gap-4">
-        <h4 className="font-display text-lg font-medium text-ivory">
+    <li className="border-b border-ivory/10 py-4 last:border-b-0 sm:py-5">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 sm:gap-4">
+        <h4 className="font-display text-base font-medium leading-snug text-ivory sm:text-lg">
           {item.name}
         </h4>
         {item.price !== undefined && (
-          <span className="shrink-0 text-sm text-emerald">
+          <span className="shrink-0 border border-emerald/30 px-2 py-1 text-xs font-bold tabular-nums text-emerald sm:border-0 sm:p-0 sm:text-sm">
             {formatPrice(item.price, currency)}
           </span>
         )}
       </div>
       {item.description && (
-        <p className="mt-1.5 text-sm leading-6 text-ivory/60">
+        <p className="mt-1.5 text-sm leading-5 text-ivory/60 sm:leading-6">
           {item.description}
         </p>
       )}
@@ -90,6 +90,55 @@ function MenuGroup({
   );
 }
 
+function MobileMenuGroup({
+  category,
+  currency,
+  defaultOpen,
+}: {
+  category: MenuSubcategory;
+  currency: string;
+  defaultOpen: boolean;
+}) {
+  return (
+    <details
+      className="group border border-ivory/15 bg-onyx/35"
+      open={defaultOpen}
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 marker:content-none">
+        <div>
+          <h3 className="font-display text-2xl font-medium tracking-[-0.03em] text-ivory">
+            {category.name}
+          </h3>
+          <p className="mt-1 text-xs font-bold tracking-[0.1em] text-emerald">
+            {category.items.length} {category.items.length === 1 ? "ITEM" : "ITEMS"}
+          </p>
+        </div>
+        <span
+          aria-hidden="true"
+          className="text-2xl leading-none text-emerald transition-transform duration-200 group-open:rotate-45"
+        >
+          +
+        </span>
+      </summary>
+      <div className="border-t border-ivory/10 px-6 pb-6">
+        {category.description && (
+          <p className="mt-4 text-sm italic text-ivory/55">{category.description}</p>
+        )}
+        {category.modifier && (
+          <p className="mt-3 text-xs font-bold tracking-[0.1em] text-emerald">
+            {category.modifier}
+          </p>
+        )}
+        <ul className="mt-5">
+          {category.items.map((item) => (
+            <MenuItemRow currency={currency} item={item} key={item.name} />
+          ))}
+        </ul>
+      </div>
+    </details>
+  );
+}
+
 export function MenuBrowser({
   categories,
   currency,
@@ -98,6 +147,7 @@ export function MenuBrowser({
   currency: string;
 }) {
   const [activeCategoryName, setActiveCategoryName] = useState(categories[0].name);
+  const categoryPickerRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const activeCategory =
     categories.find((category) => category.name === activeCategoryName) ?? categories[0];
@@ -153,8 +203,29 @@ export function MenuBrowser({
         </header>
 
         <div
+          className="sticky top-3 z-20 -mx-1 bg-onyx/95 px-1 py-3 backdrop-blur-sm sm:hidden"
+          ref={categoryPickerRef}
+        >
+          <label className="sr-only" htmlFor="menu-category-select">
+            Browse menu category
+          </label>
+          <select
+            className="w-full border border-emerald/70 bg-onyx px-4 py-4 text-base font-semibold text-ivory outline-none focus:border-ivory"
+            id="menu-category-select"
+            onChange={(event) => setActiveCategoryName(event.target.value)}
+            value={activeCategory.name}
+          >
+            {categories.map((category) => (
+              <option key={category.name} value={category.name}>
+                {categoryLabels[category.name] ?? category.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div
           aria-label="Menu categories"
-          className="flex gap-7 overflow-x-auto border-b border-ivory/15 px-1 pb-5 sm:justify-center"
+          className="hidden gap-7 overflow-x-auto border-b border-ivory/15 px-1 pb-5 sm:flex sm:justify-center"
           role="tablist"
         >
           {categories.map((category, index) => {
@@ -201,11 +272,45 @@ export function MenuBrowser({
             </h2>
           </header>
 
-          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+          {activeCategory.name === "SHISHA EXPERIENCE" && (
+            <aside className="mt-6 border-l-2 border-emerald bg-onyx/45 px-5 py-4 text-left sm:mt-8">
+              <p className="text-sm font-semibold text-ivory">Not sure where to start?</p>
+              <p className="mt-1 text-sm leading-6 text-ivory/65">
+                Ask the Mundus team for a shisha recommendation.
+              </p>
+            </aside>
+          )}
+
+          <div className="mt-8 grid gap-4 sm:hidden">
+            {groups.map((group, index) => (
+              <MobileMenuGroup
+                category={group}
+                currency={currency}
+                defaultOpen={groups.length === 1 || index === 0}
+                key={`${activeCategory.name}-${group.name}`}
+              />
+            ))}
+          </div>
+
+          <div className="mt-10 hidden gap-6 sm:grid lg:grid-cols-2">
             {groups.map((group) => (
               <MenuGroup category={group} currency={currency} key={group.name} />
             ))}
           </div>
+
+          <button
+            className="mt-8 w-full border border-ivory/20 px-5 py-4 text-xs font-bold tracking-[0.12em] text-ivory transition-colors hover:border-emerald hover:text-emerald sm:hidden"
+            onClick={() =>
+              categoryPickerRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              })
+            }
+            type="button"
+          >
+            Back to categories
+          </button>
+
         </div>
       </div>
     </section>
