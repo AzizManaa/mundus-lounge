@@ -4,7 +4,7 @@ import Link from "next/link";
 import { MenuBrowser } from "../../components/menu-browser";
 import { SiteFooter } from "../../components/site-footer";
 import { siteUrl } from "../../data/mundus-business";
-import { menuCategories, menuCurrency } from "../../data/mundus-menu";
+import { getMenu } from "../../data/mundus-menu";
 
 export const metadata: Metadata = {
   ...(siteUrl ? { alternates: { canonical: "/menu" } } : {}),
@@ -20,7 +20,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function MenuPage() {
+export default async function MenuPage() {
+  const menu = await getMenu();
+
   return (
     <>
       <main id="top">
@@ -46,7 +48,7 @@ export default function MenuPage() {
           </div>
         </header>
 
-        <MenuBrowser categories={menuCategories} currency={menuCurrency} />
+        <MenuBrowser categories={menu.categories} currency={menu.currency} />
       </main>
       <SiteFooter />
     </>
