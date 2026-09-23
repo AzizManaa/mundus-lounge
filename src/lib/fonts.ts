@@ -1,14 +1,14 @@
-import localFont from "next/font/local";
+import { Bricolage_Grotesque, Italianno } from "next/font/google";
 
-export const bricolage = localFont({
-  src: "../app/fonts/bricolage/BricolageGrotesque-Variable.woff2",
+export const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
   display: "swap",
   variable: "--font-bricolage",
-  weight: "200 800",
 });
 
-export const timberline = localFont({
-  src: "../app/fonts/timberline/Timberline-Regular.woff2",
+export const italianno = Italianno({
+  subsets: ["latin"],
   display: "swap",
-  variable: "--font-timberline",
+  variable: "--font-italianno",
+  weight: "400",
 });

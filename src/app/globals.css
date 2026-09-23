@@ -10,7 +10,7 @@
 
   --font-sans: var(--font-bricolage), Arial, Helvetica, sans-serif;
   --font-display: var(--font-bricolage), Arial, Helvetica, sans-serif;
-  --font-script: var(--font-timberline), cursive;
+  --font-script: var(--font-italianno), cursive;
 
   --spacing-page: clamp(1.25rem, 4vw, 4rem);
   --spacing-section: clamp(4.5rem, 10vw, 8rem);

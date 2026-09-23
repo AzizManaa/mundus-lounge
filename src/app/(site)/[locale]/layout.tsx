@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ReviewShortcut } from "../../../components/review-shortcut";
 import { business, getLocalBusinessSchema, siteUrl } from "../../../data/mundus-business";
 import { locales } from "../../../i18n";
-import { bricolage, timberline } from "../../../lib/fonts";
+import { bricolage, italianno } from "../../../lib/fonts";
 import { getLocalizedBusinessDescription } from "../../../lib/metadata";
 import { requireLocale } from "../../../lib/locale";
 import "../../globals.css";
@@ -36,7 +36,7 @@ export default async function LocaleLayout({
   const schema = getLocalBusinessSchema(getLocalizedBusinessDescription(locale), locale);
 
   return (
-    <html className={`${bricolage.variable} ${timberline.variable}`} lang={locale}>
+    <html className={`${bricolage.variable} ${italianno.variable}`} lang={locale}>
       <body>
         {children}
         <ReviewShortcut locale={locale} />
