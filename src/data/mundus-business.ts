@@ -1,4 +1,11 @@
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+const vercelProductionDomain = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+
+export const siteUrl = configuredSiteUrl
+  ? configuredSiteUrl.replace(/\/$/, "")
+  : vercelProductionDomain
+    ? `https://${vercelProductionDomain}`
+    : undefined;
 
 type OpeningHours = {
   closes?: string;

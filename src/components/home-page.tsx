@@ -3,7 +3,6 @@ import Link from "next/link";
 import { getMessages, type Locale } from "../i18n";
 import aboutImageOne from "../../public/images/mundus-about-one.png";
 import aboutImageTwo from "../../public/images/mundus-about-two.png";
-import heroImage from "../../public/images/mundus-shisha-hero.png";
 import smokeLeft from "../../public/images/mundus-smoke-left.png";
 import smokeRight from "../../public/images/mundus-smoke-right.png";
 import { LocaleSwitcher } from "./locale-switcher";
@@ -66,10 +65,10 @@ export function HomePage({ locale }: { locale: Locale }) {
             className="absolute inset-0 size-full object-cover object-[70%_center]"
             muted
             playsInline
-            poster={heroImage.src}
+            poster="/images/mundus-shisha-hero.jpg"
             preload="metadata"
           >
-            <source src="/videos/mundus-hero.mp4" type="video/mp4" />
+            <source media="(prefers-reduced-motion: no-preference)" src="/videos/mundus-hero.mp4" type="video/mp4" />
           </video>
           <div aria-hidden="true" className="mundus-hero-overlay absolute inset-0" />
 

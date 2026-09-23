@@ -37,6 +37,17 @@ export function getPageMetadata(locale: Locale, page: "home" | "menu"): Metadata
       alternateLocale: locale === "es" ? ["en_ES"] : ["es_ES"],
       description,
       locale: locale === "es" ? "es_ES" : "en_ES",
+      ...(siteUrl
+        ? {
+            images: [{
+              alt: "Mundus Lounge shisha",
+              height: 900,
+              url: "/images/mundus-shisha-hero.jpg",
+              width: 1600,
+            }],
+            url: path,
+          }
+        : {}),
       siteName: business.name,
       title,
       type: "website",
@@ -45,6 +56,7 @@ export function getPageMetadata(locale: Locale, page: "home" | "menu"): Metadata
     twitter: {
       card: "summary",
       description,
+      ...(siteUrl ? { images: ["/images/mundus-shisha-hero.jpg"] } : {}),
       title,
     },
   };

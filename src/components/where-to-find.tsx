@@ -10,7 +10,7 @@ export function WhereToFind({ locale }: { locale: Locale }) {
       id="visit"
       style={{
         backgroundImage:
-          "linear-gradient(90deg, rgba(11, 13, 12, 0.9), rgba(11, 13, 12, 0.7) 55%, rgba(11, 13, 12, 0.88)), url('/images/mundus-where-to-find-background.png')",
+          "linear-gradient(90deg, rgba(11, 13, 12, 0.9), rgba(11, 13, 12, 0.7) 55%, rgba(11, 13, 12, 0.88)), url('/images/mundus-where-to-find-background.webp')",
       }}
     >
       <div className="mundus-container relative z-10">
