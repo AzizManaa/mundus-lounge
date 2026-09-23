@@ -1,21 +1,22 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "../data/mundus-business";
+import { locales } from "../i18n";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  if (!siteUrl) {
+  const baseUrl = siteUrl;
+
+  if (!baseUrl) {
     return [];
   }
 
-  return [
-    {
-      changeFrequency: "weekly",
-      priority: 1,
-      url: siteUrl,
-    },
-    {
-      changeFrequency: "weekly",
-      priority: 0.8,
-      url: `${siteUrl}/menu`,
-    },
-  ];
+  return ["", "/menu"].flatMap((path) => {
+    const languages = Object.fromEntries(
+      locales.map((locale) => [locale, `${baseUrl}/${locale}${path}`]),
+    );
+
+    return locales.map((locale) => ({
+      alternates: { languages },
+      url: `${baseUrl}/${locale}${path}`,
+    }));
+  });
 }

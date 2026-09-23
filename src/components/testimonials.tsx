@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getMessages, type Locale } from "../i18n";
 import dominikAvatar from "../../public/images/review-dominik-skladanek.png";
 import marioAvatar from "../../public/images/review-mario-steineschwanz.png";
 import momentsBackgroundLeft from "../../public/images/mundus-moments-bg-left.png";
@@ -26,7 +27,8 @@ const testimonials = [
   },
 ];
 
-export function Testimonials() {
+export function Testimonials({ locale }: { locale: Locale }) {
+  const messages = getMessages(locale).testimonials;
   return (
     <section
       aria-labelledby="testimonials-heading"
@@ -59,14 +61,14 @@ export function Testimonials() {
 
       <div className="mundus-container relative z-10">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="mundus-eyebrow mb-6">Testimonials</p>
+          <p className="mundus-eyebrow mb-6">{messages.eyebrow}</p>
           <h2
             className="font-display text-4xl font-[200] leading-[1.02] tracking-[-0.05em] text-ivory sm:text-5xl"
             id="testimonials-heading"
           >
-            What people think
+            {messages.heading[0]}
             <br />
-            about Mundus
+            {messages.heading[1]}
           </h2>
         </div>
 
@@ -83,13 +85,13 @@ export function Testimonials() {
                 “
               </span>
               <Image
-                alt={`${testimonial.name}'s profile photo`}
+                alt={`${messages.avatarAlt} ${testimonial.name}`}
                 className="size-16 rounded-full object-cover"
                 height={64}
                 src={testimonial.avatar}
                 width={64}
               />
-              <blockquote className="mt-7 text-base leading-7 text-ivory/75">
+              <blockquote className="mt-7 text-base leading-7 text-ivory/75" lang="en">
                 {testimonial.quote}
               </blockquote>
               <figcaption className="mt-auto pt-7 text-base font-semibold text-emerald">

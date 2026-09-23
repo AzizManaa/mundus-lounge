@@ -1,3 +1,4 @@
+import type { Locale } from "../i18n";
 import menu from "./mundus-menu.json";
 
 export type MenuItem = {
@@ -39,20 +40,10 @@ const fallbackMenu: MenuData = {
   currency: menu.currency,
 };
 
-export const menuCategories = fallbackMenu.categories;
-export const menuCurrency = fallbackMenu.currency;
-
-const menuSheetHeaders = [
-  "category",
-  "subcategory",
-  "item",
-  "description",
-  "price",
-  "bottle_price",
-  "shot_price",
-  "modifier",
-  "visible",
-] as const;
+const headerAliases: Record<string, string> = {
+  item_name: "item",
+  show_online: "visible",
+};
 
 function parseCsv(csv: string): string[][] {
   const rows: string[][] = [];
@@ -110,19 +101,30 @@ function isVisible(value: string | undefined) {
   return !["0", "false", "no", "off"].includes(value?.trim().toLowerCase() ?? "");
 }
 
-function getSheetRows(csv: string): MenuSheetRow[] {
+function getSheetRows(csv: string): MenuSheetRow[] | null {
   const [headers, ...rows] = parseCsv(csv);
 
   if (!headers) {
-    return [];
+    return null;
   }
 
-  const normalizedHeaders = headers.map((header) =>
-    header.trim().toLowerCase().replaceAll(" ", "_"),
-  );
+  const normalizedHeaders = headers.map((header) => {
+    const key = header
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "");
+    return headerAliases[key] ?? key;
+  });
+
+  if (!["category", "item", "visible"].every((header) => normalizedHeaders.includes(header))) {
+    return null;
+  }
 
   return rows
-    .filter((row) => row.some((cell) => cell.trim()))
+    .filter((row) =>
+      row.some((cell, index) => normalizedHeaders[index] !== "visible" && cell.trim()),
+    )
     .map((row) =>
       Object.fromEntries(
         normalizedHeaders.map((header, index) => [header, row[index]?.trim() ?? ""]),
@@ -130,13 +132,7 @@ function getSheetRows(csv: string): MenuSheetRow[] {
     );
 }
 
-function menuFromSheet(csv: string): MenuData | null {
-  const rows = getSheetRows(csv);
-
-  if (!rows.some((row) => row.category && row.item)) {
-    return null;
-  }
-
+function menuFromSheetRows(rows: MenuSheetRow[]): MenuData {
   const categories = new Map<string, CategoryBuilder>();
 
   for (const row of rows) {
@@ -197,78 +193,73 @@ function menuFromSheet(csv: string): MenuData | null {
     })
     .filter((category): category is MenuCategory => category !== null);
 
-  return parsedCategories.length > 0
-    ? { categories: parsedCategories, currency: fallbackMenu.currency }
-    : null;
+  return { categories: parsedCategories, currency: fallbackMenu.currency };
 }
 
-function csvCell(value: string | number | null | undefined) {
-  const content = value?.toString() ?? "";
-  return /[",\n\r]/.test(content)
-    ? `"${content.replaceAll('"', '""')}"`
-    : content;
+function translatedText(value: string | undefined, fallback: string | undefined) {
+  const text = value?.trim() ?? "";
+  return text && !text.startsWith("#") && !/^loading\.{0,3}$/i.test(text)
+    ? text
+    : (fallback ?? "");
 }
 
-function menuItemToSheetRow(
-  category: string,
-  subcategory: string,
-  modifier: string | undefined,
-  item: MenuItem,
-) {
-  return [
-    category,
-    subcategory,
-    item.name,
-    item.description,
-    item.price,
-    item.bottle_price,
-    item.shot_price,
-    modifier,
-    "true",
-  ];
-}
-
-export function createMenuSheetTemplate() {
-  const rows = fallbackMenu.categories.flatMap((category) => {
-    if (category.subcategories) {
-      return category.subcategories.flatMap((subcategory) =>
-        subcategory.items.map((item) =>
-          menuItemToSheetRow(
-            category.name,
-            subcategory.name,
-            subcategory.modifier,
-            item,
-          ),
-        ),
-      );
-    }
-
-    return (category.items ?? []).map((item) =>
-      menuItemToSheetRow(category.name, "", undefined, item),
+function mergeEnglishRows(spanishRows: MenuSheetRow[], englishRows: MenuSheetRow[]) {
+  const sharedFields = ["price", "bottle_price", "shot_price", "visible"];
+  const rowsMatch =
+    spanishRows.length === englishRows.length &&
+    spanishRows.every((spanish, index) =>
+      sharedFields.every((field) => spanish[field] === englishRows[index][field]),
     );
-  });
 
-  return [menuSheetHeaders, ...rows]
-    .map((row) => row.map(csvCell).join(","))
-    .join("\n");
+  if (!rowsMatch) {
+    return spanishRows;
+  }
+
+  return spanishRows.map((spanish, index) => {
+    const english = englishRows[index];
+
+    return {
+      ...spanish,
+      category: translatedText(english.category, spanish.category),
+      subcategory: translatedText(english.subcategory, spanish.subcategory),
+      item: translatedText(english.item, spanish.item),
+      description: translatedText(english.description, spanish.description),
+      modifier: translatedText(english.modifier, spanish.modifier),
+    };
+  });
 }
 
-export async function getMenu(): Promise<MenuData> {
-  const sheetUrl = process.env.MENU_SHEET_CSV_URL;
-
-  if (!sheetUrl) {
-    return fallbackMenu;
+async function fetchSheetRows(url: string | undefined): Promise<MenuSheetRow[] | null> {
+  if (!url) {
+    return null;
   }
 
   try {
-    const response = await fetch(sheetUrl, { next: { revalidate: 60 } });
-
-    if (!response.ok) {
-      return fallbackMenu;
-    }
-
-    return menuFromSheet(await response.text()) ?? fallbackMenu;
+    const response = await fetch(url, { next: { revalidate: 60 } });
+    return response.ok ? getSheetRows(await response.text()) : null;
   } catch {
-    return fallbackMenu;
+    return null;
   }
+}
+
+export async function getMenu(locale: Locale): Promise<MenuData> {
+  const spanishUrl = process.env.MENU_SHEET_CSV_URL_ES;
+  const englishUrl = process.env.MENU_SHEET_CSV_URL_EN;
+  const [spanishRows, englishRows] = await Promise.all([
+    fetchSheetRows(spanishUrl),
+    locale === "en" ? fetchSheetRows(englishUrl) : Promise.resolve(null),
+  ]);
+  const spanishMenu = spanishRows !== null ? menuFromSheetRows(spanishRows) : null;
+
+  if (locale === "es") {
+    return spanishMenu ?? fallbackMenu;
+  }
+
+  const englishMenu = englishRows !== null
+    ? menuFromSheetRows(
+        spanishRows !== null ? mergeEnglishRows(spanishRows, englishRows) : englishRows,
+      )
+    : null;
+
+  return englishMenu ?? spanishMenu ?? fallbackMenu;
 }

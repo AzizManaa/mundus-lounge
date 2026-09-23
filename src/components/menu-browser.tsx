@@ -1,27 +1,19 @@
 "use client";
 
 import { type KeyboardEvent, useRef, useState } from "react";
+import type { Locale, MenuMessages } from "../i18n";
 import type { MenuCategory, MenuItem, MenuSubcategory } from "../data/mundus-menu";
 
-const categoryLabels: Record<string, string> = {
-  "SHISHA EXPERIENCE": "Shisha",
-  "CÓCTELES": "Cocktails",
-  COMBINADOS: "Spirits",
-  FOOD: "Food",
-  CERVEZAS: "Beer",
-  VINOS: "Wine",
-  "BATIDOS & ZUMOS": "Milkshakes & Juices",
-  "CAFÉS & TÉS": "Coffee & Tea",
-  POSTRES: "Dessert",
-  REFRESCOS: "Soft drinks",
-};
-
-function formatPrice(price: number | null | undefined, currency: string) {
+function formatPrice(
+  price: number | null | undefined,
+  currency: string,
+  locale: Locale,
+) {
   if (price == null) {
     return null;
   }
 
-  return new Intl.NumberFormat("es-ES", {
+  return new Intl.NumberFormat(locale === "es" ? "es-ES" : "en-ES", {
     currency,
     maximumFractionDigits: 2,
     minimumFractionDigits: 0,
@@ -29,7 +21,17 @@ function formatPrice(price: number | null | undefined, currency: string) {
   }).format(price);
 }
 
-function MenuItemRow({ item, currency }: { item: MenuItem; currency: string }) {
+function MenuItemRow({
+  item,
+  currency,
+  locale,
+  priceLabels,
+}: {
+  item: MenuItem;
+  currency: string;
+  locale: Locale;
+  priceLabels: { bottle: string; shot: string };
+}) {
   return (
     <li className="border-b border-ivory/10 py-4 last:border-b-0 sm:py-5">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 sm:gap-4">
@@ -38,7 +40,7 @@ function MenuItemRow({ item, currency }: { item: MenuItem; currency: string }) {
         </h4>
         {item.price !== undefined && (
           <span className="shrink-0 border border-emerald/30 px-2 py-1 text-xs font-bold tabular-nums text-emerald sm:border-0 sm:p-0 sm:text-sm">
-            {formatPrice(item.price, currency)}
+            {formatPrice(item.price, currency, locale)}
           </span>
         )}
       </div>
@@ -50,10 +52,10 @@ function MenuItemRow({ item, currency }: { item: MenuItem; currency: string }) {
       {(item.bottle_price != null || item.shot_price != null) && (
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium tracking-[0.08em] text-ivory/45">
           {item.bottle_price != null && (
-            <span>BOTTLE {formatPrice(item.bottle_price, currency)}</span>
+            <span>{priceLabels.bottle} {formatPrice(item.bottle_price, currency, locale)}</span>
           )}
           {item.shot_price != null && (
-            <span>SHOT {formatPrice(item.shot_price, currency)}</span>
+            <span>{priceLabels.shot} {formatPrice(item.shot_price, currency, locale)}</span>
           )}
         </div>
       )}
@@ -64,9 +66,13 @@ function MenuItemRow({ item, currency }: { item: MenuItem; currency: string }) {
 function MenuGroup({
   category,
   currency,
+  locale,
+  priceLabels,
 }: {
   category: MenuSubcategory;
   currency: string;
+  locale: Locale;
+  priceLabels: { bottle: string; shot: string };
 }) {
   return (
     <article className="border border-ivory/15 bg-onyx/35 p-6 sm:p-8">
@@ -83,7 +89,7 @@ function MenuGroup({
       )}
       <ul className="mt-5">
         {category.items.map((item) => (
-          <MenuItemRow currency={currency} item={item} key={item.name} />
+          <MenuItemRow currency={currency} item={item} key={item.name} locale={locale} priceLabels={priceLabels} />
         ))}
       </ul>
     </article>
@@ -94,10 +100,16 @@ function MobileMenuGroup({
   category,
   currency,
   defaultOpen,
+  itemCount,
+  locale,
+  priceLabels,
 }: {
   category: MenuSubcategory;
   currency: string;
   defaultOpen: boolean;
+  itemCount: { one: string; other: string };
+  locale: Locale;
+  priceLabels: { bottle: string; shot: string };
 }) {
   return (
     <details
@@ -110,7 +122,7 @@ function MobileMenuGroup({
             {category.name}
           </h3>
           <p className="mt-1 text-xs font-bold tracking-[0.1em] text-emerald">
-            {category.items.length} {category.items.length === 1 ? "ITEM" : "ITEMS"}
+            {category.items.length} {category.items.length === 1 ? itemCount.one : itemCount.other}
           </p>
         </div>
         <span
@@ -131,7 +143,7 @@ function MobileMenuGroup({
         )}
         <ul className="mt-5">
           {category.items.map((item) => (
-            <MenuItemRow currency={currency} item={item} key={item.name} />
+            <MenuItemRow currency={currency} item={item} key={item.name} locale={locale} priceLabels={priceLabels} />
           ))}
         </ul>
       </div>
@@ -142,10 +154,15 @@ function MobileMenuGroup({
 export function MenuBrowser({
   categories,
   currency,
+  locale,
+  messages,
 }: {
   categories: MenuCategory[];
   currency: string;
+  locale: Locale;
+  messages: MenuMessages;
 }) {
+  const categoryLabels = messages.categoryLabels;
   const [activeCategoryName, setActiveCategoryName] = useState(categories[0].name);
   const categoryPickerRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -190,15 +207,15 @@ export function MenuBrowser({
     <section className="bg-onyx pb-24 pt-12 sm:pb-32 sm:pt-16">
       <div className="mundus-container">
         <header className="mx-auto mb-12 max-w-2xl text-center sm:mb-16">
-          <p className="mundus-eyebrow mb-6">Choose your moment</p>
+          <p className="mundus-eyebrow mb-6">{messages.eyebrow}</p>
           <h1
             className="font-display text-5xl font-[200] tracking-[-0.05em] text-ivory sm:text-6xl"
             id="menu-heading"
           >
-            The Mundus Menu
+            {messages.heading}
           </h1>
           <p className="mt-6 text-base leading-7 text-ivory/65 sm:text-lg">
-            Explore shisha, drinks, food, and everything in between. Prices are shown in euros.
+            {messages.description}
           </p>
         </header>
 
@@ -207,7 +224,7 @@ export function MenuBrowser({
           ref={categoryPickerRef}
         >
           <label className="sr-only" htmlFor="menu-category-select">
-            Browse menu category
+            {messages.browseCategory}
           </label>
           <select
             className="w-full border border-emerald/70 bg-onyx px-4 py-4 text-base font-semibold text-ivory outline-none focus:border-ivory"
@@ -224,7 +241,7 @@ export function MenuBrowser({
         </div>
 
         <div
-          aria-label="Menu categories"
+          aria-label={messages.categoryList}
           className="hidden gap-7 overflow-x-auto border-b border-ivory/15 px-1 pb-5 sm:flex sm:justify-center"
           role="tablist"
         >
@@ -274,9 +291,11 @@ export function MenuBrowser({
 
           {activeCategory.name === "SHISHA EXPERIENCE" && (
             <aside className="mt-6 border-l-2 border-emerald bg-onyx/45 px-5 py-4 text-left sm:mt-8">
-              <p className="text-sm font-semibold text-ivory">Not sure where to start?</p>
+              <p className="text-sm font-semibold text-ivory">
+                {messages.recommendation.title}
+              </p>
               <p className="mt-1 text-sm leading-6 text-ivory/65">
-                Ask the Mundus team for a shisha recommendation.
+                {messages.recommendation.body}
               </p>
             </aside>
           )}
@@ -287,14 +306,17 @@ export function MenuBrowser({
                 category={group}
                 currency={currency}
                 defaultOpen={groups.length === 1 || index === 0}
+                itemCount={messages.itemCount}
                 key={`${activeCategory.name}-${group.name}`}
+                locale={locale}
+                priceLabels={messages}
               />
             ))}
           </div>
 
           <div className="mt-10 hidden gap-6 sm:grid lg:grid-cols-2">
             {groups.map((group) => (
-              <MenuGroup category={group} currency={currency} key={group.name} />
+              <MenuGroup category={group} currency={currency} key={group.name} locale={locale} priceLabels={messages} />
             ))}
           </div>
 
@@ -308,9 +330,8 @@ export function MenuBrowser({
             }
             type="button"
           >
-            Back to categories
+            {messages.backToCategories}
           </button>
-
         </div>
       </div>
     </section>

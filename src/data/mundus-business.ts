@@ -27,31 +27,34 @@ export const business = {
   directionsUrl:
     "https://www.google.com/maps/search/?api=1&query=C%2F%20de%20Padilla%2C%20177%2C%2008013%20Barcelona",
   name: "Mundus Lounge",
-  neighbourhood: "Eixample, near Sagrada Família",
   openingHours,
   phone: "+34 931 05 83 58",
   telephoneUrl: "tel:+34931058358",
 } as const;
 
-export const localBusinessSchema = {
-  "@context": "https://schema.org",
-  "@type": "BarOrPub",
-  ...(siteUrl ? { "@id": `${siteUrl}/#business`, url: siteUrl } : {}),
-  address: {
-    "@type": "PostalAddress",
-    addressCountry: business.address.country,
-    addressLocality: business.address.city,
-    postalCode: business.address.postalCode,
-    streetAddress: business.address.streetAddress,
-  },
-  name: business.name,
-  openingHoursSpecification: business.openingHours
-    .filter((hours) => hours.opens && hours.closes)
-    .map((hours) => ({
-      "@type": "OpeningHoursSpecification",
-      closes: hours.closes,
-      dayOfWeek: hours.day,
-      opens: hours.opens,
-    })),
-  telephone: business.phone,
-};
+export function getLocalBusinessSchema(description: string, locale: "es" | "en") {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BarOrPub",
+    ...(siteUrl ? { "@id": `${siteUrl}/#business`, url: siteUrl } : {}),
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: business.address.country,
+      addressLocality: business.address.city,
+      postalCode: business.address.postalCode,
+      streetAddress: business.address.streetAddress,
+    },
+    description,
+    inLanguage: locale,
+    name: business.name,
+    openingHoursSpecification: business.openingHours
+      .filter((hours) => hours.opens && hours.closes)
+      .map((hours) => ({
+        "@type": "OpeningHoursSpecification",
+        closes: hours.closes,
+        dayOfWeek: hours.day,
+        opens: hours.opens,
+      })),
+    telephone: business.phone,
+  };
+}

@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { business } from "../data/mundus-business";
+import { getMessages, type Locale } from "../i18n";
 
-export function SiteFooter() {
+export function SiteFooter({ locale }: { locale: Locale }) {
   const currentYear = new Date().getFullYear();
+  const { footer: messages, navigation } = getMessages(locale);
 
   return (
     <footer className="border-t border-ivory/10 bg-black py-14 sm:py-16" id="contact">
@@ -18,13 +20,13 @@ export function SiteFooter() {
               width={160}
             />
             <p className="mt-4 max-w-48 text-sm leading-6 text-ivory/60">
-              Personalised shisha, drinks, and casual food in Barcelona.
+              {messages.summary}
             </p>
           </div>
 
           <div>
             <p className="text-xs font-bold tracking-[0.14em] text-emerald">
-              FIND US
+              {messages.findUs}
             </p>
             <p className="mt-4 text-lg text-ivory">{business.address.streetAddress}</p>
             <p className="mt-1 text-sm text-ivory/60">
@@ -34,7 +36,7 @@ export function SiteFooter() {
 
           <div>
             <p className="text-xs font-bold tracking-[0.14em] text-emerald">
-              CALL
+              {messages.call}
             </p>
             <a
               className="mt-4 inline-block font-display text-2xl font-medium tracking-[-0.04em] text-ivory no-underline transition-colors hover:text-emerald"
@@ -42,14 +44,14 @@ export function SiteFooter() {
             >
               {business.phone}
             </a>
-            <p className="mt-2 text-sm text-ivory/60">Call Mundus</p>
+            <p className="mt-2 text-sm text-ivory/60">{messages.callMundus}</p>
           </div>
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-ivory/10 pt-6 text-xs text-ivory/50 sm:mt-14 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {currentYear} Mundus Lounge. All rights reserved.</p>
+          <p>© {currentYear} Mundus Lounge. {messages.copyright}</p>
           <p className="flex items-center gap-1.5">
-            Crafted by
+            {messages.craftedBy}
             <a
               className="inline-flex items-center text-ivory/70 no-underline transition-colors hover:text-emerald"
               href="https://aziz-manaa.com"
@@ -75,7 +77,7 @@ export function SiteFooter() {
             </a>
           </p>
           <a className="text-ivory/60 no-underline transition-colors hover:text-emerald" href="#top">
-            Back to top
+            {navigation.backToTop}
           </a>
         </div>
       </div>
