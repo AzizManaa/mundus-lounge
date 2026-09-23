@@ -11,9 +11,9 @@ import foodImage from "../../public/images/mundus-menu-food.png";
 type ChapterId = keyof MenuMessages["chapters"];
 
 const chapters = [
-  { id: "ritual", image: shishaImage, number: "01" },
-  { id: "bar", image: drinksImage, number: "02" },
-  { id: "table", image: foodImage, number: "03" },
+  { id: "ritual", image: shishaImage },
+  { id: "bar", image: drinksImage },
+  { id: "table", image: foodImage },
 ] as const;
 
 const categoryChapters: Record<string, ChapterId> = {
@@ -75,7 +75,7 @@ function MenuItemRow({
   priceLabels: { bottle: string; shot: string };
 }) {
   return (
-    <li className="border-b border-ivory/10 py-4 last:border-b-0 sm:py-5">
+    <li className="night-atlas__item border-b border-ivory/10 py-4 last:border-b-0 sm:py-5">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 sm:gap-4">
         <h4 className="font-display text-base font-medium leading-snug text-ivory sm:text-lg">
           {item.name}
@@ -142,14 +142,12 @@ function MobileMenuGroup({
   category,
   currency,
   defaultOpen,
-  itemCount,
   locale,
   priceLabels,
 }: {
   category: MenuSubcategory;
   currency: string;
   defaultOpen: boolean;
-  itemCount: { one: string; other: string };
   locale: Locale;
   priceLabels: { bottle: string; shot: string };
 }) {
@@ -163,9 +161,6 @@ function MobileMenuGroup({
           <h3 className="font-display text-2xl font-medium tracking-[-0.03em] text-ivory">
             {category.name}
           </h3>
-          <p className="mt-1 text-xs font-bold tracking-[0.1em] text-emerald">
-            {category.items.length} {category.items.length === 1 ? itemCount.one : itemCount.other}
-          </p>
         </div>
         <span
           aria-hidden="true"
@@ -239,8 +234,6 @@ export function MenuBrowser({
   }
 
   function renderCategoryChoice(category: MenuCategory) {
-    const index = categories.indexOf(category);
-
     return (
       <button
         aria-current={activeCategory.name === category.name ? "true" : undefined}
@@ -252,7 +245,6 @@ export function MenuBrowser({
         }}
         type="button"
       >
-        <span className="night-atlas__category-number">{String(index + 1).padStart(2, "0")}</span>
         <span>{categoryLabels[category.name] ?? category.name}</span>
         <span aria-hidden="true" className="night-atlas__sheet-category-mark">
           {activeCategory.name === category.name ? "●" : "↗"}
@@ -274,9 +266,7 @@ export function MenuBrowser({
           <p className="night-atlas__description">{messages.description}</p>
         </header>
 
-        <div
-          className="night-atlas__mobile-nav sticky top-0 z-20 -mx-1 px-1 py-3 backdrop-blur-sm sm:hidden"
-        >
+        <div className="night-atlas__mobile-nav sticky top-2 z-20 py-2 sm:hidden">
           <button
             aria-controls="menu-category-dialog"
             aria-haspopup="dialog"
@@ -286,7 +276,6 @@ export function MenuBrowser({
           >
             <span className="night-atlas__mobile-trigger-top">
               <span><span aria-hidden="true">✳</span> {messages.browseAtlas}</span>
-              <span>{String(categories.indexOf(activeCategory) + 1).padStart(2, "0")} / {String(categories.length).padStart(2, "0")}</span>
             </span>
             <span className="night-atlas__mobile-trigger-bottom">
               <span>{categoryLabels[activeCategory.name] ?? activeCategory.name}</span>
@@ -317,7 +306,7 @@ export function MenuBrowser({
                 {chapterCategories.map((chapter) => (
                   <section aria-labelledby={`sheet-chapter-${chapter.id}`} className="night-atlas__sheet-section" key={chapter.id}>
                     <h3 className="night-atlas__sheet-section-heading" id={`sheet-chapter-${chapter.id}`}>
-                      <span>{chapter.number}</span> {messages.chapters[chapter.id].title}
+                      {messages.chapters[chapter.id].title}
                     </h3>
                     {chapter.categories.map(renderCategoryChoice)}
                   </section>
@@ -350,7 +339,6 @@ export function MenuBrowser({
                 <Image alt="" className="night-atlas__chapter-image" fill placeholder="blur" preload={chapter.id === "ritual"} sizes="(min-width: 1024px) 32vw, (min-width: 640px) 33vw, 38vw" src={chapter.image} />
                 <span aria-hidden="true" className="night-atlas__chapter-shade" />
                 <span className="night-atlas__chapter-content">
-                  <span className="night-atlas__chapter-number">{chapter.number} / 03</span>
                   <span className="night-atlas__chapter-title">{messages.chapters[chapter.id].title}</span>
                   <span className="night-atlas__chapter-description">{messages.chapters[chapter.id].description}</span>
                 </span>
@@ -366,7 +354,7 @@ export function MenuBrowser({
             <h2 className="font-display text-2xl font-[300] tracking-[-0.03em] text-ivory">{messages.indexHeading}</h2>
           </div>
           <div className="night-atlas__category-grid">
-            {categories.map((category, index) => (
+            {categories.map((category) => (
               <button
                 aria-controls="menu-panel"
                 aria-current={activeCategory.name === category.name ? "true" : undefined}
@@ -375,7 +363,6 @@ export function MenuBrowser({
                 onClick={() => selectCategory(category.name, true)}
                 type="button"
               >
-                <span className="night-atlas__category-number">{String(index + 1).padStart(2, "0")}</span>
                 <span>{categoryLabels[category.name] ?? category.name}</span>
                 <span aria-hidden="true" className="night-atlas__category-arrow">↗</span>
               </button>
@@ -397,35 +384,36 @@ export function MenuBrowser({
             </h2>
           </header>
 
-          {activeCategory.name === "SHISHA EXPERIENCE" && (
-            <aside className="mt-6 border-l-2 border-emerald bg-onyx/45 px-5 py-4 text-left sm:mt-8">
-              <p className="text-sm font-semibold text-ivory">
-                {messages.recommendation.title}
-              </p>
-              <p className="mt-1 text-sm leading-6 text-ivory/65">
-                {messages.recommendation.body}
-              </p>
-            </aside>
-          )}
+          <div className="night-atlas__panel-content" key={activeCategory.name}>
+            {activeCategory.name === "SHISHA EXPERIENCE" && (
+              <aside className="mt-6 border-l-2 border-emerald bg-onyx/45 px-5 py-4 text-left sm:mt-8">
+                <p className="text-sm font-semibold text-ivory">
+                  {messages.recommendation.title}
+                </p>
+                <p className="mt-1 text-sm leading-6 text-ivory/65">
+                  {messages.recommendation.body}
+                </p>
+              </aside>
+            )}
 
-          <div className="mt-8 grid gap-4 sm:hidden">
-            {groups.map((group, index) => (
-              <MobileMenuGroup
-                category={group}
-                currency={currency}
-                defaultOpen={groups.length === 1 || index === 0}
-                itemCount={messages.itemCount}
-                key={`${activeCategory.name}-${group.name}`}
-                locale={locale}
-                priceLabels={messages}
-              />
-            ))}
-          </div>
+            <div className="mt-8 grid gap-4 sm:hidden">
+              {groups.map((group, index) => (
+                <MobileMenuGroup
+                  category={group}
+                  currency={currency}
+                  defaultOpen={groups.length === 1 || index === 0}
+                  key={`${activeCategory.name}-${group.name}`}
+                  locale={locale}
+                  priceLabels={messages}
+                />
+              ))}
+            </div>
 
-          <div className="mt-10 hidden gap-6 sm:grid lg:grid-cols-2">
-            {groups.map((group) => (
-              <MenuGroup category={group} currency={currency} key={group.name} locale={locale} priceLabels={messages} />
-            ))}
+            <div className="mt-10 hidden gap-6 sm:grid lg:grid-cols-2">
+              {groups.map((group) => (
+                <MenuGroup category={group} currency={currency} key={group.name} locale={locale} priceLabels={messages} />
+              ))}
+            </div>
           </div>
 
           <button

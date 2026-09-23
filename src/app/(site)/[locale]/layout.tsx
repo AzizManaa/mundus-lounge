@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ReviewShortcut } from "../../../components/review-shortcut";
 import { business, getLocalBusinessSchema, siteUrl } from "../../../data/mundus-business";
 import { locales } from "../../../i18n";
 import { bricolage, timberline } from "../../../lib/fonts";
@@ -38,6 +39,7 @@ export default async function LocaleLayout({
     <html className={`${bricolage.variable} ${timberline.variable}`} lang={locale}>
       <body>
         {children}
+        <ReviewShortcut locale={locale} />
         <script
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(schema).replace(/</g, "\\u003c"),

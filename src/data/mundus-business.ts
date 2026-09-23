@@ -28,7 +28,7 @@ export const business = {
     "https://www.google.com/maps/search/?api=1&query=C%2F%20de%20Padilla%2C%20177%2C%2008013%20Barcelona",
   name: "Mundus Lounge",
   openingHours,
-  phone: "+34 931 05 83 58",
+  phone: "931 05 83 58",
   telephoneUrl: "tel:+34931058358",
 } as const;
 
@@ -55,6 +55,6 @@ export function getLocalBusinessSchema(description: string, locale: "es" | "en")
         dayOfWeek: hours.day,
         opens: hours.opens,
       })),
-    telephone: business.phone,
+    telephone: business.telephoneUrl.slice(4),
   };
 }

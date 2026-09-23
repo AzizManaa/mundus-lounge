@@ -10,7 +10,6 @@ export function MenuAtlas({ locale }: { locale: Locale }) {
   const menuFeatures = messages.features.map((feature, index) => ({
     ...feature,
     image: [shishaImage, cocktailImage, foodImage][index],
-    number: String(index + 1).padStart(2, "0"),
   }));
 
   return (
@@ -54,10 +53,7 @@ export function MenuAtlas({ locale }: { locale: Locale }) {
                   />
                   <span className="absolute inset-0 bg-gradient-to-t from-onyx/90 via-onyx/20 to-onyx/30" />
                   <span className="relative z-10 mt-auto p-7 sm:p-8">
-                    <span className="block text-xs font-bold tracking-[0.14em] text-emerald">
-                      {feature.number}
-                    </span>
-                    <span className="mt-3 block font-display text-4xl font-[200] tracking-[-0.05em] text-ivory">
+                    <span className="block font-display text-4xl font-[200] tracking-[-0.05em] text-ivory">
                       {feature.title}
                     </span>
                   </span>

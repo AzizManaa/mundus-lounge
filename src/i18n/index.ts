@@ -47,7 +47,6 @@ type Messages = {
     eyebrow: string;
     heading: string;
     indexHeading: string;
-    itemCount: { one: string; other: string };
     otherCategories: string;
     recommendation: { body: string; title: string };
     shot: string;
@@ -77,6 +76,7 @@ type Messages = {
     viewMenu: string;
     visit: string;
   };
+  reviewShortcut: string;
   testimonials: {
     avatarAlt: string;
     eyebrow: string;
@@ -157,7 +157,6 @@ const messages: Record<Locale, Messages> = {
       eyebrow: "Atlas de la noche",
       heading: "La carta Mundus",
       indexHeading: "Ve directo a tu favorito",
-      itemCount: { one: "PRODUCTO", other: "PRODUCTOS" },
       otherCategories: "Otras categorías",
       recommendation: {
         body: "Pregunta al equipo de Mundus por una recomendación de shisha.",
@@ -214,6 +213,7 @@ const messages: Record<Locale, Messages> = {
       viewMenu: "Ver carta",
       visit: "Visítanos",
     },
+    reviewShortcut: "Deja una reseña",
     testimonials: {
       avatarAlt: "Foto de perfil de",
       eyebrow: "Testimonios",
@@ -306,7 +306,6 @@ const messages: Record<Locale, Messages> = {
       eyebrow: "The Night Atlas",
       heading: "The Mundus Menu",
       indexHeading: "Go straight to your favourite",
-      itemCount: { one: "ITEM", other: "ITEMS" },
       otherCategories: "Other categories",
       recommendation: {
         body: "Ask the Mundus team for a shisha recommendation.",
@@ -363,6 +362,7 @@ const messages: Record<Locale, Messages> = {
       viewMenu: "View Menu",
       visit: "Visit Us",
     },
+    reviewShortcut: "Leave a review",
     testimonials: {
       avatarAlt: "Profile photo of",
       eyebrow: "Testimonials",
