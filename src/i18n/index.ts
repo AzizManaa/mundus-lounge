@@ -37,14 +37,18 @@ type Messages = {
   menu: {
     backToCategories: string;
     bottle: string;
-    browseCategory: string;
+    browseAtlas: string;
     categoryList: string;
     categoryLabels: Record<string, string>;
+    chapters: Record<"ritual" | "bar" | "table", { description: string; title: string }>;
+    closeCategories: string;
     description: string;
     empty: string;
     eyebrow: string;
     heading: string;
+    indexHeading: string;
     itemCount: { one: string; other: string };
+    otherCategories: string;
     recommendation: { body: string; title: string };
     shot: string;
     title: string;
@@ -127,7 +131,7 @@ const messages: Record<Locale, Messages> = {
     menu: {
       backToCategories: "Volver a las categorías",
       bottle: "BOTELLA",
-      browseCategory: "Explorar categoría del menú",
+      browseAtlas: "Explorar el atlas",
       categoryList: "Categorías de la carta",
       categoryLabels: {
         "BATIDOS & ZUMOS": "Batidos y zumos",
@@ -141,12 +145,20 @@ const messages: Record<Locale, Messages> = {
         "SHISHA EXPERIENCE": "Shisha",
         VINOS: "Vinos",
       },
+      chapters: {
+        ritual: { description: "Shisha para disfrutar sin prisa", title: "El ritual" },
+        bar: { description: "Cócteles y bebidas para cada momento", title: "La barra" },
+        table: { description: "Algo para picar, café y un final dulce", title: "La mesa" },
+      },
+      closeCategories: "Cerrar categorías",
       description:
-        "Explora shisha, bebidas, comida y todo lo demás. Los precios se muestran en euros.",
+        "Tres formas de vivir la noche. Elige un capítulo o ve directo a lo que te apetece.",
       empty: "La carta no está disponible en este momento.",
-      eyebrow: "Elige tu momento",
+      eyebrow: "Atlas de la noche",
       heading: "La carta Mundus",
+      indexHeading: "Ve directo a tu favorito",
       itemCount: { one: "PRODUCTO", other: "PRODUCTOS" },
+      otherCategories: "Otras categorías",
       recommendation: {
         body: "Pregunta al equipo de Mundus por una recomendación de shisha.",
         title: "¿No sabes por dónde empezar?",
@@ -260,7 +272,7 @@ const messages: Record<Locale, Messages> = {
     menu: {
       backToCategories: "Back to categories",
       bottle: "BOTTLE",
-      browseCategory: "Browse menu category",
+      browseAtlas: "Browse the Atlas",
       categoryList: "Menu categories",
       categoryLabels: {
         BEERS: "Beer",
@@ -282,12 +294,20 @@ const messages: Record<Locale, Messages> = {
         VINOS: "Wine",
         WINES: "Wine",
       },
+      chapters: {
+        ritual: { description: "Shisha at your own pace", title: "The Ritual" },
+        bar: { description: "Cocktails and drinks for every moment", title: "The Bar" },
+        table: { description: "Bites, coffee and something sweet", title: "The Table" },
+      },
+      closeCategories: "Close categories",
       description:
-        "Explore shisha, drinks, food, and everything in between. Prices are shown in euros.",
+        "Three ways into the night. Choose a chapter or go straight to what you fancy.",
       empty: "The menu is not available right now.",
-      eyebrow: "Choose your moment",
+      eyebrow: "The Night Atlas",
       heading: "The Mundus Menu",
+      indexHeading: "Go straight to your favourite",
       itemCount: { one: "ITEM", other: "ITEMS" },
+      otherCategories: "Other categories",
       recommendation: {
         body: "Ask the Mundus team for a shisha recommendation.",
         title: "Not sure where to start?",

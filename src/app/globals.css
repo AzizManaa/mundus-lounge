@@ -197,6 +197,395 @@ a:focus-visible {
   padding: 1.5rem;
 }
 
+.night-atlas {
+  background: radial-gradient(ellipse at 52% 0%, #19241d 0%, var(--color-onyx) 44rem);
+}
+
+.night-atlas__intro {
+  align-items: end;
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.night-atlas__description {
+  color: color-mix(in srgb, var(--color-ivory) 72%, transparent);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 30rem;
+}
+
+.night-atlas__mobile-nav {
+  background: color-mix(in srgb, var(--color-onyx) 94%, transparent);
+}
+
+.night-atlas__mobile-trigger {
+  background: var(--color-olive);
+  border: 1px solid var(--color-brass);
+  color: var(--color-ivory);
+  display: block;
+  padding: 0.7rem 1rem 0.85rem;
+  text-align: left;
+  width: 100%;
+}
+
+.night-atlas__mobile-trigger-top,
+.night-atlas__mobile-trigger-bottom {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.night-atlas__mobile-trigger-top {
+  color: var(--color-brass);
+  font-size: 0.61rem;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.night-atlas__mobile-trigger-bottom {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-top: 0.35rem;
+}
+
+.night-atlas__mobile-trigger-bottom span:last-child {
+  color: var(--color-emerald);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.night-atlas__sheet[open] {
+  background: var(--color-onyx);
+  border: 0;
+  border-top: 2px solid var(--color-brass);
+  box-shadow: 0 -1.5rem 4rem rgba(0, 0, 0, 0.45);
+  color: var(--color-ivory);
+  inset: auto 0 0;
+  margin: 0;
+  max-height: 84dvh;
+  max-width: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0;
+  position: fixed;
+  width: 100%;
+}
+
+.night-atlas__sheet::backdrop {
+  background: rgba(3, 6, 4, 0.76);
+  backdrop-filter: blur(5px);
+}
+
+.night-atlas__sheet-inner {
+  margin-inline: auto;
+  max-width: 42rem;
+  padding: 0 1.25rem calc(1.5rem + env(safe-area-inset-bottom));
+}
+
+.night-atlas__sheet-header {
+  align-items: start;
+  background: var(--color-onyx);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ivory) 18%, transparent);
+  display: flex;
+  justify-content: space-between;
+  padding: 1.4rem 0 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.night-atlas__sheet-close {
+  border: 1px solid color-mix(in srgb, var(--color-ivory) 30%, transparent);
+  color: var(--color-ivory);
+  font-size: 1.5rem;
+  height: 2.75rem;
+  line-height: 1;
+  width: 2.75rem;
+}
+
+.night-atlas__sheet-sections {
+  display: grid;
+  gap: 1.5rem;
+  padding-top: 1.25rem;
+}
+
+.night-atlas__sheet-section-heading {
+  color: var(--color-ivory);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.night-atlas__sheet-section-heading span {
+  color: var(--color-brass);
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin-right: 0.5rem;
+}
+
+.night-atlas__sheet-category {
+  align-items: center;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ivory) 14%, transparent);
+  color: var(--color-ivory);
+  display: grid;
+  font-size: 0.95rem;
+  font-weight: 600;
+  gap: 0.9rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 3.35rem;
+  padding: 0.7rem 0.4rem;
+  text-align: left;
+  width: 100%;
+}
+
+.night-atlas__sheet-category[aria-current="true"] {
+  background: color-mix(in srgb, var(--color-jade) 32%, transparent);
+}
+
+.night-atlas__sheet-category-mark {
+  color: var(--color-emerald);
+  font-size: 1rem;
+}
+
+.night-atlas__chapters {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.night-atlas__chapter {
+  background: var(--color-olive);
+  border: 1px solid color-mix(in srgb, var(--color-brass) 45%, transparent);
+  color: var(--color-ivory);
+  display: block;
+  height: 8.5rem;
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+  text-align: left;
+  width: 100%;
+}
+
+.night-atlas__chapter::after {
+  border: 1px solid color-mix(in srgb, var(--color-ivory) 35%, transparent);
+  content: "";
+  inset: 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.night-atlas__chapter[aria-current="true"] {
+  border-color: var(--color-emerald);
+}
+
+.night-atlas__chapter-image {
+  object-fit: cover;
+  object-position: center 46%;
+  transition: transform 300ms ease;
+  z-index: -2;
+}
+
+.night-atlas__chapter-shade {
+  background: linear-gradient(90deg, rgba(11, 13, 12, 0.22) 0%, rgba(11, 13, 12, 0.9) 46%, rgba(11, 13, 12, 0.96) 100%);
+  inset: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.night-atlas__chapter-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  margin-left: 39%;
+  padding: 0.75rem 2rem 0.75rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.night-atlas__chapter-number,
+.night-atlas__category-number,
+.night-atlas__panel-kicker {
+  color: var(--color-brass);
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.night-atlas__chapter-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 5vw, 2rem);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin-top: 0.35rem;
+}
+
+.night-atlas__chapter-description {
+  color: color-mix(in srgb, var(--color-ivory) 74%, transparent);
+  font-size: 0.73rem;
+  line-height: 1.3;
+  margin-top: 0.35rem;
+  max-width: 17rem;
+}
+
+.night-atlas__chapter-arrow {
+  bottom: 0.75rem;
+  color: var(--color-emerald);
+  font-size: 1.1rem;
+  position: absolute;
+  right: 1rem;
+  z-index: 2;
+}
+
+.night-atlas__index {
+  margin-top: 3.25rem;
+}
+
+.night-atlas__index-heading {
+  align-items: center;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ivory) 18%, transparent);
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+}
+
+.night-atlas__index-cross {
+  color: var(--color-brass);
+  font-size: 1.25rem;
+}
+
+.night-atlas__category-grid {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.25rem;
+}
+
+.night-atlas__category {
+  align-items: center;
+  background: color-mix(in srgb, var(--color-olive) 75%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-ivory) 15%, transparent);
+  color: var(--color-ivory);
+  display: grid;
+  font-size: 0.82rem;
+  font-weight: 600;
+  gap: 0.5rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 3.5rem;
+  padding: 0.8rem;
+  text-align: left;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.night-atlas__category:hover,
+.night-atlas__category[aria-current="true"] {
+  background: color-mix(in srgb, var(--color-jade) 30%, var(--color-olive));
+  border-color: var(--color-emerald);
+}
+
+.night-atlas__category-arrow {
+  color: var(--color-emerald);
+}
+
+.night-atlas__panel {
+  background: linear-gradient(140deg, #202923, #171d19 58%, #111512);
+  border-top: 2px solid var(--color-brass);
+  scroll-margin-top: 6.5rem;
+}
+
+.night-atlas__panel-heading {
+  align-items: baseline;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ivory) 18%, transparent);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.5rem;
+  justify-content: space-between;
+  padding-bottom: 1.5rem;
+}
+
+.night-atlas__panel-heading h2 {
+  width: 100%;
+}
+
+.night-atlas__panel-heading h2:focus {
+  outline: 2px solid var(--color-emerald);
+  outline-offset: 0.35rem;
+}
+
+@media (min-width: 40rem) {
+  .night-atlas__intro {
+    gap: 3rem;
+    grid-template-columns: 1.2fr 0.8fr;
+    margin-bottom: 3rem;
+  }
+
+  .night-atlas__description {
+    border-left: 1px solid var(--color-brass);
+    padding-left: 1.5rem;
+  }
+
+  .night-atlas__chapters {
+    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .night-atlas__chapter {
+    height: clamp(16rem, 29vw, 22rem);
+  }
+
+  .night-atlas__chapter-image {
+    object-position: center;
+  }
+
+  .night-atlas__chapter-shade {
+    background: linear-gradient(0deg, rgba(11, 13, 12, 0.96), rgba(11, 13, 12, 0.04) 72%);
+  }
+
+  .night-atlas__chapter-content {
+    justify-content: flex-end;
+    margin-left: 0;
+    padding: 1.5rem;
+  }
+
+  .night-atlas__chapter-title {
+    font-size: clamp(1.7rem, 3vw, 2.65rem);
+  }
+
+  .night-atlas__chapter-description {
+    font-size: 0.85rem;
+  }
+
+  .night-atlas__chapter-arrow {
+    bottom: auto;
+    right: 1.5rem;
+    top: 1.25rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .night-atlas__category-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .night-atlas__chapter:hover .night-atlas__chapter-image,
+  .night-atlas__chapter:focus-visible .night-atlas__chapter-image {
+    transform: scale(1.04);
+  }
+}
+
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .mundus-menu-card {
     transition: transform 220ms ease;
