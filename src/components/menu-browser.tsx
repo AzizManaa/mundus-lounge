@@ -4,9 +4,9 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { Locale, MenuMessages } from "../i18n";
 import type { MenuCategory, MenuItem, MenuSubcategory } from "../data/mundus-menu";
-import shishaImage from "../../public/images/mundus-menu-shisha.png";
-import drinksImage from "../../public/images/mundus-moment-cocktail.png";
-import foodImage from "../../public/images/mundus-menu-food.png";
+import shishaImage from "../../public/images/mundus-menu-shisha.webp";
+import drinksImage from "../../public/images/mundus-moment-cocktail.webp";
+import foodImage from "../../public/images/mundus-menu-food.webp";
 
 type ChapterId = keyof MenuMessages["chapters"];
 
@@ -419,18 +419,26 @@ export function MenuBrowser({
         >
           <header className="night-atlas__panel-heading">
             <span className="night-atlas__panel-kicker">{activeChapter ? messages.chapters[activeChapter].title : messages.categoryList}</span>
+            <div className="flex items-center gap-2">
+              <span aria-live="polite" className="max-w-28 text-right text-xs leading-tight text-ivory/65">{linkFeedback}</span>
+              <button
+                aria-label={messages.copyLink}
+                className="inline-flex size-11 shrink-0 items-center justify-center border border-brass/45 text-brass transition-colors hover:border-brass hover:bg-brass/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald"
+                onClick={copyCategoryLink}
+                title={messages.copyLink}
+                type="button"
+              >
+                <svg aria-hidden="true" fill="none" height="19" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" viewBox="0 0 24 24" width="19">
+                  <circle cx="18" cy="5" r="2" />
+                  <circle cx="6" cy="12" r="2" />
+                  <circle cx="18" cy="19" r="2" />
+                  <path d="m8 11 8-5m-8 7 8 5" />
+                </svg>
+              </button>
+            </div>
             <h2 className="font-display text-4xl font-[200] tracking-[-0.045em] text-ivory sm:text-6xl" id="menu-panel-heading" ref={panelHeadingRef} tabIndex={-1}>
               {categoryLabels[activeCategory.name] ?? activeCategory.name}
             </h2>
-            <button
-              className="mt-5 inline-flex min-h-11 items-center gap-2 border border-brass/45 px-4 py-2 text-xs font-bold tracking-[0.08em] text-brass transition-colors hover:border-brass hover:bg-brass/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald"
-              onClick={copyCategoryLink}
-              type="button"
-            >
-              <span aria-hidden="true">↗</span>
-              {messages.copyLink}
-            </button>
-            <span aria-live="polite" className="ml-3 text-xs text-ivory/65">{linkFeedback}</span>
           </header>
 
           <div className="night-atlas__panel-content" key={activeCategory.name}>

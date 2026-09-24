@@ -138,6 +138,46 @@ a:focus-visible {
     border: 2px solid var(--color-emerald);
     content: "";
   }
+
+  .mundus-ember-scene {
+    --ember-center-y: 20%;
+    isolation: isolate;
+  }
+
+  .mundus-ember-scene img {
+    object-position: center 25%;
+  }
+
+  .mundus-ember-scene__lit {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.25s ease-out;
+    -webkit-mask-image: radial-gradient(ellipse 32% 27% at 50% var(--ember-center-y), #000 55%, transparent 100%);
+    mask-image: radial-gradient(ellipse 32% 27% at 50% var(--ember-center-y), #000 55%, transparent 100%);
+  }
+
+  .mundus-ember-scene__glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 28% 20% at 50% var(--ember-center-y), rgba(242, 93, 22, 0.2), transparent 100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease-out;
+  }
+
+  .mundus-ember-scene[data-lit="true"] .mundus-ember-scene__lit,
+  .mundus-ember-scene[data-lit="true"] .mundus-ember-scene__glow {
+    opacity: 1;
+  }
+
+  .mundus-ember-scene[data-lit="true"] .mundus-ember-scene__glow {
+    animation: ember-breathe 6s ease-in-out 1.5s infinite;
+  }
+}
+
+@keyframes ember-breathe {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
 }
 
 @media (min-width: 40rem) {
@@ -153,6 +193,10 @@ a:focus-visible {
 }
 
 @media (min-width: 40rem) {
+  .mundus-ember-scene {
+    --ember-center-y: 13%;
+  }
+
   .mundus-image-frame::before {
     inset: -2rem 2rem 2rem -2rem;
   }
@@ -502,22 +546,20 @@ a:focus-visible {
 }
 
 .night-atlas__panel-heading {
-  align-items: baseline;
+  align-items: center;
   border-bottom: 1px solid color-mix(in srgb, var(--color-ivory) 18%, transparent);
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 0.6rem 1.5rem;
-  justify-content: space-between;
+  grid-template-columns: minmax(0, 1fr) auto;
   padding-bottom: 1.5rem;
 }
 
 .night-atlas__panel-heading h2 {
-  width: 100%;
+  grid-column: 1 / -1;
 }
 
 .night-atlas__panel-heading h2:focus {
-  outline: 2px solid var(--color-emerald);
-  outline-offset: 0.35rem;
+  outline: none;
 }
 
 .night-atlas__panel-content {
@@ -662,6 +704,16 @@ a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .mundus-ember-scene__lit {
+    opacity: 1;
+    transition: none;
+  }
+
+  .mundus-ember-scene__glow {
+    display: none;
+    animation: none;
+  }
+
   .night-atlas__panel-content {
     animation: none;
   }

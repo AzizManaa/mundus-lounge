@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getMessages, type Locale } from "../i18n";
-import aboutImageOne from "../../public/images/mundus-about-one.png";
-import aboutImageTwo from "../../public/images/mundus-about-two.png";
+import aboutImageTwo from "../../public/images/mundus-about-two.webp";
 import smokeLeft from "../../public/images/mundus-smoke-left.png";
 import smokeRight from "../../public/images/mundus-smoke-right.png";
 import { LocaleSwitcher } from "./locale-switcher";
+import { AboutEmberImage } from "./about-ember-image";
 import { MenuAtlas } from "./menu-atlas";
 import { MundusMoments } from "./mundus-moments";
 import { SiteFooter } from "./site-footer";
@@ -66,7 +66,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             className="absolute inset-0 size-full object-cover object-[70%_center]"
             muted
             playsInline
-            poster="/images/mundus-shisha-hero.jpg"
+            poster="/images/mundus-shisha-hero.webp"
             preload="metadata"
           >
             <source media="(prefers-reduced-motion: no-preference)" src="/videos/mundus-hero.mp4" type="video/mp4" />
@@ -124,9 +124,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="mundus-container relative z-10 grid gap-24 lg:gap-36">
             <article className="grid items-center gap-12 lg:grid-cols-2 lg:gap-24">
-              <div className="mundus-image-frame aspect-square sm:aspect-[4/3]">
-                <Image alt={messages.about.imageOneAlt} className="object-cover" fill placeholder="blur" sizes="(min-width: 1024px) 34vw, 100vw" src={aboutImageOne} />
-              </div>
+              <AboutEmberImage alt={messages.about.imageOneAlt} />
               <div className="max-w-xl">
                 <p className="mundus-eyebrow mb-6">{messages.about.eyebrow}</p>
                 <h2 id="about-heading" className="font-display text-4xl font-[200] leading-[1.08] tracking-[-0.045em] text-ivory sm:text-5xl">

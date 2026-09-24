@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { getMessages, type Locale } from "../i18n";
-import afterDarkImage from "../../public/images/mundus-moment-after-dark.png";
-import cocktailImage from "../../public/images/mundus-moment-cocktail.png";
-import foodImage from "../../public/images/mundus-moment-food.png";
-import goodCompanyImage from "../../public/images/mundus-moment-good-company.png";
+import afterDarkImage from "../../public/images/mundus-moment-after-dark.webp";
+import cocktailImage from "../../public/images/mundus-moment-cocktail.webp";
+import foodImage from "../../public/images/mundus-moment-food.webp";
+import goodCompanyImage from "../../public/images/mundus-moment-good-company.webp";
 import loungeTableImage from "../../public/images/mundus-moment-lounge-table.jpg";
-import shishaImage from "../../public/images/mundus-moment-shisha.png";
+import shishaImage from "../../public/images/mundus-moment-shisha.webp";
 
 const momentTiles = [
   {

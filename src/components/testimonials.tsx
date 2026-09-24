@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { getMessages, type Locale } from "../i18n";
-import dominikAvatar from "../../public/images/review-dominik-skladanek.png";
-import marioAvatar from "../../public/images/review-mario-steineschwanz.png";
+import dominikAvatar from "../../public/images/review-dominik-skladanek.webp";
+import marioAvatar from "../../public/images/review-mario-steineschwanz.webp";
 import momentsBackgroundLeft from "../../public/images/mundus-moments-bg-left.png";
 import momentsBackgroundRight from "../../public/images/mundus-moments-bg-right.png";
-import nilsAvatar from "../../public/images/review-nils-grote.png";
+import nilsAvatar from "../../public/images/review-nils-grote.webp";
 
 const testimonials = [
   {

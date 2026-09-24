@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getMessages, type Locale } from "../i18n";
-import cocktailImage from "../../public/images/mundus-menu-drinks.png";
-import foodImage from "../../public/images/mundus-menu-food.png";
-import shishaImage from "../../public/images/mundus-menu-shisha.png";
+import cocktailImage from "../../public/images/mundus-menu-drinks.webp";
+import foodImage from "../../public/images/mundus-menu-food.webp";
+import shishaImage from "../../public/images/mundus-menu-shisha.webp";
 
 export function MenuAtlas({ locale }: { locale: Locale }) {
   const messages = getMessages(locale).menuAtlas;
