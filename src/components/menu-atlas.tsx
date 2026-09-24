@@ -1,15 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getMessages, type Locale } from "../i18n";
-import cocktailImage from "../../public/images/mundus-menu-drinks.webp";
 import foodImage from "../../public/images/mundus-menu-food.webp";
-import shishaImage from "../../public/images/mundus-menu-shisha.webp";
+import { MenuImageReveal } from "./menu-image-reveal";
 
 export function MenuAtlas({ locale }: { locale: Locale }) {
   const messages = getMessages(locale).menuAtlas;
   const menuFeatures = messages.features.map((feature, index) => ({
     ...feature,
-    image: [shishaImage, cocktailImage, foodImage][index],
+    image: [null, null, foodImage][index],
     chapter: (["ritual", "bar", "table"] as const)[index],
   }));
 
@@ -44,14 +43,18 @@ export function MenuAtlas({ locale }: { locale: Locale }) {
                 href={`/${locale}/menu?chapter=${feature.chapter}`}
               >
                 <span className="mundus-menu-card__image">
-                  <Image
-                    alt=""
-                    className="object-cover"
-                    fill
-                    placeholder="blur"
-                    sizes="(min-width: 768px) 30vw, 100vw"
-                    src={feature.image}
-                  />
+                  {feature.image ? (
+                    <Image
+                      alt=""
+                      className="object-cover"
+                      fill
+                      placeholder="blur"
+                      sizes="(min-width: 768px) 30vw, 100vw"
+                      src={feature.image}
+                    />
+                  ) : (
+                    <MenuImageReveal variant={feature.chapter === "ritual" ? "shisha" : "drinks"} />
+                  )}
                   <span className="absolute inset-0 bg-gradient-to-t from-onyx/90 via-onyx/20 to-onyx/30" />
                   <span className="relative z-10 mt-auto p-7 sm:p-8">
                     <span className="block font-display text-4xl font-[200] tracking-[-0.05em] text-ivory">

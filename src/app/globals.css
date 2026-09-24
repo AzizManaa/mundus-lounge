@@ -232,6 +232,51 @@ a:focus-visible {
   position: relative;
 }
 
+.mundus-menu-reveal {
+  isolation: isolate;
+}
+
+.mundus-menu-reveal__lit {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.25s ease-out;
+}
+
+.mundus-menu-reveal--drinks .mundus-menu-reveal__lit {
+  -webkit-mask-image: radial-gradient(ellipse 32% 38% at 47% 64%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 32% 38% at 47% 64%, #000 55%, transparent 100%);
+}
+
+.mundus-menu-reveal--shisha .mundus-menu-reveal__lit {
+  -webkit-mask-image: radial-gradient(ellipse 28% 22% at 50% 17%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 28% 22% at 50% 17%, #000 55%, transparent 100%);
+}
+
+.mundus-menu-reveal__glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s ease-out;
+}
+
+.mundus-menu-reveal--drinks .mundus-menu-reveal__glow {
+  background: radial-gradient(ellipse 23% 28% at 47% 64%, rgba(255, 166, 46, 0.16), transparent 100%);
+}
+
+.mundus-menu-reveal--shisha .mundus-menu-reveal__glow {
+  background: radial-gradient(ellipse 22% 14% at 50% 17%, rgba(255, 94, 25, 0.25), transparent 100%);
+}
+
+.mundus-menu-reveal[data-lit="true"] .mundus-menu-reveal__lit,
+.mundus-menu-reveal[data-lit="true"] .mundus-menu-reveal__glow {
+  opacity: 1;
+}
+
+.mundus-menu-reveal[data-lit="true"] .mundus-menu-reveal__glow {
+  animation: ember-breathe 6s ease-in-out 1.5s infinite;
+}
+
 .mundus-menu-card__details {
   background: var(--color-olive);
   border: 1px solid var(--border-subtle);
@@ -704,12 +749,14 @@ a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mundus-ember-scene__lit {
+  .mundus-ember-scene__lit,
+  .mundus-menu-reveal__lit {
     opacity: 1;
     transition: none;
   }
 
-  .mundus-ember-scene__glow {
+  .mundus-ember-scene__glow,
+  .mundus-menu-reveal__glow {
     display: none;
     animation: none;
   }
