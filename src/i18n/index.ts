@@ -42,6 +42,9 @@ type Messages = {
     categoryLabels: Record<string, string>;
     chapters: Record<"ritual" | "bar" | "table", { description: string; title: string }>;
     closeCategories: string;
+    copyLink: string;
+    linkCopied: string;
+    copyLinkFailed: string;
     description: string;
     empty: string;
     eyebrow: string;
@@ -82,6 +85,7 @@ type Messages = {
     eyebrow: string;
     heading: [string, string];
   };
+  tonight: { heading: string };
   visit: {
     callMundus: string;
     closed: string;
@@ -151,6 +155,9 @@ const messages: Record<Locale, Messages> = {
         table: { description: "Algo para picar, café y un final dulce", title: "La mesa" },
       },
       closeCategories: "Cerrar categorías",
+      copyLink: "Copiar enlace",
+      linkCopied: "Enlace copiado",
+      copyLinkFailed: "No se pudo copiar el enlace",
       description:
         "Tres formas de vivir la noche. Elige un capítulo o ve directo a lo que te apetece.",
       empty: "La carta no está disponible en este momento.",
@@ -219,6 +226,7 @@ const messages: Record<Locale, Messages> = {
       eyebrow: "Testimonios",
       heading: ["Lo que la gente piensa", "de Mundus"],
     },
+    tonight: { heading: "Esta noche en Mundus" },
     visit: {
       callMundus: "Llama a Mundus",
       closed: "Cerrado",
@@ -300,6 +308,9 @@ const messages: Record<Locale, Messages> = {
         table: { description: "Bites, coffee and something sweet", title: "The Table" },
       },
       closeCategories: "Close categories",
+      copyLink: "Copy link",
+      linkCopied: "Link copied",
+      copyLinkFailed: "Could not copy link",
       description:
         "Three ways into the night. Choose a chapter or go straight to what you fancy.",
       empty: "The menu is not available right now.",
@@ -368,6 +379,7 @@ const messages: Record<Locale, Messages> = {
       eyebrow: "Testimonials",
       heading: ["What people think", "about Mundus"],
     },
+    tonight: { heading: "Tonight at Mundus" },
     visit: {
       callMundus: "Call Mundus",
       closed: "Closed",

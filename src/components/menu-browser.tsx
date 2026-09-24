@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Locale, MenuMessages } from "../i18n";
 import type { MenuCategory, MenuItem, MenuSubcategory } from "../data/mundus-menu";
 import shishaImage from "../../public/images/mundus-menu-shisha.png";
@@ -202,9 +202,11 @@ export function MenuBrowser({
   const categoryLabels = messages.categoryLabels;
   const initialCategory = categories.find((category) => chapterForCategory(category.name) === "ritual") ?? categories[0];
   const [activeCategoryName, setActiveCategoryName] = useState(initialCategory.name);
+  const [linkFeedback, setLinkFeedback] = useState("");
   const categoryDialogRef = useRef<HTMLDialogElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const panelHeadingRef = useRef<HTMLHeadingElement>(null);
+  const hasSyncedInitialUrl = useRef(false);
   const activeCategory =
     categories.find((category) => category.name === activeCategoryName) ?? categories[0];
   const activeChapter = chapterForCategory(activeCategory.name);
@@ -220,8 +222,34 @@ export function MenuBrowser({
     .filter((chapter) => chapter.categories.length > 0);
   const otherCategories = categories.filter((category) => chapterForCategory(category.name) === null);
 
+  useEffect(() => {
+    function syncFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const requestedCategory = params.get("category");
+      const requestedChapter = params.get("chapter");
+      const category =
+        categories.find((entry) => entry.name === requestedCategory) ??
+        categories.find((entry) => chapterForCategory(entry.name) === requestedChapter);
+      setActiveCategoryName(category?.name ?? initialCategory.name);
+      setLinkFeedback("");
+      if (category && !hasSyncedInitialUrl.current) {
+        requestAnimationFrame(() => panelRef.current?.scrollIntoView({ block: "start" }));
+      }
+      hasSyncedInitialUrl.current = true;
+    }
+
+    syncFromUrl();
+    window.addEventListener("popstate", syncFromUrl);
+    return () => window.removeEventListener("popstate", syncFromUrl);
+  }, [categories, initialCategory.name]);
+
   function selectCategory(name: string, scrollToMenu = false) {
     setActiveCategoryName(name);
+    setLinkFeedback("");
+    const url = new URL(window.location.href);
+    url.searchParams.delete("chapter");
+    url.searchParams.set("category", name);
+    window.history.pushState(null, "", url);
     if (scrollToMenu) {
       requestAnimationFrame(() => {
         panelHeadingRef.current?.focus({ preventScroll: true });
@@ -230,6 +258,18 @@ export function MenuBrowser({
           block: "start",
         });
       });
+    }
+  }
+
+  async function copyCategoryLink() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("chapter");
+    url.searchParams.set("category", activeCategory.name);
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      setLinkFeedback(messages.linkCopied);
+    } catch {
+      setLinkFeedback(messages.copyLinkFailed);
     }
   }
 
@@ -382,6 +422,15 @@ export function MenuBrowser({
             <h2 className="font-display text-4xl font-[200] tracking-[-0.045em] text-ivory sm:text-6xl" id="menu-panel-heading" ref={panelHeadingRef} tabIndex={-1}>
               {categoryLabels[activeCategory.name] ?? activeCategory.name}
             </h2>
+            <button
+              className="mt-5 inline-flex min-h-11 items-center gap-2 border border-brass/45 px-4 py-2 text-xs font-bold tracking-[0.08em] text-brass transition-colors hover:border-brass hover:bg-brass/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald"
+              onClick={copyCategoryLink}
+              type="button"
+            >
+              <span aria-hidden="true">↗</span>
+              {messages.copyLink}
+            </button>
+            <span aria-live="polite" className="ml-3 text-xs text-ivory/65">{linkFeedback}</span>
           </header>
 
           <div className="night-atlas__panel-content" key={activeCategory.name}>

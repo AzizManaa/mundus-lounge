@@ -10,6 +10,7 @@ import { MenuAtlas } from "./menu-atlas";
 import { MundusMoments } from "./mundus-moments";
 import { SiteFooter } from "./site-footer";
 import { Testimonials } from "./testimonials";
+import { TonightStrip } from "./tonight-strip";
 import { WhereToFind } from "./where-to-find";
 
 export function HomePage({ locale }: { locale: Locale }) {
@@ -106,6 +107,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
           </div>
         </section>
+
+        <TonightStrip locale={locale} />
 
         <section
           aria-labelledby="about-heading"

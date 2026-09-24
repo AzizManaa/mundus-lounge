@@ -10,6 +10,7 @@ export function MenuAtlas({ locale }: { locale: Locale }) {
   const menuFeatures = messages.features.map((feature, index) => ({
     ...feature,
     image: [shishaImage, cocktailImage, foodImage][index],
+    chapter: (["ritual", "bar", "table"] as const)[index],
   }));
 
   return (
@@ -40,7 +41,7 @@ export function MenuAtlas({ locale }: { locale: Locale }) {
               <Link
                 aria-label={`${messages.viewMenu}: ${feature.title}`}
                 className="mundus-menu-card group block focus-visible:outline-none"
-                href={`/${locale}/menu`}
+                href={`/${locale}/menu?chapter=${feature.chapter}`}
               >
                 <span className="mundus-menu-card__image">
                   <Image
