@@ -22,6 +22,20 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <p className="mt-4 max-w-48 text-sm leading-6 text-ivory/60">
               {messages.summary}
             </p>
+            <a
+              aria-label={messages.instagram}
+              className="mt-5 inline-flex size-11 items-center justify-center border border-ivory/20 text-ivory/75 transition-colors hover:border-emerald hover:text-emerald"
+              href={business.instagramUrl}
+              rel="noopener noreferrer"
+              target="_blank"
+              title={messages.instagram}
+            >
+              <svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 24 24">
+                <rect height="18" rx="5" width="18" x="3" y="3" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
           </div>
 
           <div>

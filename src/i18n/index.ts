@@ -23,6 +23,7 @@ type Messages = {
     copyright: string;
     craftedBy: string;
     findUs: string;
+    instagram: string;
     summary: string;
   };
   hero: {
@@ -37,7 +38,7 @@ type Messages = {
   menu: {
     backToCategories: string;
     bottle: string;
-    browseAtlas: string;
+    browseCategories: string;
     categoryList: string;
     categoryLabels: Record<string, string>;
     chapters: Record<"ritual" | "bar" | "table", { description: string; title: string }>;
@@ -120,6 +121,7 @@ const messages: Record<Locale, Messages> = {
       copyright: "Todos los derechos reservados.",
       craftedBy: "Creado por",
       findUs: "ENCUÉNTRANOS",
+      instagram: "Mundus Lounge en Instagram",
       summary: "Shisha personalizada, bebidas y comida informal en Barcelona.",
     },
     hero: {
@@ -135,7 +137,7 @@ const messages: Record<Locale, Messages> = {
     menu: {
       backToCategories: "Volver a las categorías",
       bottle: "BOTELLA",
-      browseAtlas: "Explorar el atlas",
+      browseCategories: "Explorar categorías",
       categoryList: "Categorías de la carta",
       categoryLabels: {
         "BATIDOS & ZUMOS": "Batidos y zumos",
@@ -150,18 +152,18 @@ const messages: Record<Locale, Messages> = {
         VINOS: "Vinos",
       },
       chapters: {
-        ritual: { description: "Shisha para disfrutar sin prisa", title: "El ritual" },
-        bar: { description: "Cócteles y bebidas para cada momento", title: "La barra" },
-        table: { description: "Algo para picar, café y un final dulce", title: "La mesa" },
+        ritual: { description: "Shisha para disfrutar sin prisa", title: "Shisha" },
+        bar: { description: "Cócteles y bebidas para cada momento", title: "Bebidas" },
+        table: { description: "Algo para picar, café y un final dulce", title: "Comida" },
       },
       closeCategories: "Cerrar categorías",
       copyLink: "Copiar enlace",
       linkCopied: "Enlace copiado",
       copyLinkFailed: "No se pudo copiar el enlace",
       description:
-        "Tres formas de vivir la noche. Elige un capítulo o ve directo a lo que te apetece.",
+        "Explora shisha, bebidas y comida, o ve directo a una categoría.",
       empty: "La carta no está disponible en este momento.",
-      eyebrow: "Atlas de la noche",
+      eyebrow: "Mundus Lounge",
       heading: "La carta Mundus",
       indexHeading: "Ve directo a tu favorito",
       otherCategories: "Otras categorías",
@@ -265,6 +267,7 @@ const messages: Record<Locale, Messages> = {
       copyright: "All rights reserved.",
       craftedBy: "Crafted by",
       findUs: "FIND US",
+      instagram: "Mundus Lounge on Instagram",
       summary: "Personalised shisha, drinks, and casual food in Barcelona.",
     },
     hero: {
@@ -280,7 +283,7 @@ const messages: Record<Locale, Messages> = {
     menu: {
       backToCategories: "Back to categories",
       bottle: "BOTTLE",
-      browseAtlas: "Browse the Atlas",
+      browseCategories: "Browse categories",
       categoryList: "Menu categories",
       categoryLabels: {
         BEERS: "Beer",
@@ -303,18 +306,18 @@ const messages: Record<Locale, Messages> = {
         WINES: "Wine",
       },
       chapters: {
-        ritual: { description: "Shisha at your own pace", title: "The Ritual" },
-        bar: { description: "Cocktails and drinks for every moment", title: "The Bar" },
-        table: { description: "Bites, coffee and something sweet", title: "The Table" },
+        ritual: { description: "Shisha at your own pace", title: "Shisha" },
+        bar: { description: "Cocktails and drinks for every moment", title: "Drinks" },
+        table: { description: "Bites, coffee and something sweet", title: "Food" },
       },
       closeCategories: "Close categories",
       copyLink: "Copy link",
       linkCopied: "Link copied",
       copyLinkFailed: "Could not copy link",
       description:
-        "Three ways into the night. Choose a chapter or go straight to what you fancy.",
+        "Explore shisha, drinks and food, or jump straight to a category.",
       empty: "The menu is not available right now.",
-      eyebrow: "The Night Atlas",
+      eyebrow: "Mundus Lounge",
       heading: "The Mundus Menu",
       indexHeading: "Go straight to your favourite",
       otherCategories: "Other categories",

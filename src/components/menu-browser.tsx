@@ -315,7 +315,7 @@ export function MenuBrowser({
             type="button"
           >
             <span className="night-atlas__mobile-trigger-top">
-              <span><span aria-hidden="true">✳</span> {messages.browseAtlas}</span>
+              <span><span aria-hidden="true">✳</span> {messages.browseCategories}</span>
             </span>
             <span className="night-atlas__mobile-trigger-bottom">
               <span>{categoryLabels[activeCategory.name] ?? activeCategory.name}</span>
@@ -335,7 +335,7 @@ export function MenuBrowser({
             <div className="night-atlas__sheet-inner">
               <div className="night-atlas__sheet-header">
                 <div>
-                  <p className="night-atlas__panel-kicker">{messages.browseAtlas}</p>
+                  <p className="night-atlas__panel-kicker">{messages.browseCategories}</p>
                   <h2 className="font-display text-3xl font-[300] tracking-[-0.04em] text-ivory" id="menu-category-dialog-title">
                     {messages.categoryList}
                   </h2>
@@ -362,7 +362,7 @@ export function MenuBrowser({
           </dialog>
         </div>
 
-        <div className="night-atlas__chapters" role="group" aria-label={messages.eyebrow}>
+        <div className="night-atlas__chapters" role="group" aria-label={messages.categoryList}>
           {chapters.map((chapter) => {
             const firstCategory = categories.find((category) => chapterForCategory(category.name) === chapter.id);
             if (!firstCategory) return null;

@@ -34,6 +34,7 @@ export const business = {
   directionsUrl:
     "https://www.google.com/maps/search/?api=1&query=C%2F%20de%20Padilla%2C%20177%2C%2008013%20Barcelona",
   name: "Mundus Lounge",
+  instagramUrl: "https://www.instagram.com/mundus.lounge",
   openingHours,
   phone: "931 05 83 58",
   telephoneUrl: "tel:+34931058358",
