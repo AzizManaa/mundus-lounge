@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-onyx: #0b0d0c;
-  --color-jade: #0b6b45;
-  --color-emerald: #18a565;
-  --color-brass: #b88a42;
-  --color-ivory: #f3ebdd;
-  --color-olive: #202723;
+  --color-onyx: #0c0a08;
+  --color-honey-deep: #805019;
+  --color-honey: #e4ad55;
+  --color-gold: #c6a26a;
+  --color-cream: #f5ead6;
+  --color-espresso: #211913;
 
   --font-sans: var(--font-bricolage), Arial, Helvetica, sans-serif;
   --font-display: var(--font-bricolage), Arial, Helvetica, sans-serif;
@@ -18,8 +18,8 @@
 
 :root {
   --page-max-width: 72rem;
-  --border-subtle: color-mix(in srgb, var(--color-ivory) 16%, transparent);
-  --focus-ring: color-mix(in srgb, var(--color-emerald) 80%, white);
+  --border-subtle: color-mix(in srgb, var(--color-cream) 16%, transparent);
+  --focus-ring: color-mix(in srgb, var(--color-honey) 80%, white);
 }
 
 * {
@@ -35,7 +35,7 @@ body {
   min-width: 20rem;
   margin: 0;
   background: var(--color-onyx);
-  color: var(--color-ivory);
+  color: var(--color-cream);
   font-family: var(--font-sans);
   font-synthesis: none;
   line-height: 1.5;
@@ -63,7 +63,7 @@ a:focus-visible {
   }
 
   .mundus-eyebrow {
-    color: var(--color-emerald);
+    color: var(--color-honey);
     font-family: var(--font-script);
     font-size: clamp(2rem, 3vw, 3.75rem);
     font-weight: 400;
@@ -76,9 +76,9 @@ a:focus-visible {
     min-height: 2.75rem;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--color-emerald);
-    background: var(--color-jade);
-    color: var(--color-ivory);
+    border: 1px solid var(--color-honey);
+    background: var(--color-honey-deep);
+    color: var(--color-cream);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -90,8 +90,8 @@ a:focus-visible {
   }
 
   .mundus-button:hover {
-    background: var(--color-emerald);
-    border-color: var(--color-emerald);
+    background: var(--color-honey);
+    border-color: var(--color-honey);
     color: var(--color-onyx);
   }
 
@@ -101,21 +101,21 @@ a:focus-visible {
   }
 
   .mundus-button--quiet:hover {
-    background: var(--color-olive);
-    border-color: var(--color-brass);
-    color: var(--color-ivory);
+    background: var(--color-espresso);
+    border-color: var(--color-gold);
+    color: var(--color-cream);
   }
 
   .mundus-button--outline {
     background: transparent;
-    border-color: var(--color-emerald);
-    color: var(--color-emerald);
+    border-color: var(--color-honey);
+    color: var(--color-honey);
   }
 
   .mundus-button--outline:hover {
-    background: var(--color-jade);
-    border-color: var(--color-emerald);
-    color: var(--color-ivory);
+    background: var(--color-honey-deep);
+    border-color: var(--color-honey);
+    color: var(--color-cream);
   }
 
   .mundus-hero-overlay {
@@ -135,7 +135,7 @@ a:focus-visible {
     position: absolute;
     inset: -1.25rem 1.25rem 1.25rem -1.25rem;
     z-index: -1;
-    border: 2px solid var(--color-emerald);
+    border: 2px solid var(--color-honey);
     content: "";
   }
 
@@ -159,7 +159,7 @@ a:focus-visible {
   .mundus-ember-scene__glow {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 28% 20% at 50% var(--ember-center-y), rgba(242, 93, 22, 0.2), transparent 100%);
+    background: radial-gradient(ellipse 28% 20% at 50% var(--ember-center-y), rgba(228, 173, 85, 0.2), transparent 100%);
     opacity: 0;
     pointer-events: none;
     transition: opacity 1.5s ease-out;
@@ -184,7 +184,7 @@ a:focus-visible {
   .mundus-hero-overlay {
     background: linear-gradient(
       90deg,
-      var(--color-onyx) 0%,
+      #0b0d0c 0%,
       rgba(11, 13, 12, 0.94) 32%,
       rgba(11, 13, 12, 0.46) 64%,
       rgba(11, 13, 12, 0.76) 100%
@@ -214,8 +214,8 @@ a:focus-visible {
 }
 
 .mundus-testimonials {
-  background: linear-gradient(135deg, #111914 0%, var(--color-onyx) 72%);
-  border-block: 1px solid color-mix(in srgb, var(--color-emerald) 20%, transparent);
+  background: linear-gradient(135deg, #241a11 0%, var(--color-onyx) 72%);
+  border-block: 1px solid color-mix(in srgb, var(--color-honey) 20%, transparent);
 }
 
 .mundus-menu-card {
@@ -225,7 +225,7 @@ a:focus-visible {
 
 .mundus-menu-card__image {
   aspect-ratio: 4 / 5;
-  border: 1px solid var(--color-emerald);
+  border: 1px solid var(--color-honey);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -261,11 +261,11 @@ a:focus-visible {
 }
 
 .mundus-menu-reveal--drinks .mundus-menu-reveal__glow {
-  background: radial-gradient(ellipse 23% 28% at 47% 64%, rgba(255, 166, 46, 0.16), transparent 100%);
+  background: radial-gradient(ellipse 23% 28% at 47% 64%, rgba(228, 173, 85, 0.16), transparent 100%);
 }
 
 .mundus-menu-reveal--shisha .mundus-menu-reveal__glow {
-  background: radial-gradient(ellipse 22% 14% at 50% 17%, rgba(255, 94, 25, 0.25), transparent 100%);
+  background: radial-gradient(ellipse 22% 14% at 50% 17%, rgba(228, 173, 85, 0.25), transparent 100%);
 }
 
 .mundus-menu-reveal[data-lit="true"] .mundus-menu-reveal__lit,
@@ -278,7 +278,7 @@ a:focus-visible {
 }
 
 .mundus-menu-card__details {
-  background: var(--color-olive);
+  background: var(--color-espresso);
   border: 1px solid var(--border-subtle);
   border-top: 0;
   display: flex;
@@ -287,7 +287,7 @@ a:focus-visible {
 }
 
 .night-atlas {
-  background: radial-gradient(ellipse at 52% 0%, #19241d 0%, var(--color-onyx) 44rem);
+  background: radial-gradient(ellipse at 52% 0%, #2a1d11 0%, var(--color-onyx) 44rem);
 }
 
 .night-atlas__intro {
@@ -298,7 +298,7 @@ a:focus-visible {
 }
 
 .night-atlas__description {
-  color: color-mix(in srgb, var(--color-ivory) 72%, transparent);
+  color: color-mix(in srgb, var(--color-cream) 72%, transparent);
   font-size: 1rem;
   line-height: 1.7;
   max-width: 30rem;
@@ -309,9 +309,9 @@ a:focus-visible {
 }
 
 .night-atlas__mobile-trigger {
-  background: var(--color-olive);
-  border: 1px solid var(--color-brass);
-  color: var(--color-ivory);
+  background: var(--color-espresso);
+  border: 1px solid var(--color-gold);
+  color: var(--color-cream);
   display: block;
   padding: 0.7rem 1rem 0.85rem;
   box-shadow: 0 0.65rem 1.8rem rgba(0, 0, 0, 0.35), 0 0.15rem 0.4rem rgba(0, 0, 0, 0.24);
@@ -322,7 +322,7 @@ a:focus-visible {
 
 .night-atlas__mobile-trigger:hover,
 .night-atlas__mobile-trigger:focus-visible {
-  border-color: var(--color-emerald);
+  border-color: var(--color-honey);
   box-shadow: 0 0.85rem 2rem rgba(0, 0, 0, 0.42);
 }
 
@@ -334,7 +334,7 @@ a:focus-visible {
 }
 
 .night-atlas__mobile-trigger-top {
-  color: var(--color-brass);
+  color: var(--color-gold);
   font-size: 0.61rem;
   font-weight: 700;
   letter-spacing: 0.17em;
@@ -351,7 +351,7 @@ a:focus-visible {
 }
 
 .night-atlas__mobile-trigger-bottom span:last-child {
-  color: var(--color-emerald);
+  color: var(--color-honey);
   font-size: 1.5rem;
   line-height: 1;
 }
@@ -359,9 +359,9 @@ a:focus-visible {
 .night-atlas__sheet[open] {
   background: var(--color-onyx);
   border: 0;
-  border-top: 2px solid var(--color-brass);
+  border-top: 2px solid var(--color-gold);
   box-shadow: 0 -1.5rem 4rem rgba(0, 0, 0, 0.45);
-  color: var(--color-ivory);
+  color: var(--color-cream);
   inset: auto 0 0;
   margin: 0;
   max-height: 84dvh;
@@ -374,7 +374,7 @@ a:focus-visible {
 }
 
 .night-atlas__sheet::backdrop {
-  background: rgba(3, 6, 4, 0.76);
+  background: rgba(12, 10, 8, 0.76);
   backdrop-filter: blur(5px);
 }
 
@@ -387,7 +387,7 @@ a:focus-visible {
 .night-atlas__sheet-header {
   align-items: start;
   background: var(--color-onyx);
-  border-bottom: 1px solid color-mix(in srgb, var(--color-ivory) 18%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-cream) 18%, transparent);
   display: flex;
   justify-content: space-between;
   padding: 1.4rem 0 1rem;
@@ -397,8 +397,8 @@ a:focus-visible {
 }
 
 .night-atlas__sheet-close {
-  border: 1px solid color-mix(in srgb, var(--color-ivory) 30%, transparent);
-  color: var(--color-ivory);
+  border: 1px solid color-mix(in srgb, var(--color-cream) 30%, transparent);
+  color: var(--color-cream);
   font-size: 1.5rem;
   height: 2.75rem;
   line-height: 1;
@@ -412,7 +412,7 @@ a:focus-visible {
 }
 
 .night-atlas__sheet-section-heading {
-  color: var(--color-ivory);
+  color: var(--color-cream);
   font-family: var(--font-display);
   font-size: 1.35rem;
   font-weight: 300;
@@ -422,8 +422,8 @@ a:focus-visible {
 
 .night-atlas__sheet-category {
   align-items: center;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-ivory) 14%, transparent);
-  color: var(--color-ivory);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-cream) 14%, transparent);
+  color: var(--color-cream);
   display: grid;
   font-size: 0.95rem;
   font-weight: 600;
@@ -436,11 +436,11 @@ a:focus-visible {
 }
 
 .night-atlas__sheet-category[aria-current="true"] {
-  background: color-mix(in srgb, var(--color-jade) 32%, transparent);
+  background: color-mix(in srgb, var(--color-honey-deep) 32%, transparent);
 }
 
 .night-atlas__sheet-category-mark {
-  color: var(--color-emerald);
+  color: var(--color-honey);
   font-size: 1rem;
 }
 
@@ -450,9 +450,9 @@ a:focus-visible {
 }
 
 .night-atlas__chapter {
-  background: var(--color-olive);
-  border: 1px solid color-mix(in srgb, var(--color-brass) 45%, transparent);
-  color: var(--color-ivory);
+  background: var(--color-espresso);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
+  color: var(--color-cream);
   display: block;
   height: 8.5rem;
   isolation: isolate;
@@ -463,7 +463,7 @@ a:focus-visible {
 }
 
 .night-atlas__chapter::after {
-  border: 1px solid color-mix(in srgb, var(--color-ivory) 35%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-cream) 35%, transparent);
   content: "";
   inset: 0.5rem;
   pointer-events: none;
@@ -472,7 +472,7 @@ a:focus-visible {
 }
 
 .night-atlas__chapter[aria-current="true"] {
-  border-color: var(--color-emerald);
+  border-color: var(--color-honey);
 }
 
 .night-atlas__chapter-image {
@@ -483,7 +483,7 @@ a:focus-visible {
 }
 
 .night-atlas__chapter-shade {
-  background: linear-gradient(90deg, rgba(11, 13, 12, 0.22) 0%, rgba(11, 13, 12, 0.9) 46%, rgba(11, 13, 12, 0.96) 100%);
+  background: linear-gradient(90deg, rgba(12, 10, 8, 0.22) 0%, rgba(12, 10, 8, 0.9) 46%, rgba(12, 10, 8, 0.96) 100%);
   inset: 0;
   position: absolute;
   z-index: -1;
@@ -501,7 +501,7 @@ a:focus-visible {
 }
 
 .night-atlas__panel-kicker {
-  color: var(--color-brass);
+  color: var(--color-gold);
   font-size: 0.63rem;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -518,7 +518,7 @@ a:focus-visible {
 }
 
 .night-atlas__chapter-description {
-  color: color-mix(in srgb, var(--color-ivory) 74%, transparent);
+  color: color-mix(in srgb, var(--color-cream) 74%, transparent);
   font-size: 0.73rem;
   line-height: 1.3;
   margin-top: 0.35rem;
@@ -527,7 +527,7 @@ a:focus-visible {
 
 .night-atlas__chapter-arrow {
   bottom: 0.75rem;
-  color: var(--color-emerald);
+  color: var(--color-honey);
   font-size: 1.1rem;
   position: absolute;
   right: 1rem;
@@ -540,14 +540,14 @@ a:focus-visible {
 
 .night-atlas__index-heading {
   align-items: center;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-ivory) 18%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-cream) 18%, transparent);
   display: flex;
   gap: 1rem;
   padding-bottom: 1.25rem;
 }
 
 .night-atlas__index-cross {
-  color: var(--color-brass);
+  color: var(--color-gold);
   font-size: 1.25rem;
 }
 
@@ -560,9 +560,9 @@ a:focus-visible {
 
 .night-atlas__category {
   align-items: center;
-  background: color-mix(in srgb, var(--color-olive) 75%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-ivory) 15%, transparent);
-  color: var(--color-ivory);
+  background: color-mix(in srgb, var(--color-espresso) 75%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-cream) 15%, transparent);
+  color: var(--color-cream);
   display: grid;
   font-size: 0.82rem;
   font-weight: 600;
@@ -576,23 +576,23 @@ a:focus-visible {
 
 .night-atlas__category:hover,
 .night-atlas__category[aria-current="true"] {
-  background: color-mix(in srgb, var(--color-jade) 30%, var(--color-olive));
-  border-color: var(--color-emerald);
+  background: color-mix(in srgb, var(--color-honey-deep) 30%, var(--color-espresso));
+  border-color: var(--color-honey);
 }
 
 .night-atlas__category-arrow {
-  color: var(--color-emerald);
+  color: var(--color-honey);
 }
 
 .night-atlas__panel {
-  background: linear-gradient(140deg, #202923, #171d19 58%, #111512);
-  border-top: 2px solid var(--color-brass);
+  background: linear-gradient(140deg, #302115, #211913 58%, #130e0a);
+  border-top: 2px solid var(--color-gold);
   scroll-margin-top: 6.5rem;
 }
 
 .night-atlas__panel-heading {
   align-items: center;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-ivory) 18%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-cream) 18%, transparent);
   display: grid;
   gap: 0.6rem 1.5rem;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -629,19 +629,19 @@ a:focus-visible {
   }
 
   .night-atlas__item:hover {
-    background: color-mix(in srgb, var(--color-emerald) 7%, transparent);
+    background: color-mix(in srgb, var(--color-honey) 7%, transparent);
     padding-inline: 0.5rem;
   }
 }
 
 .mundus-review-shortcut {
   align-items: center;
-  background: var(--color-olive);
-  border: 1px solid color-mix(in srgb, var(--color-brass) 65%, transparent);
+  background: var(--color-espresso);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 65%, transparent);
   border-radius: 999px;
   bottom: max(1rem, env(safe-area-inset-bottom));
   box-shadow: 0 0.5rem 1.6rem rgba(0, 0, 0, 0.38);
-  color: var(--color-ivory);
+  color: var(--color-cream);
   display: inline-flex;
   font-size: 0.75rem;
   font-weight: 700;
@@ -656,14 +656,14 @@ a:focus-visible {
 }
 
 .mundus-review-shortcut svg {
-  color: var(--color-brass);
+  color: var(--color-gold);
   flex: none;
   height: 1rem;
   width: 1rem;
 }
 
 .mundus-review-shortcut:hover {
-  border-color: var(--color-emerald);
+  border-color: var(--color-honey);
   box-shadow: 0 0.7rem 1.9rem rgba(0, 0, 0, 0.48);
   transform: translateY(-0.15rem);
 }
@@ -676,7 +676,7 @@ a:focus-visible {
   }
 
   .night-atlas__description {
-    border-left: 1px solid var(--color-brass);
+    border-left: 1px solid var(--color-gold);
     padding-left: 1.5rem;
   }
 
@@ -694,7 +694,7 @@ a:focus-visible {
   }
 
   .night-atlas__chapter-shade {
-    background: linear-gradient(0deg, rgba(11, 13, 12, 0.96), rgba(11, 13, 12, 0.04) 72%);
+    background: linear-gradient(0deg, rgba(12, 10, 8, 0.96), rgba(12, 10, 8, 0.04) 72%);
   }
 
   .night-atlas__chapter-content {
@@ -797,7 +797,7 @@ a:focus-visible {
 
 .mundus-error-page__code {
   margin: 0 0 1.5rem;
-  color: var(--color-brass);
+  color: var(--color-gold);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.3em;
@@ -805,7 +805,7 @@ a:focus-visible {
 
 .mundus-error-page__eyebrow {
   margin: 0 0 0.5rem;
-  color: var(--color-emerald);
+  color: var(--color-honey);
   font-family: var(--font-script);
   font-size: clamp(2.5rem, 6vw, 4rem);
   line-height: 1;
@@ -822,7 +822,7 @@ a:focus-visible {
 .mundus-error-page__description {
   max-width: 33rem;
   margin: 1.5rem 0 2rem;
-  color: color-mix(in srgb, var(--color-ivory) 70%, transparent);
+  color: color-mix(in srgb, var(--color-cream) 70%, transparent);
   font-size: clamp(1rem, 1.7vw, 1.125rem);
 }
 
@@ -835,7 +835,7 @@ a:focus-visible {
 .mundus-error-page__language {
   display: inline-block;
   margin-top: 2rem;
-  color: var(--color-ivory);
+  color: var(--color-cream);
   font-size: 0.875rem;
   text-underline-offset: 0.3em;
 }
@@ -849,7 +849,7 @@ body:has(.mundus-error-page, .mundus-not-found) .mundus-review-shortcut {
   isolation: isolate;
   min-height: 100svh;
   overflow: hidden;
-  background: radial-gradient(circle at 78% 30%, #3e4a30 0%, #1b2b23 46%, #121c18 100%);
+  background: radial-gradient(circle at 78% 30%, #44301b 0%, #211913 46%, #0c0a08 100%);
 }
 
 .mundus-not-found__visual {
@@ -864,7 +864,7 @@ body:has(.mundus-error-page, .mundus-not-found) .mundus-review-shortcut {
 .mundus-not-found__visual::after {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(18, 28, 24, 0.58), transparent 55%);
+  background: linear-gradient(0deg, rgba(12, 10, 8, 0.58), transparent 55%);
   content: "";
 }
 
@@ -887,7 +887,7 @@ body:has(.mundus-error-page, .mundus-not-found) .mundus-review-shortcut {
 
 .mundus-not-found__eyebrow {
   margin: 0 0 1.25rem;
-  color: #d7b474;
+  color: var(--color-gold);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -896,7 +896,7 @@ body:has(.mundus-error-page, .mundus-not-found) .mundus-review-shortcut {
 
 .mundus-not-found__eyebrow span {
   padding-inline: 0.5rem;
-  color: var(--color-emerald);
+  color: var(--color-honey);
 }
 
 .mundus-not-found h1 {
@@ -912,7 +912,7 @@ body:has(.mundus-error-page, .mundus-not-found) .mundus-review-shortcut {
 .mundus-not-found__description {
   max-width: 29rem;
   margin: 2rem 0;
-  color: color-mix(in srgb, var(--color-ivory) 82%, transparent);
+  color: color-mix(in srgb, var(--color-cream) 82%, transparent);
   font-size: clamp(1rem, 1.7vw, 1.125rem);
 }
 

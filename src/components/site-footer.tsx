@@ -7,7 +7,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
   const { footer: messages, navigation } = getMessages(locale);
 
   return (
-    <footer className="border-t border-ivory/10 bg-black py-14 sm:py-16" id="contact">
+    <footer className="border-t border-cream/10 bg-black py-14 sm:py-16" id="contact">
       <div className="mundus-container">
         <div className="grid gap-10 md:grid-cols-3 md:gap-8">
           <div>
@@ -19,12 +19,12 @@ export function SiteFooter({ locale }: { locale: Locale }) {
               unoptimized
               width={160}
             />
-            <p className="mt-4 max-w-48 text-sm leading-6 text-ivory/60">
+            <p className="mt-4 max-w-48 text-sm leading-6 text-cream/60">
               {messages.summary}
             </p>
             <a
               aria-label={messages.instagram}
-              className="mt-5 inline-flex size-11 items-center justify-center border border-ivory/20 text-ivory/75 transition-colors hover:border-emerald hover:text-emerald"
+              className="mt-5 inline-flex size-11 items-center justify-center border border-cream/20 text-cream/75 transition-colors hover:border-honey hover:text-honey"
               href={business.instagramUrl}
               rel="noopener noreferrer"
               target="_blank"
@@ -39,35 +39,35 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           </div>
 
           <div>
-            <p className="text-xs font-bold tracking-[0.14em] text-emerald">
+            <p className="text-xs font-bold tracking-[0.14em] text-honey">
               {messages.findUs}
             </p>
-            <p className="mt-4 text-lg text-ivory">{business.address.streetAddress}</p>
-            <p className="mt-1 text-sm text-ivory/60">
+            <p className="mt-4 text-lg text-cream">{business.address.streetAddress}</p>
+            <p className="mt-1 text-sm text-cream/60">
               {business.address.postalCode} {business.address.city}
             </p>
           </div>
 
           <div>
-            <p className="text-xs font-bold tracking-[0.14em] text-emerald">
+            <p className="text-xs font-bold tracking-[0.14em] text-honey">
               {messages.call}
             </p>
             <a
-              className="mt-4 inline-block font-display text-2xl font-medium tracking-[-0.04em] text-ivory no-underline transition-colors hover:text-emerald"
+              className="mt-4 inline-block font-display text-2xl font-medium tracking-[-0.04em] text-cream no-underline transition-colors hover:text-honey"
               href={business.telephoneUrl}
             >
               {business.phone}
             </a>
-            <p className="mt-2 text-sm text-ivory/60">{messages.callMundus}</p>
+            <p className="mt-2 text-sm text-cream/60">{messages.callMundus}</p>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-ivory/10 pt-6 text-xs text-ivory/50 sm:mt-14 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-cream/10 pt-6 text-xs text-cream/50 sm:mt-14 sm:flex-row sm:items-center sm:justify-between">
           <p>© {currentYear} Mundus Lounge. {messages.copyright}</p>
           <p className="flex items-center gap-1.5">
             {messages.craftedBy}
             <a
-              className="inline-flex items-center text-ivory/70 no-underline transition-colors hover:text-emerald"
+              className="inline-flex items-center text-cream/70 no-underline transition-colors hover:text-honey"
               href="https://aziz-manaa.com"
               rel="noopener noreferrer"
               target="_blank"
@@ -75,7 +75,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
               NekoDesk
               <svg
                 aria-hidden="true"
-                className="ml-1.5 size-3.5 text-emerald"
+                className="ml-1.5 size-3.5 text-honey"
                 fill="none"
                 stroke="currentColor"
                 strokeLinecap="round"
@@ -90,7 +90,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
               </svg>
             </a>
           </p>
-          <a className="text-ivory/60 no-underline transition-colors hover:text-emerald" href="#top">
+          <a className="text-cream/60 no-underline transition-colors hover:text-honey" href="#top">
             {navigation.backToTop}
           </a>
         </div>

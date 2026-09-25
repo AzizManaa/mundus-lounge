@@ -43,13 +43,13 @@ export function MundusMoments({ locale }: { locale: Locale }) {
           <div>
             <p className="mundus-eyebrow mb-6">{messages.eyebrow}</p>
             <h2
-              className="font-display text-5xl font-[200] leading-[0.95] tracking-[-0.05em] text-ivory sm:text-6xl"
+              className="font-display text-5xl font-[200] leading-[0.95] tracking-[-0.05em] text-cream sm:text-6xl"
               id="moments-heading"
             >
               {messages.heading}
             </h2>
           </div>
-          <p className="max-w-sm text-base leading-7 text-ivory/65">
+          <p className="max-w-sm text-base leading-7 text-cream/65">
             {messages.description}
           </p>
         </div>
@@ -60,7 +60,7 @@ export function MundusMoments({ locale }: { locale: Locale }) {
 
             return (
               <figure
-                className={`group relative cursor-default overflow-hidden border border-ivory/15 p-5 transition-colors duration-500 hover:border-emerald/55 sm:p-6 motion-reduce:transition-none ${tile.className}`}
+                className={`group relative cursor-default overflow-hidden border border-cream/15 p-5 transition-colors duration-500 hover:border-honey/55 sm:p-6 motion-reduce:transition-none ${tile.className}`}
                 key={label}
               >
                 <Image
@@ -73,13 +73,13 @@ export function MundusMoments({ locale }: { locale: Locale }) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-onyx/85 via-transparent to-transparent transition-opacity duration-700 group-hover:opacity-75 motion-reduce:transition-none" />
                 <figcaption className="relative z-10 flex h-full translate-y-1 flex-col justify-end transition-transform duration-500 ease-out group-hover:translate-y-0 motion-reduce:translate-y-0 motion-reduce:transition-none">
-                  <span className="font-display text-2xl font-[200] tracking-[-0.03em] text-ivory sm:text-3xl">
+                  <span className="font-display text-2xl font-[200] tracking-[-0.03em] text-cream sm:text-3xl">
                     {label}
                   </span>
                 </figcaption>
                 <span
                   aria-hidden="true"
-                  className="absolute inset-x-5 bottom-0 z-10 h-px origin-left scale-x-0 bg-emerald transition-transform duration-700 ease-out group-hover:scale-x-100 sm:inset-x-6 motion-reduce:transition-none"
+                  className="absolute inset-x-5 bottom-0 z-10 h-px origin-left scale-x-0 bg-honey transition-transform duration-700 ease-out group-hover:scale-x-100 sm:inset-x-6 motion-reduce:transition-none"
                 />
               </figure>
             );

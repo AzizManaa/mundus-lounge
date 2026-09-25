@@ -19,7 +19,7 @@ export function LocaleSwitcher({
           <Link
             aria-current={active ? "page" : undefined}
             className={`transition-colors ${
-              active ? "text-emerald" : "text-ivory/60 hover:text-ivory"
+              active ? "text-honey" : "text-cream/60 hover:text-cream"
             }`}
             href={`/${candidate}${path}`}
             key={candidate}

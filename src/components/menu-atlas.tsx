@@ -15,21 +15,21 @@ export function MenuAtlas({ locale }: { locale: Locale }) {
   return (
     <section
       aria-labelledby="menu-heading"
-      className="mundus-section border-y border-ivory/10 bg-olive/30"
+      className="mundus-section border-y border-cream/10 bg-espresso/30"
       id="menu"
     >
       <div className="mundus-container">
-        <div className="grid gap-8 border-b border-ivory/15 pb-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-end">
+        <div className="grid gap-8 border-b border-cream/15 pb-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-end">
           <div>
             <p className="mundus-eyebrow mb-6">{messages.eyebrow}</p>
             <h2
-              className="font-display text-5xl font-[200] leading-[0.95] tracking-[-0.05em] text-ivory sm:text-6xl"
+              className="font-display text-5xl font-[200] leading-[0.95] tracking-[-0.05em] text-cream sm:text-6xl"
               id="menu-heading"
             >
               {messages.heading}
             </h2>
           </div>
-          <p className="max-w-lg text-base leading-7 text-ivory/70 sm:text-lg">
+          <p className="max-w-lg text-base leading-7 text-cream/70 sm:text-lg">
             {messages.description}
           </p>
         </div>
@@ -57,14 +57,14 @@ export function MenuAtlas({ locale }: { locale: Locale }) {
                   )}
                   <span className="absolute inset-0 bg-gradient-to-t from-onyx/90 via-onyx/20 to-onyx/30" />
                   <span className="relative z-10 mt-auto p-7 sm:p-8">
-                    <span className="block font-display text-4xl font-[200] tracking-[-0.05em] text-ivory">
+                    <span className="block font-display text-4xl font-[200] tracking-[-0.05em] text-cream">
                       {feature.title}
                     </span>
                   </span>
                 </span>
 
                 <span className="mundus-menu-card__details">
-                  <span className="text-sm leading-6 text-ivory/65">
+                  <span className="text-sm leading-6 text-cream/65">
                     {feature.description}
                   </span>
                 </span>

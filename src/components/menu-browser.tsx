@@ -75,24 +75,24 @@ function MenuItemRow({
   priceLabels: { bottle: string; shot: string };
 }) {
   return (
-    <li className="night-atlas__item border-b border-ivory/10 py-4 last:border-b-0 sm:py-5">
+    <li className="night-atlas__item border-b border-cream/10 py-4 last:border-b-0 sm:py-5">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 sm:gap-4">
-        <h4 className="font-display text-base font-medium leading-snug text-ivory sm:text-lg">
+        <h4 className="font-display text-base font-medium leading-snug text-cream sm:text-lg">
           {item.name}
         </h4>
         {item.price !== undefined && (
-          <span className="shrink-0 border border-emerald/30 px-2 py-1 text-xs font-bold tabular-nums text-emerald sm:border-0 sm:p-0 sm:text-sm">
+          <span className="shrink-0 border border-honey/30 px-2 py-1 text-xs font-bold tabular-nums text-honey sm:border-0 sm:p-0 sm:text-sm">
             {formatPrice(item.price, currency, locale)}
           </span>
         )}
       </div>
       {item.description && (
-        <p className="mt-1.5 text-sm leading-5 text-ivory/60 sm:leading-6">
+        <p className="mt-1.5 text-sm leading-5 text-cream/60 sm:leading-6">
           {item.description}
         </p>
       )}
       {(item.bottle_price != null || item.shot_price != null) && (
-        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium tracking-[0.08em] text-ivory/45">
+        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium tracking-[0.08em] text-cream/45">
           {item.bottle_price != null && (
             <span>{priceLabels.bottle} {formatPrice(item.bottle_price, currency, locale)}</span>
           )}
@@ -117,15 +117,15 @@ function MenuGroup({
   priceLabels: { bottle: string; shot: string };
 }) {
   return (
-    <article className="border border-ivory/15 bg-onyx/35 p-6 sm:p-8">
-      <h3 className="font-display text-2xl font-medium tracking-[-0.03em] text-ivory sm:text-3xl">
+    <article className="border border-cream/15 bg-onyx/35 p-6 sm:p-8">
+      <h3 className="font-display text-2xl font-medium tracking-[-0.03em] text-cream sm:text-3xl">
         {category.name}
       </h3>
       {category.description && (
-        <p className="mt-2 text-sm italic text-ivory/55">{category.description}</p>
+        <p className="mt-2 text-sm italic text-cream/55">{category.description}</p>
       )}
       {category.modifier && (
-        <p className="mt-3 text-xs font-bold tracking-[0.1em] text-emerald">
+        <p className="mt-3 text-xs font-bold tracking-[0.1em] text-honey">
           {category.modifier}
         </p>
       )}
@@ -153,28 +153,28 @@ function MobileMenuGroup({
 }) {
   return (
     <details
-      className="group border border-ivory/15 bg-onyx/35"
+      className="group border border-cream/15 bg-onyx/35"
       open={defaultOpen}
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 marker:content-none">
         <div>
-          <h3 className="font-display text-2xl font-medium tracking-[-0.03em] text-ivory">
+          <h3 className="font-display text-2xl font-medium tracking-[-0.03em] text-cream">
             {category.name}
           </h3>
         </div>
         <span
           aria-hidden="true"
-          className="text-2xl leading-none text-emerald transition-transform duration-200 group-open:rotate-45"
+          className="text-2xl leading-none text-honey transition-transform duration-200 group-open:rotate-45"
         >
           +
         </span>
       </summary>
-      <div className="border-t border-ivory/10 px-6 pb-6">
+      <div className="border-t border-cream/10 px-6 pb-6">
         {category.description && (
-          <p className="mt-4 text-sm italic text-ivory/55">{category.description}</p>
+          <p className="mt-4 text-sm italic text-cream/55">{category.description}</p>
         )}
         {category.modifier && (
-          <p className="mt-3 text-xs font-bold tracking-[0.1em] text-emerald">
+          <p className="mt-3 text-xs font-bold tracking-[0.1em] text-honey">
             {category.modifier}
           </p>
         )}
@@ -299,7 +299,7 @@ export function MenuBrowser({
         <header className="night-atlas__intro">
           <div>
             <p className="mundus-eyebrow mb-5">{messages.eyebrow}</p>
-            <h1 className="font-display text-5xl font-[200] leading-[0.98] tracking-[-0.055em] text-ivory sm:text-6xl lg:text-7xl" id="menu-heading">
+            <h1 className="font-display text-5xl font-[200] leading-[0.98] tracking-[-0.055em] text-cream sm:text-6xl lg:text-7xl" id="menu-heading">
               {messages.heading}
             </h1>
           </div>
@@ -336,7 +336,7 @@ export function MenuBrowser({
               <div className="night-atlas__sheet-header">
                 <div>
                   <p className="night-atlas__panel-kicker">{messages.browseCategories}</p>
-                  <h2 className="font-display text-3xl font-[300] tracking-[-0.04em] text-ivory" id="menu-category-dialog-title">
+                  <h2 className="font-display text-3xl font-[300] tracking-[-0.04em] text-cream" id="menu-category-dialog-title">
                     {messages.categoryList}
                   </h2>
                 </div>
@@ -391,7 +391,7 @@ export function MenuBrowser({
         <nav aria-label={messages.categoryList} className="night-atlas__index hidden sm:block">
           <div className="night-atlas__index-heading">
             <span className="night-atlas__index-cross" aria-hidden="true">✳</span>
-            <h2 className="font-display text-2xl font-[300] tracking-[-0.03em] text-ivory">{messages.indexHeading}</h2>
+            <h2 className="font-display text-2xl font-[300] tracking-[-0.03em] text-cream">{messages.indexHeading}</h2>
           </div>
           <div className="night-atlas__category-grid">
             {categories.map((category) => (
@@ -420,10 +420,10 @@ export function MenuBrowser({
           <header className="night-atlas__panel-heading">
             <span className="night-atlas__panel-kicker">{activeChapter ? messages.chapters[activeChapter].title : messages.categoryList}</span>
             <div className="flex items-center gap-2">
-              <span aria-live="polite" className="max-w-28 text-right text-xs leading-tight text-ivory/65">{linkFeedback}</span>
+              <span aria-live="polite" className="max-w-28 text-right text-xs leading-tight text-cream/65">{linkFeedback}</span>
               <button
                 aria-label={messages.copyLink}
-                className="inline-flex size-11 shrink-0 items-center justify-center border border-brass/45 text-brass transition-colors hover:border-brass hover:bg-brass/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald"
+                className="inline-flex size-11 shrink-0 items-center justify-center border border-gold/45 text-gold transition-colors hover:border-gold hover:bg-gold/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-honey"
                 onClick={copyCategoryLink}
                 title={messages.copyLink}
                 type="button"
@@ -436,18 +436,18 @@ export function MenuBrowser({
                 </svg>
               </button>
             </div>
-            <h2 className="font-display text-4xl font-[200] tracking-[-0.045em] text-ivory sm:text-6xl" id="menu-panel-heading" ref={panelHeadingRef} tabIndex={-1}>
+            <h2 className="font-display text-4xl font-[200] tracking-[-0.045em] text-cream sm:text-6xl" id="menu-panel-heading" ref={panelHeadingRef} tabIndex={-1}>
               {categoryLabels[activeCategory.name] ?? activeCategory.name}
             </h2>
           </header>
 
           <div className="night-atlas__panel-content" key={activeCategory.name}>
             {activeCategory.name === "SHISHA EXPERIENCE" && (
-              <aside className="mt-6 border-l-2 border-emerald bg-onyx/45 px-5 py-4 text-left sm:mt-8">
-                <p className="text-sm font-semibold text-ivory">
+              <aside className="mt-6 border-l-2 border-honey bg-onyx/45 px-5 py-4 text-left sm:mt-8">
+                <p className="text-sm font-semibold text-cream">
                   {messages.recommendation.title}
                 </p>
-                <p className="mt-1 text-sm leading-6 text-ivory/65">
+                <p className="mt-1 text-sm leading-6 text-cream/65">
                   {messages.recommendation.body}
                 </p>
               </aside>
@@ -474,7 +474,7 @@ export function MenuBrowser({
           </div>
 
           <button
-            className="mt-8 w-full border border-ivory/20 px-5 py-4 text-xs font-bold tracking-[0.12em] text-ivory transition-colors hover:border-emerald hover:text-emerald sm:hidden"
+            className="mt-8 w-full border border-cream/20 px-5 py-4 text-xs font-bold tracking-[0.12em] text-cream transition-colors hover:border-honey hover:text-honey sm:hidden"
             onClick={() => categoryDialogRef.current?.showModal()}
             type="button"
           >

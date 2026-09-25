@@ -41,7 +41,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             <nav aria-label={messages.navigation.primary} className="hidden items-center gap-8 lg:flex">
               {navigationItems.map((item) => (
                 <a
-                  className="text-sm font-medium text-ivory/90 no-underline transition-colors hover:text-emerald"
+                  className="text-sm font-medium text-cream/90 no-underline transition-colors hover:text-honey"
                   href={item.href}
                   key={item.href}
                 >
@@ -59,7 +59,7 @@ export function HomePage({ locale }: { locale: Locale }) {
           </div>
         </header>
 
-        <section className="relative isolate flex min-h-svh overflow-hidden border-b border-ivory/10">
+        <section className="relative isolate flex min-h-svh overflow-hidden border-b border-cream/10">
           <video
             aria-hidden="true"
             autoPlay
@@ -76,30 +76,30 @@ export function HomePage({ locale }: { locale: Locale }) {
           <div className="mundus-container relative z-10 flex items-start pt-32 sm:pt-36">
             <div className="max-w-xl">
               <p className="mundus-eyebrow mb-5">{messages.hero.eyebrow}</p>
-              <h1 className="font-display text-5xl font-[200] leading-[0.98] tracking-[-0.055em] text-ivory sm:text-7xl lg:text-[5.6rem]">
+              <h1 className="font-display text-5xl font-[200] leading-[0.98] tracking-[-0.055em] text-cream sm:text-7xl lg:text-[5.6rem]">
                 {messages.hero.heading[0]}
                 <br />
                 {messages.hero.heading[1]}
                 <br />
                 {messages.hero.heading[2]}
               </h1>
-              <p className="mt-8 max-w-md text-base leading-7 text-ivory/80 sm:text-lg">
+              <p className="mt-8 max-w-md text-base leading-7 text-cream/80 sm:text-lg">
                 {messages.hero.summary}
               </p>
-              <dl className="mt-16 grid max-w-md grid-cols-2 border-t border-ivory/15 pt-7 sm:mt-20">
-                <div className="border-r border-ivory/15 pr-6">
-                  <dt className="text-xs font-bold tracking-[0.1em] text-ivory/60">
+              <dl className="mt-16 grid max-w-md grid-cols-2 border-t border-cream/15 pt-7 sm:mt-20">
+                <div className="border-r border-cream/15 pr-6">
+                  <dt className="text-xs font-bold tracking-[0.1em] text-cream/60">
                     {messages.hero.shishaLabel}
                   </dt>
-                  <dd className="mt-2 font-display text-2xl font-medium tracking-[-0.03em] text-ivory">
+                  <dd className="mt-2 font-display text-2xl font-medium tracking-[-0.03em] text-cream">
                     {messages.hero.shisha}
                   </dd>
                 </div>
                 <div className="pl-6">
-                  <dt className="text-xs font-bold tracking-[0.1em] text-ivory/60">
+                  <dt className="text-xs font-bold tracking-[0.1em] text-cream/60">
                     {messages.hero.drinksLabel}
                   </dt>
-                  <dd className="mt-2 font-display text-2xl font-medium tracking-[-0.03em] text-ivory">
+                  <dd className="mt-2 font-display text-2xl font-medium tracking-[-0.03em] text-cream">
                     {messages.hero.drinks}
                   </dd>
                 </div>
@@ -127,24 +127,24 @@ export function HomePage({ locale }: { locale: Locale }) {
               <AboutEmberImage alt={messages.about.imageOneAlt} />
               <div className="max-w-xl">
                 <p className="mundus-eyebrow mb-6">{messages.about.eyebrow}</p>
-                <h2 id="about-heading" className="font-display text-4xl font-[200] leading-[1.08] tracking-[-0.045em] text-ivory sm:text-5xl">
+                <h2 id="about-heading" className="font-display text-4xl font-[200] leading-[1.08] tracking-[-0.045em] text-cream sm:text-5xl">
                   {messages.about.heading[0]}
                   <br />
                   {messages.about.heading[1]}
                 </h2>
-                <p className="mt-7 text-base leading-7 text-ivory/70 sm:text-lg">{messages.about.firstParagraph}</p>
+                <p className="mt-7 text-base leading-7 text-cream/70 sm:text-lg">{messages.about.firstParagraph}</p>
               </div>
             </article>
 
             <article className="grid items-center gap-12 lg:grid-cols-2 lg:gap-24">
               <div className="order-2 max-w-xl lg:order-1">
                 <p className="mundus-eyebrow mb-6">{messages.about.secondEyebrow}</p>
-                <h2 className="font-display text-4xl font-[200] leading-[1.08] tracking-[-0.045em] text-ivory sm:text-5xl">
+                <h2 className="font-display text-4xl font-[200] leading-[1.08] tracking-[-0.045em] text-cream sm:text-5xl">
                   {messages.about.secondHeading[0]}
                   <br />
                   {messages.about.secondHeading[1]}
                 </h2>
-                <p className="mt-7 text-base leading-7 text-ivory/70 sm:text-lg">{messages.about.secondParagraph}</p>
+                <p className="mt-7 text-base leading-7 text-cream/70 sm:text-lg">{messages.about.secondParagraph}</p>
               </div>
               <div className="mundus-image-frame order-1 aspect-[4/5] sm:aspect-[5/4] lg:order-2">
                 <Image alt={messages.about.imageTwoAlt} className="object-cover" fill placeholder="blur" sizes="(min-width: 1024px) 34vw, 100vw" src={aboutImageTwo} />

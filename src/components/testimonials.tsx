@@ -63,7 +63,7 @@ export function Testimonials({ locale }: { locale: Locale }) {
         <div className="mx-auto max-w-2xl text-center">
           <p className="mundus-eyebrow mb-6">{messages.eyebrow}</p>
           <h2
-            className="font-display text-4xl font-[200] leading-[1.02] tracking-[-0.05em] text-ivory sm:text-5xl"
+            className="font-display text-4xl font-[200] leading-[1.02] tracking-[-0.05em] text-cream sm:text-5xl"
             id="testimonials-heading"
           >
             {messages.heading[0]}
@@ -75,12 +75,12 @@ export function Testimonials({ locale }: { locale: Locale }) {
         <div className="mx-auto mt-14 grid max-w-5xl gap-4 md:grid-cols-3 sm:mt-16">
           {testimonials.map((testimonial) => (
             <figure
-              className="relative flex min-h-80 flex-col items-center overflow-hidden border border-ivory/10 bg-onyx/75 px-8 py-10 text-center sm:px-10"
+              className="relative flex min-h-80 flex-col items-center overflow-hidden border border-cream/10 bg-onyx/75 px-8 py-10 text-center sm:px-10"
               key={testimonial.name}
             >
               <span
                 aria-hidden="true"
-                className="absolute left-8 top-7 font-display text-6xl leading-none text-emerald sm:left-10"
+                className="absolute left-8 top-7 font-display text-6xl leading-none text-honey sm:left-10"
               >
                 “
               </span>
@@ -91,15 +91,15 @@ export function Testimonials({ locale }: { locale: Locale }) {
                 src={testimonial.avatar}
                 width={64}
               />
-              <blockquote className="mt-7 text-base leading-7 text-ivory/75" lang="en">
+              <blockquote className="mt-7 text-base leading-7 text-cream/75" lang="en">
                 {testimonial.quote}
               </blockquote>
-              <figcaption className="mt-auto pt-7 text-base font-semibold text-emerald">
+              <figcaption className="mt-auto pt-7 text-base font-semibold text-honey">
                 {testimonial.name}
               </figcaption>
               <span
                 aria-hidden="true"
-                className="absolute bottom-5 right-8 font-display text-6xl leading-none text-emerald sm:right-10"
+                className="absolute bottom-5 right-8 font-display text-6xl leading-none text-honey sm:right-10"
               >
                 ”
               </span>

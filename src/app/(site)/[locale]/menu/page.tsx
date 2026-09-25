@@ -28,7 +28,7 @@ export default async function LocalizedMenuPage({
   return (
     <>
       <main id="top">
-        <header className="border-b border-ivory/10 bg-onyx py-6">
+        <header className="border-b border-cream/10 bg-onyx py-6">
           <div className="mundus-container flex items-center justify-between gap-4">
             <Link
               aria-label={messages.navigation.backHome}
@@ -54,7 +54,7 @@ export default async function LocalizedMenuPage({
             messages={messages.menu}
           />
         ) : (
-          <p className="mundus-container py-24 text-center text-ivory/70">
+          <p className="mundus-container py-24 text-center text-cream/70">
             {messages.menu.empty}
           </p>
         )}
