@@ -2,9 +2,13 @@ import Image from "next/image";
 import { business } from "../data/mundus-business";
 import { getMessages, type Locale } from "../i18n";
 
-export function SiteFooter({ locale }: { locale: Locale }) {
+export function SiteFooter({ locale, copy }: {
+  locale: Locale;
+  copy?: { footer: ReturnType<typeof getMessages>["footer"]; backToTop: string };
+}) {
   const currentYear = new Date().getFullYear();
-  const { footer: messages, navigation } = getMessages(locale);
+  const siteMessages = getMessages(locale);
+  const messages = copy?.footer ?? siteMessages.footer;
 
   return (
     <footer className="border-t border-cream/10 bg-black py-14 sm:py-16" id="contact">
@@ -91,7 +95,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             </a>
           </p>
           <a className="text-cream/60 no-underline transition-colors hover:text-honey" href="#top">
-            {navigation.backToTop}
+            {copy?.backToTop ?? siteMessages.navigation.backToTop}
           </a>
         </div>
       </div>

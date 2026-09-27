@@ -40,7 +40,7 @@ export const business = {
   telephoneUrl: "tel:+34931058358",
 } as const;
 
-export function getLocalBusinessSchema(description: string, locale: "es" | "en") {
+export function getLocalBusinessSchema(description: string, locale: string) {
   return {
     "@context": "https://schema.org",
     "@type": "BarOrPub",

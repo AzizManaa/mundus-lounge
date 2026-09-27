@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { getMessages, type Locale } from "../i18n";
+import { locales, type Locale } from "../i18n";
 import { business, siteUrl } from "../data/mundus-business";
+import { getMenuMessages, homeLocaleFor, menuLocales, type MenuLocale } from "../i18n/menu";
 
 const siteDescriptions: Record<Locale, string> = {
   es: "Un lounge relajado en Barcelona para disfrutar de shisha personalizada, cócteles, café, té y comida informal cerca de la Sagrada Família.",
@@ -8,8 +9,20 @@ const siteDescriptions: Record<Locale, string> = {
 };
 
 export function getPageMetadata(locale: Locale, page: "home" | "menu"): Metadata {
-  const messages = getMessages(locale);
-  const description = page === "home" ? siteDescriptions[locale] : messages.menu.description;
+  return localizedMetadata(locale, page);
+}
+
+export function getMenuMetadata(locale: MenuLocale): Metadata {
+  return localizedMetadata(locale, "menu");
+}
+
+const openGraphLocales: Record<MenuLocale, string> = {
+  es: "es_ES", en: "en_GB", ca: "ca_ES", fr: "fr_FR", ru: "ru_RU",
+};
+
+function localizedMetadata(locale: MenuLocale, page: "home" | "menu"): Metadata {
+  const messages = getMenuMessages(locale);
+  const description = page === "home" ? siteDescriptions[homeLocaleFor(locale)] : messages.menu.description;
   const pageTitle =
     page === "home"
       ? locale === "es"
@@ -18,10 +31,8 @@ export function getPageMetadata(locale: Locale, page: "home" | "menu"): Metadata
       : messages.menu.title;
   const title = `${pageTitle} | Mundus Lounge`;
   const path = page === "home" ? `/${locale}` : `/${locale}/menu`;
-  const alternatePaths = {
-    en: "/en" + (page === "menu" ? "/menu" : ""),
-    es: "/es" + (page === "menu" ? "/menu" : ""),
-  };
+  const pageLocales = page === "menu" ? menuLocales : locales;
+  const alternatePaths = Object.fromEntries(pageLocales.map((language) => [language, `/${language}${page === "menu" ? "/menu" : ""}`]));
 
   return {
     ...(siteUrl
@@ -34,9 +45,9 @@ export function getPageMetadata(locale: Locale, page: "home" | "menu"): Metadata
       : {}),
     description,
     openGraph: {
-      alternateLocale: locale === "es" ? ["en_ES"] : ["es_ES"],
+      alternateLocale: pageLocales.filter((language) => language !== locale).map((language) => openGraphLocales[language]),
       description,
-      locale: locale === "es" ? "es_ES" : "en_ES",
+      locale: openGraphLocales[locale],
       ...(siteUrl
         ? {
             images: [{
@@ -60,8 +71,4 @@ export function getPageMetadata(locale: Locale, page: "home" | "menu"): Metadata
       title,
     },
   };
-}
-
-export function getLocalizedBusinessDescription(locale: Locale) {
-  return siteDescriptions[locale];
 }

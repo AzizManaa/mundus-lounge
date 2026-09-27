@@ -1,4 +1,4 @@
-import type { Locale } from "../i18n";
+import type { MenuLocale } from "../i18n/menu";
 import menu from "./mundus-menu.json";
 
 export type MenuItem = {
@@ -18,6 +18,7 @@ export type MenuSubcategory = {
 
 export type MenuCategory = {
   name: string;
+  displayName?: string;
   items?: MenuItem[];
   subcategories?: MenuSubcategory[];
 };
@@ -33,6 +34,7 @@ type CategoryBuilder = {
   groups: Map<string, MenuSubcategory>;
   items: MenuItem[];
   name: string;
+  displayName?: string;
 };
 
 const fallbackMenu: MenuData = {
@@ -123,7 +125,9 @@ function getSheetRows(csv: string): MenuSheetRow[] | null {
 
   return rows
     .filter((row) =>
-      row.some((cell, index) => normalizedHeaders[index] !== "visible" && cell.trim()),
+      row.some((cell, index) =>
+        ["category", "subcategory", "item", "description", "price", "bottle_price", "shot_price", "modifier"].includes(normalizedHeaders[index]) && cell.trim(),
+      ),
     )
     .map((row) =>
       Object.fromEntries(
@@ -145,6 +149,7 @@ function menuFromSheetRows(rows: MenuSheetRow[]): MenuData {
         groups: new Map<string, MenuSubcategory>(),
         items: [],
         name: row.category,
+        ...(row.category_label ? { displayName: row.category_label } : {}),
       };
     const price = parsePrice(row.price);
     const bottlePrice = parsePrice(row.bottle_price);
@@ -186,14 +191,15 @@ function menuFromSheetRows(rows: MenuSheetRow[]): MenuData {
       if (subcategories.length > 0) {
         return {
           name: category.name,
+          displayName: category.displayName,
           subcategories: category.items.length > 0
-            ? [{ name: category.name, items: category.items }, ...subcategories]
+            ? [{ name: category.displayName ?? category.name, items: category.items }, ...subcategories]
             : subcategories,
         };
       }
 
       return category.items.length > 0
-        ? { items: category.items, name: category.name }
+        ? { items: category.items, name: category.name, displayName: category.displayName }
         : null;
     })
     .filter((category): category is MenuCategory => category !== null);
@@ -208,12 +214,12 @@ function translatedText(value: string | undefined, fallback: string | undefined)
     : (fallback ?? "");
 }
 
-function mergeEnglishRows(spanishRows: MenuSheetRow[], englishRows: MenuSheetRow[]) {
+function mergeTranslatedRows(spanishRows: MenuSheetRow[], translatedRows: MenuSheetRow[]) {
   const sharedFields = ["price", "bottle_price", "shot_price", "visible"];
   const rowsMatch =
-    spanishRows.length === englishRows.length &&
+    spanishRows.length === translatedRows.length &&
     spanishRows.every((spanish, index) =>
-      sharedFields.every((field) => spanish[field] === englishRows[index][field]),
+      sharedFields.every((field) => spanish[field] === translatedRows[index][field]),
     );
 
   if (!rowsMatch) {
@@ -221,15 +227,15 @@ function mergeEnglishRows(spanishRows: MenuSheetRow[], englishRows: MenuSheetRow
   }
 
   return spanishRows.map((spanish, index) => {
-    const english = englishRows[index];
+    const translated = translatedRows[index];
 
     return {
       ...spanish,
-      category: translatedText(english.category, spanish.category),
-      subcategory: translatedText(english.subcategory, spanish.subcategory),
-      item: translatedText(english.item, spanish.item),
-      description: translatedText(english.description, spanish.description),
-      modifier: translatedText(english.modifier, spanish.modifier),
+      category_label: translatedText(translated.category, spanish.category),
+      subcategory: translatedText(translated.subcategory, spanish.subcategory),
+      item: translatedText(translated.item, spanish.item),
+      description: translatedText(translated.description, spanish.description),
+      modifier: translatedText(translated.modifier, spanish.modifier),
     };
   });
 }
@@ -247,24 +253,23 @@ async function fetchSheetRows(url: string | undefined): Promise<MenuSheetRow[] |
   }
 }
 
-export async function getMenu(locale: Locale): Promise<MenuData> {
-  const spanishUrl = process.env.MENU_SHEET_CSV_URL_ES;
-  const englishUrl = process.env.MENU_SHEET_CSV_URL_EN;
-  const [spanishRows, englishRows] = await Promise.all([
-    fetchSheetRows(spanishUrl),
-    locale === "en" ? fetchSheetRows(englishUrl) : Promise.resolve(null),
+export async function getMenu(locale: MenuLocale): Promise<MenuData> {
+  const urls: Record<MenuLocale, string | undefined> = {
+    es: process.env.MENU_SHEET_CSV_URL_ES,
+    en: process.env.MENU_SHEET_CSV_URL_EN,
+    ca: process.env.MENU_SHEET_CSV_URL_CA,
+    fr: process.env.MENU_SHEET_CSV_URL_FR,
+    ru: process.env.MENU_SHEET_CSV_URL_RU,
+  };
+  const [spanishRows, translatedRows] = await Promise.all([
+    fetchSheetRows(urls.es),
+    locale !== "es" ? fetchSheetRows(urls[locale]) : Promise.resolve(null),
   ]);
-  const spanishMenu = spanishRows !== null ? menuFromSheetRows(spanishRows) : null;
-
-  if (locale === "es") {
-    return spanishMenu ?? fallbackMenu;
+  // Spanish owns category identity, prices and visibility, even if a translation feed is stale.
+  if (spanishRows !== null) {
+    return menuFromSheetRows(translatedRows !== null
+      ? mergeTranslatedRows(spanishRows, translatedRows)
+      : spanishRows);
   }
-
-  const englishMenu = englishRows !== null
-    ? menuFromSheetRows(
-        spanishRows !== null ? mergeEnglishRows(spanishRows, englishRows) : englishRows,
-      )
-    : null;
-
-  return englishMenu ?? spanishMenu ?? fallbackMenu;
+  return fallbackMenu;
 }

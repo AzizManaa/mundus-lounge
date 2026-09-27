@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { ReviewShortcut } from "../../../components/review-shortcut";
 import { business, getLocalBusinessSchema, siteUrl } from "../../../data/mundus-business";
-import { isLocale, locales } from "../../../i18n";
+import { getMenuMessages, isMenuLocale, menuLocales } from "../../../i18n/menu";
 import { bricolage, italianno } from "../../../lib/fonts";
-import { getLocalizedBusinessDescription } from "../../../lib/metadata";
 import "../../globals.css";
 
 export const metadata: Metadata = {
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export async function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
+  return menuLocales.map((locale) => ({ locale }));
 }
 
 export default async function LocaleLayout({
@@ -27,9 +26,9 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const requestedLocale = (await params).locale;
-  const locale = isLocale(requestedLocale) ? requestedLocale : null;
+  const locale = isMenuLocale(requestedLocale) ? requestedLocale : null;
   const schema = locale
-    ? getLocalBusinessSchema(getLocalizedBusinessDescription(locale), locale)
+    ? getLocalBusinessSchema(getMenuMessages(locale).footer.summary, locale)
     : null;
 
   return (

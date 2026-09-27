@@ -1,19 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MenuBrowser } from "../../../../components/menu-browser";
-import { LocaleSwitcher } from "../../../../components/locale-switcher";
+import { MenuLanguageSwitcher } from "../../../../components/menu-language-switcher";
 import { SiteFooter } from "../../../../components/site-footer";
 import { getMenu } from "../../../../data/mundus-menu";
-import { getMessages } from "../../../../i18n";
-import { requireLocale } from "../../../../lib/locale";
-import { getPageMetadata } from "../../../../lib/metadata";
+import { getMenuMessages, homeLocaleFor } from "../../../../i18n/menu";
+import { requireMenuLocale } from "../../../../lib/locale";
+import { getMenuMetadata } from "../../../../lib/metadata";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  return getPageMetadata(requireLocale((await params).locale), "menu");
+  return getMenuMetadata(requireMenuLocale((await params).locale));
 }
 
 export default async function LocalizedMenuPage({
@@ -21,9 +21,10 @@ export default async function LocalizedMenuPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const locale = requireLocale((await params).locale);
+  const locale = requireMenuLocale((await params).locale);
   const menu = await getMenu(locale);
-  const messages = getMessages(locale);
+  const messages = getMenuMessages(locale);
+  const homeLocale = homeLocaleFor(locale);
 
   return (
     <>
@@ -31,16 +32,16 @@ export default async function LocalizedMenuPage({
         <header className="border-b border-cream/10 bg-onyx py-6">
           <div className="mundus-container flex items-center justify-between gap-4">
             <Link
-              aria-label={messages.navigation.backHome}
+              aria-label={messages.backHome}
               className="inline-flex size-11 items-center justify-center"
-              href={`/${locale}`}
+              href={`/${homeLocale}`}
             >
               <Image alt="" className="size-9" height={36} src="/brand/mundus-mark.svg" unoptimized width={36} />
             </Link>
             <div className="flex items-center gap-4 sm:gap-6">
-              <LocaleSwitcher label={messages.navigation.language} locale={locale} path="/menu" />
-              <Link className="mundus-button mundus-button--outline" href={`/${locale}`}>
-                {messages.navigation.backHome}
+              <MenuLanguageSwitcher label={messages.language} locale={locale} />
+              <Link className="mundus-button mundus-button--outline" href={`/${homeLocale}`}>
+                {messages.backHome}
               </Link>
             </div>
           </div>
@@ -59,7 +60,7 @@ export default async function LocalizedMenuPage({
           </p>
         )}
       </main>
-      <SiteFooter locale={locale} />
+      <SiteFooter locale={homeLocale} copy={messages} />
     </>
   );
 }

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import type { Locale, MenuMessages } from "../i18n";
+import type { MenuMessages } from "../i18n";
+import type { MenuLocale } from "../i18n/menu";
 import type { MenuCategory, MenuItem, MenuSubcategory } from "../data/mundus-menu";
 import shishaImage from "../../public/images/mundus-menu-shisha.webp";
 import drinksImage from "../../public/images/mundus-moment-cocktail.webp";
@@ -49,13 +50,13 @@ function chapterForCategory(name: string): ChapterId | null {
 function formatPrice(
   price: number | null | undefined,
   currency: string,
-  locale: Locale,
+  locale: MenuLocale,
 ) {
   if (price == null) {
     return null;
   }
 
-  return new Intl.NumberFormat(locale === "es" ? "es-ES" : "en-ES", {
+  return new Intl.NumberFormat(locale, {
     currency,
     maximumFractionDigits: 2,
     minimumFractionDigits: 0,
@@ -71,7 +72,7 @@ function MenuItemRow({
 }: {
   item: MenuItem;
   currency: string;
-  locale: Locale;
+  locale: MenuLocale;
   priceLabels: { bottle: string; shot: string };
 }) {
   return (
@@ -113,7 +114,7 @@ function MenuGroup({
 }: {
   category: MenuSubcategory;
   currency: string;
-  locale: Locale;
+  locale: MenuLocale;
   priceLabels: { bottle: string; shot: string };
 }) {
   return (
@@ -148,7 +149,7 @@ function MobileMenuGroup({
   category: MenuSubcategory;
   currency: string;
   defaultOpen: boolean;
-  locale: Locale;
+  locale: MenuLocale;
   priceLabels: { bottle: string; shot: string };
 }) {
   return (
@@ -194,7 +195,7 @@ export function MenuBrowser({
 }: {
   categories: MenuCategory[];
   currency: string;
-  locale: Locale;
+  locale: MenuLocale;
   messages: MenuMessages;
 }) {
   const categoryLabels = messages.categoryLabels;
@@ -210,7 +211,7 @@ export function MenuBrowser({
   const activeChapter = chapterForCategory(activeCategory.name);
   const panelImage = chapters.find((chapter) => chapter.id === activeChapter)?.image;
   const singleGroup = activeCategory.items
-    ? { items: activeCategory.items, name: activeCategory.name }
+    ? { items: activeCategory.items, name: categoryLabels[activeCategory.name] ?? activeCategory.displayName ?? activeCategory.name }
     : null;
   const groups = activeCategory.subcategories ?? (singleGroup ? [singleGroup] : []);
   const chapterCategories = chapters
@@ -227,7 +228,7 @@ export function MenuBrowser({
       const requestedCategory = params.get("category");
       const requestedChapter = params.get("chapter");
       const category =
-        categories.find((entry) => entry.name === requestedCategory) ??
+        categories.find((entry) => entry.name === requestedCategory || entry.displayName === requestedCategory) ??
         categories.find((entry) => chapterForCategory(entry.name) === requestedChapter);
       setActiveCategoryName(category?.name ?? initialCategory.name);
       setLinkFeedback("");
@@ -284,7 +285,7 @@ export function MenuBrowser({
         }}
         type="button"
       >
-        <span>{categoryLabels[category.name] ?? category.name}</span>
+        <span>{categoryLabels[category.name] ?? category.displayName ?? category.name}</span>
         <span aria-hidden="true" className="night-atlas__sheet-category-mark">
           {activeCategory.name === category.name ? "●" : "↗"}
         </span>
@@ -317,7 +318,7 @@ export function MenuBrowser({
               <span><span aria-hidden="true">✳</span> {messages.browseCategories}</span>
             </span>
             <span className="night-atlas__mobile-trigger-bottom">
-              <span>{categoryLabels[activeCategory.name] ?? activeCategory.name}</span>
+              <span>{categoryLabels[activeCategory.name] ?? activeCategory.displayName ?? activeCategory.name}</span>
               <span aria-hidden="true">⌄</span>
             </span>
           </button>
@@ -402,7 +403,7 @@ export function MenuBrowser({
                 onClick={() => selectCategory(category.name, true)}
                 type="button"
               >
-                <span>{categoryLabels[category.name] ?? category.name}</span>
+                <span>{categoryLabels[category.name] ?? category.displayName ?? category.name}</span>
                 <span aria-hidden="true" className="night-atlas__category-arrow">↗</span>
               </button>
             ))}
@@ -449,7 +450,7 @@ export function MenuBrowser({
               </button>
             </div>
             <h2 className="font-display text-4xl font-[200] tracking-[-0.045em] text-cream sm:text-6xl" id="menu-panel-heading" ref={panelHeadingRef} tabIndex={-1}>
-              {categoryLabels[activeCategory.name] ?? activeCategory.name}
+              {categoryLabels[activeCategory.name] ?? activeCategory.displayName ?? activeCategory.name}
             </h2>
           </header>
 

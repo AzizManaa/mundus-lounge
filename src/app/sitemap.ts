@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "../data/mundus-business";
 import { locales } from "../i18n";
+import { menuLocales } from "../i18n/menu";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = siteUrl;
@@ -10,11 +11,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   return ["", "/menu"].flatMap((path) => {
+    const pageLocales = path === "/menu" ? menuLocales : locales;
     const languages = Object.fromEntries(
-      locales.map((locale) => [locale, `${baseUrl}/${locale}${path}`]),
+      pageLocales.map((locale) => [locale, `${baseUrl}/${locale}${path}`]),
     );
 
-    return locales.map((locale) => ({
+    return pageLocales.map((locale) => ({
       alternates: { languages },
       url: `${baseUrl}/${locale}${path}`,
     }));
