@@ -168,7 +168,7 @@ const messages: Record<Locale, Messages> = {
       indexHeading: "Ve directo a tu favorito",
       otherCategories: "Otras categorías",
       recommendation: {
-        body: "Pregunta al equipo de Mundus por una recomendación de shisha.",
+        body: "Con más de 200 sabores de shisha para elegir, pregunta al equipo de Mundus y te ayudaremos a encontrar tu mezcla ideal.",
         title: "¿No sabes por dónde empezar?",
       },
       shot: "CHUPITO",
@@ -322,7 +322,7 @@ const messages: Record<Locale, Messages> = {
       indexHeading: "Go straight to your favourite",
       otherCategories: "Other categories",
       recommendation: {
-        body: "Ask the Mundus team for a shisha recommendation.",
+        body: "With over 200 shisha flavours to choose from, ask the Mundus team to help you find your ideal mix.",
         title: "Not sure where to start?",
       },
       shot: "SHOT",

@@ -3,7 +3,7 @@
 ## Working agreement
 
 - Work on one unchecked milestone at a time.
-- Verify desktop and mobile behavior, build, lint, and typecheck before review.
+- The user performs manual desktop/mobile verification. Run build, lint, and typecheck only when requested.
 - Mark a milestone complete only after user approval.
 - Treat the supplied mockup as the component and layout reference; use real assets and verified business context only.
 

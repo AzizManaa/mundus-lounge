@@ -184,7 +184,12 @@ function menuFromSheetRows(rows: MenuSheetRow[]): MenuData {
       );
 
       if (subcategories.length > 0) {
-        return { name: category.name, subcategories };
+        return {
+          name: category.name,
+          subcategories: category.items.length > 0
+            ? [{ name: category.name, items: category.items }, ...subcategories]
+            : subcategories,
+        };
       }
 
       return category.items.length > 0

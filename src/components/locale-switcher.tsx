@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Locale } from "../i18n";
+import { locales, type Locale } from "../i18n";
 
 export function LocaleSwitcher({
   label,
@@ -12,7 +12,7 @@ export function LocaleSwitcher({
 }) {
   return (
     <nav aria-label={label} className="flex items-center gap-2 text-xs font-bold tracking-[0.12em]">
-      {(["es", "en"] as const).map((candidate) => {
+      {locales.map((candidate) => {
         const active = locale === candidate;
 
         return (

@@ -232,51 +232,6 @@ a:focus-visible {
   position: relative;
 }
 
-.mundus-menu-reveal {
-  isolation: isolate;
-}
-
-.mundus-menu-reveal__lit {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1.25s ease-out;
-}
-
-.mundus-menu-reveal--drinks .mundus-menu-reveal__lit {
-  -webkit-mask-image: radial-gradient(ellipse 32% 38% at 47% 64%, #000 55%, transparent 100%);
-  mask-image: radial-gradient(ellipse 32% 38% at 47% 64%, #000 55%, transparent 100%);
-}
-
-.mundus-menu-reveal--shisha .mundus-menu-reveal__lit {
-  -webkit-mask-image: radial-gradient(ellipse 28% 22% at 50% 17%, #000 55%, transparent 100%);
-  mask-image: radial-gradient(ellipse 28% 22% at 50% 17%, #000 55%, transparent 100%);
-}
-
-.mundus-menu-reveal__glow {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1.5s ease-out;
-}
-
-.mundus-menu-reveal--drinks .mundus-menu-reveal__glow {
-  background: radial-gradient(ellipse 23% 28% at 47% 64%, rgba(228, 173, 85, 0.16), transparent 100%);
-}
-
-.mundus-menu-reveal--shisha .mundus-menu-reveal__glow {
-  background: radial-gradient(ellipse 22% 14% at 50% 17%, rgba(228, 173, 85, 0.25), transparent 100%);
-}
-
-.mundus-menu-reveal[data-lit="true"] .mundus-menu-reveal__lit,
-.mundus-menu-reveal[data-lit="true"] .mundus-menu-reveal__glow {
-  opacity: 1;
-}
-
-.mundus-menu-reveal[data-lit="true"] .mundus-menu-reveal__glow {
-  animation: ember-breathe 6s ease-in-out 1.5s infinite;
-}
-
 .mundus-menu-card__details {
   background: var(--color-espresso);
   border: 1px solid var(--border-subtle);
@@ -585,9 +540,36 @@ a:focus-visible {
 }
 
 .night-atlas__panel {
-  background: linear-gradient(140deg, #302115, #211913 58%, #130e0a);
+  background: #130e0a;
   border-top: 2px solid var(--color-gold);
+  isolation: isolate;
+  position: relative;
   scroll-margin-top: 6.5rem;
+}
+
+.night-atlas__panel-visual {
+  height: 26rem;
+  inset: 0 0 auto;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.night-atlas__panel-image {
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+.night-atlas__panel[data-chapter="ritual"] .night-atlas__panel-image {
+  object-position: center 22%;
+}
+
+.night-atlas__panel-visual::after {
+  background: linear-gradient(180deg, rgba(19, 14, 10, 0.12) 0%, rgba(19, 14, 10, 0.16) 50%, rgba(19, 14, 10, 0.45) 80%, #130e0a 100%);
+  content: "";
+  inset: 0;
+  position: absolute;
 }
 
 .night-atlas__panel-heading {
@@ -597,6 +579,7 @@ a:focus-visible {
   gap: 0.6rem 1.5rem;
   grid-template-columns: minmax(0, 1fr) auto;
   padding-bottom: 1.5rem;
+  min-height: 10rem;
 }
 
 .night-atlas__panel-heading h2 {
@@ -749,14 +732,12 @@ a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mundus-ember-scene__lit,
-  .mundus-menu-reveal__lit {
+  .mundus-ember-scene__lit {
     opacity: 1;
     transition: none;
   }
 
-  .mundus-ember-scene__glow,
-  .mundus-menu-reveal__glow {
+  .mundus-ember-scene__glow {
     display: none;
     animation: none;
   }

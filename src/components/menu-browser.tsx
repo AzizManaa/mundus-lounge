@@ -130,8 +130,8 @@ function MenuGroup({
         </p>
       )}
       <ul className="mt-5">
-        {category.items.map((item) => (
-          <MenuItemRow currency={currency} item={item} key={item.name} locale={locale} priceLabels={priceLabels} />
+        {category.items.map((item, index) => (
+          <MenuItemRow currency={currency} item={item} key={`${item.name}-${index}`} locale={locale} priceLabels={priceLabels} />
         ))}
       </ul>
     </article>
@@ -157,11 +157,9 @@ function MobileMenuGroup({
       open={defaultOpen}
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 marker:content-none">
-        <div>
-          <h3 className="font-display text-2xl font-medium tracking-[-0.03em] text-cream">
-            {category.name}
-          </h3>
-        </div>
+        <h3 className="font-display text-2xl font-medium tracking-[-0.03em] text-cream">
+          {category.name}
+        </h3>
         <span
           aria-hidden="true"
           className="text-2xl leading-none text-honey transition-transform duration-200 group-open:rotate-45"
@@ -179,8 +177,8 @@ function MobileMenuGroup({
           </p>
         )}
         <ul className="mt-5">
-          {category.items.map((item) => (
-            <MenuItemRow currency={currency} item={item} key={item.name} locale={locale} priceLabels={priceLabels} />
+          {category.items.map((item, index) => (
+            <MenuItemRow currency={currency} item={item} key={`${item.name}-${index}`} locale={locale} priceLabels={priceLabels} />
           ))}
         </ul>
       </div>
@@ -210,6 +208,7 @@ export function MenuBrowser({
   const activeCategory =
     categories.find((category) => category.name === activeCategoryName) ?? categories[0];
   const activeChapter = chapterForCategory(activeCategory.name);
+  const panelImage = chapters.find((chapter) => chapter.id === activeChapter)?.image;
   const singleGroup = activeCategory.items
     ? { items: activeCategory.items, name: activeCategory.name }
     : null;
@@ -416,7 +415,20 @@ export function MenuBrowser({
           id="menu-panel"
           ref={panelRef}
           role="region"
+          data-chapter={activeChapter ?? undefined}
         >
+          {panelImage && (
+            <div aria-hidden="true" className="night-atlas__panel-visual">
+              <Image
+                alt=""
+                className="night-atlas__panel-image"
+                fill
+                placeholder="blur"
+                sizes="(min-width: 1280px) 1152px, 100vw"
+                src={panelImage}
+              />
+            </div>
+          )}
           <header className="night-atlas__panel-heading">
             <span className="night-atlas__panel-kicker">{activeChapter ? messages.chapters[activeChapter].title : messages.categoryList}</span>
             <div className="flex items-center gap-2">
