@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { signIn, signOut } from "next-auth/react";
 import type { SheetProduct } from "../../../lib/menu-sheet-admin";
@@ -92,6 +93,7 @@ export default function MenuEditor({ initialProducts, email, initialError = "" }
 
     </div></header>
     <main className="admin-main">
+      <nav aria-label="Gestión"><Link className="admin-text-button" href="/admin/loyalty" prefetch={false}>Tarjetas VIP →</Link></nav>
       <p className="admin-footnote">Sesión: {email}</p>
       {sessionExpired && <div className="admin-feedback is-error" role="alert"><p>Tu sesión ha caducado. Copia tus cambios antes de volver a entrar.</p><button type="button" className="admin-text-button" onClick={() => void signIn("google", { callbackUrl: "/admin" })}>Volver a iniciar sesión</button></div>}
       {(error || notice) && <div className={`admin-feedback ${error ? "is-error" : ""}`} role={error ? "alert" : "status"}><strong>{error ? "No se pudo completar" : "Guardado"}</strong><p>{error || notice}</p></div>}

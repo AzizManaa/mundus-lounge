@@ -7,9 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:loyalty": "npx --yes firebase-tools@15.35.0 emulators:exec --only firestore --project demo-mundus-loyalty \"LOYALTY_FIREBASE_PROJECT_ID=demo-mundus-loyalty tsx --test tests/loyalty.test.ts\""
   },
   "dependencies": {
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
+    "firebase-admin": "^14.5.0",
     "next": "16.4.5",
     "next-auth": "4.24.15",
     "react": "19.2.8",
@@ -23,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.5",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }
