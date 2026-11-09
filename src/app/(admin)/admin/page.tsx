@@ -1,0 +1,17 @@
+import { adminAuthConfigured, getAdminSession } from "../../../lib/admin-auth";
+import { listProducts, type SheetProduct } from "../../../lib/menu-sheet-admin";
+import AdminLogin from "./login";
+import MenuEditor from "./menu-editor";
+
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const session = await getAdminSession();
+  if (!session) {
+    const { error } = await searchParams;
+    return <AdminLogin configured={adminAuthConfigured()} error={error} />;
+  }
+  let products: SheetProduct[] = [];
+  let error = "";
+  try { products = await listProducts(); }
+  catch { error = "No se pudo cargar la carta. Pulsa Actualizar para volver a intentarlo."; }
+  return <MenuEditor initialProducts={products} email={session.user!.email!} initialError={error} />;
+}
