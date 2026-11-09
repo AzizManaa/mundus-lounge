@@ -13,5 +13,5 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   let error = "";
   try { products = await listProducts(); }
   catch { error = "No se pudo cargar la carta. Pulsa Actualizar para volver a intentarlo."; }
-  return <MenuEditor initialProducts={products} email={session.user!.email!} initialError={error} />;
+  return <MenuEditor initialProducts={products} email={session.user!.email!} initialError={error} showLoyaltyLink={process.env.VERCEL_ENV !== "production"} />;
 }
