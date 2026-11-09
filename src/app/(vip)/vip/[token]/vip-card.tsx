@@ -11,12 +11,10 @@ import Qr from "../../../../components/loyalty/qr";
 import { TARGET, type PublicCard } from "../../../../lib/loyalty/types";
 export default function VipCard({
   token,
-  staff,
   initialCard,
   initialError,
 }: {
   token: string;
-  staff: boolean;
   initialCard: PublicCard | null;
   initialError: string;
 }) {
@@ -147,20 +145,7 @@ export default function VipCard({
           uno nuevo al personal.
         </p>
       </section>
-      {staff && /^[A-Za-z0-9_-]{43}$/.test(token) && (
-        <a
-          className="loyalty-staff-link"
-          href={`/admin/loyalty?token=${token}`}
-        >
-          Abrir en gestión →
-        </a>
-      )}
-      {!staff && /^[A-Za-z0-9_-]{43}$/.test(token) && (
-        <details className="loyalty-terms">
-          <summary>Acceso para el personal</summary>
-          <a href={`/admin/loyalty?token=${token}`}>Entrar con Google</a>
-        </details>
-      )}
+
     </main>
   );
 }

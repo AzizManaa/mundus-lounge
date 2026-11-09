@@ -154,11 +154,7 @@
   color: var(--gold);
   padding: 12px 0;
 }
-.loyalty-staff-link {
-  display: block;
-  text-align: center;
-  padding: 15px;
-}
+
 .loyalty-error,
 .loyalty-notice {
   border: 1px solid #a05c47;
