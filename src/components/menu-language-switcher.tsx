@@ -1,12 +1,21 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { menuLanguageNames, menuLocales, type MenuLocale } from "../i18n/menu";
 
 export function MenuLanguageSwitcher({ locale, label }: { locale: MenuLocale; label: string }) {
-  const router = useRouter();
   const picker = useRef<HTMLDetailsElement>(null);
+
+  useEffect(() => {
+    function closeOnOutsidePointer(event: PointerEvent) {
+      if (event.target instanceof Node && !picker.current?.contains(event.target)) {
+        if (picker.current) picker.current.open = false;
+      }
+    }
+
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    return () => document.removeEventListener("pointerdown", closeOnOutsidePointer);
+  }, []);
 
   function closePicker() {
     if (picker.current) picker.current.open = false;
@@ -16,9 +25,6 @@ export function MenuLanguageSwitcher({ locale, label }: { locale: MenuLocale; la
     <details
       ref={picker}
       className="group relative shrink-0"
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) closePicker();
-      }}
       onKeyDown={(event) => {
         if (event.key === "Escape") {
           closePicker();
@@ -42,21 +48,19 @@ export function MenuLanguageSwitcher({ locale, label }: { locale: MenuLocale; la
       </summary>
       <div className="absolute right-0 top-full z-50 mt-2 w-48 border border-gold/40 bg-onyx p-1.5 shadow-xl shadow-black/40">
         {menuLocales.map((language) => (
-          <button
+          <a
             key={language}
-            type="button"
+            href={`/${language}/menu`}
             lang={language}
             aria-current={language === locale ? "true" : undefined}
             className={`flex min-h-11 w-full items-center justify-between gap-3 px-3 text-left text-sm transition-colors hover:bg-gold/10 focus-visible:outline-2 focus-visible:outline-honey ${language === locale ? "bg-gold/10 text-gold" : "text-cream"}`}
-            onClick={() => {
-              closePicker();
-              picker.current?.querySelector("summary")?.focus();
-              if (language !== locale) router.push(`/${language}/menu${window.location.search}`);
+            onClick={(event) => {
+              event.currentTarget.search = window.location.search;
             }}
           >
             {menuLanguageNames[language]}
             {language === locale ? <span aria-hidden="true">✓</span> : <span aria-hidden="true" className="text-xs uppercase text-cream/45">{language}</span>}
-          </button>
+          </a>
         ))}
       </div>
     </details>
