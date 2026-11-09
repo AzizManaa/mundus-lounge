@@ -119,6 +119,7 @@ export default function LoyaltyEditor({
       "",
       `/admin/loyalty?card=${data.card.id}`,
     );
+    return data.card as Card;
   }, []);
   const list = useCallback(async (query = "", cursor = "") => {
     const data = await call({ action: "list", search: query, cursor });
@@ -127,7 +128,7 @@ export default function LoyaltyEditor({
     setTruncated(data.truncated);
   }, []);
   const perform = useCallback(
-    async (fn: () => Promise<void>) => {
+    async (fn: () => Promise<unknown>) => {
       if (inFlight.current) return;
       inFlight.current = true;
       setBusy(true);
@@ -144,37 +145,40 @@ export default function LoyaltyEditor({
     },
     [report],
   );
-  async function send(command: Command) {
-    setPending(command);
-    let result;
-    try {
-      result = await call(command);
-    } catch (e) {
-      if (e instanceof ApiError && e.status < 500 && e.status !== 401) {
-        setPending(null);
-        if (command.id) {
-          try {
-            await detail(command.id);
-          } catch {
-            /* Keep original action error. */
+  const send = useCallback(
+    async (command: Command) => {
+      setPending(command);
+      let result;
+      try {
+        result = await call(command);
+      } catch (e) {
+        if (e instanceof ApiError && e.status < 500 && e.status !== 401) {
+          setPending(null);
+          if (command.id) {
+            try {
+              await detail(command.id);
+            } catch {
+              /* Keep original action error. */
+            }
           }
         }
+        throw e;
       }
-      throw e;
-    }
-    setPending(null);
-    setCreating(false);
-    if (command.token)
-      setIssued(window.location.origin + "/vip/" + command.token);
-    setNotice(labels[command.action]);
-    try {
-      await detail(result.id);
-    } catch {
-      setError(
-        "Operación confirmada. No se pudo cargar el saldo actualizado. Pulsa Actualizar.",
-      );
-    }
-  }
+      setPending(null);
+      setCreating(false);
+      if (command.token)
+        setIssued(window.location.origin + "/vip/" + command.token);
+      setNotice(labels[command.action]);
+      try {
+        await detail(result.id);
+      } catch {
+        setError(
+          "Operación confirmada. No se pudo cargar el saldo actualizado. Pulsa Actualizar.",
+        );
+      }
+    },
+    [detail],
+  );
   function mutate(action: Command["action"]) {
     if (!selected || pending || busy) return;
     const messages: Partial<Record<Command["action"], string>> = {
@@ -202,10 +206,22 @@ export default function LoyaltyEditor({
   const onScan = useCallback(
     (token: string) => {
       setScanning(false);
+      if (busy || pending) {
+        setError("Termina la operación pendiente antes de escanear otra tarjeta.");
+        return;
+      }
       setIssued("");
-      void perform(() => detail(undefined, token));
+      void perform(async () => {
+        const card = await detail(undefined, token);
+        await send({
+          action: "stamp",
+          operationId: crypto.randomUUID(),
+          id: card.id,
+          revision: card.revision,
+        });
+      });
     },
-    [perform, detail],
+    [busy, pending, perform, detail, send],
   );
   async function share() {
     try {
@@ -329,7 +345,7 @@ export default function LoyaltyEditor({
               + Nueva tarjeta VIP
             </button>
             <button disabled={locked} onClick={() => setScanning(true)}>
-              Escanear QR
+              Escanear y añadir sello
             </button>
           </div>
           {scanning && (

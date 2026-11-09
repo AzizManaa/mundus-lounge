@@ -1,6 +1,6 @@
 # Mundus VIP loyalty
 
-Spanish web cards; staff confirms one stamp per paid order. Seven stamps unlock one drink chosen by staff. Redeeming resets to zero. No expiry, customer login, till integration, messages or native Wallet integration.
+Spanish web cards; staff awards one stamp per paid order using the scanner or manual confirmation. Seven stamps unlock one drink chosen by staff. Redeeming resets to zero. No expiry, customer login, till integration, messages or native Wallet integration.
 
 ## Local development and tests
 
@@ -41,7 +41,7 @@ Spark quotas can interrupt service; billing must remain unlinked. Paid backups, 
 
 `/admin/loyalty` creates, finds and edits cards. `/vip/[token]` shows only the first name, balance and target. Staff API uses POST `/api/admin/loyalty` with `action`: list, detail, create, update, stamp, redeem, undo or replace. Public POST `/api/loyalty/card` takes the token in its JSON body. Mutation bodies include an operation UUID and expected card revision; create/replace also include a cryptographically random 256-bit token from the browser. Only SHA-256 token hashes are stored on the server.
 
-Operations are transactional and idempotent. Successful retry receipts are checked before revision checks; different payloads cannot reuse an operation ID. Unknown outcomes stay in tab-local session storage and require explicit retry. No offline queue or automatic stamping. A stale action requires refresh and a fresh confirmation.
+Operations are transactional and idempotent. Successful retry receipts are checked before revision checks; different payloads cannot reuse an operation ID. Unknown outcomes stay in tab-local session storage and require explicit retry. No offline queue. The authenticated staff scanner automatically submits one stamp per scan session, stops the camera on the first valid QR and opens the updated card. Unknown outcomes use the same operation ID for explicit retry; stale or inactive cards and cards at seven stamps are rejected by the server. Opening a QR URL with a normal camera only opens the read-only customer page; it never writes on navigation. Manual stamping and reward redemption still require confirmation.
 
 Name search is accent-insensitive prefix search on the full name; phone search is a digit prefix (include the country code if saved). Results are bounded to 25; refine searches with more characters. The default list uses document-ID cursor pagination. Duplicate names/phones are allowed; staff verifies identity manually.
 

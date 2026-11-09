@@ -48,10 +48,11 @@ export default function Scanner({
   }, [onScan]);
   return (
     <section className="loyalty-panel">
-      <h2>Escanear tarjeta</h2>
+      <h2>Escanear y añadir sello</h2>
       <video ref={video} autoPlay muted playsInline className="loyalty-video" />
       <p role="status">
-        {error || "Apunta al QR del cliente. Escanear no añade sellos."}
+        {error ||
+          "Escanea el QR después de un pedido pagado. Se añadirá un sello y se cerrará la cámara."}
       </p>
       <button onClick={onClose}>Cerrar cámara</button>
     </section>
