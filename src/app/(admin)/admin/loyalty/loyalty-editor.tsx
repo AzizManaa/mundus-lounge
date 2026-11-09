@@ -24,6 +24,7 @@ const labels: Record<string, string> = {
   undo: "Último sello deshecho",
   update: "Datos actualizados",
   replace: "Enlace reemplazado",
+  delete: "Tarjeta eliminada permanentemente",
 };
 function newToken() {
   return btoa(
@@ -163,6 +164,20 @@ export default function LoyaltyEditor({
         command.token ? window.location.origin + "/vip/" + command.token : "",
       );
       setNotice(labels[command.action]);
+      if (command.action === "delete") {
+        setSelected(null);
+        setActivity([]);
+        setName("");
+        setPhone("");
+        setCards((current) => current.filter((card) => card.id !== command.id));
+        window.history.replaceState(null, "", "/admin/loyalty");
+        try {
+          await list(appliedSearch);
+        } catch {
+          setError("Tarjeta eliminada. No se pudo actualizar la lista. Pulsa Actualizar.");
+        }
+        return;
+      }
       try {
         await detail(result.id);
       } catch {
@@ -171,7 +186,7 @@ export default function LoyaltyEditor({
         );
       }
     },
-    [detail],
+    [detail, list, appliedSearch],
   );
   function mutate(action: Command["action"]) {
     if (!selected || pending || busy) return;
@@ -179,6 +194,7 @@ export default function LoyaltyEditor({
       stamp: `¿Añadir un sello a ${selected.name}? Confirma que corresponde a un pedido pagado.`,
       redeem: `¿Has entregado la bebida gratis a ${selected.name}? El saldo volverá a cero.`,
       undo: "¿Deshacer el último sello?",
+      delete: `¿Eliminar permanentemente la tarjeta de ${selected.name}? Se perderán sus ${selected.balance} sellos, sus datos y todo el historial. El enlace dejará de funcionar. Esta acción no se puede deshacer.`,
       replace: "El enlace anterior dejará de funcionar. ¿Crear uno nuevo?",
     };
     if (
@@ -554,6 +570,20 @@ export default function LoyaltyEditor({
                     </small>
                   </div>
                 ))}
+              </section>
+              <section className="loyalty-panel">
+                <h2>Eliminar tarjeta</h2>
+                <p>
+                  Borra los datos, los sellos y el historial de este cliente.
+                  Para una pausa temporal, desactiva la tarjeta en sus datos.
+                </p>
+                <button
+                  className="loyalty-danger"
+                  disabled={locked}
+                  onClick={() => mutate("delete")}
+                >
+                  Eliminar tarjeta permanentemente
+                </button>
               </section>
             </>
           )}

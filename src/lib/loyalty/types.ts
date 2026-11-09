@@ -20,7 +20,7 @@ export type Activity = {
   after: number;
 };
 export type Command = {
-  action: "create" | "stamp" | "redeem" | "undo" | "update" | "replace";
+  action: "create" | "stamp" | "redeem" | "undo" | "update" | "replace" | "delete";
   operationId: string;
   id?: string;
   revision?: number;
@@ -85,7 +85,7 @@ export function parseCommand(value: unknown): Command {
   const { action, operationId } = body;
   if (
     typeof action !== "string" ||
-    !["create", "stamp", "redeem", "undo", "update", "replace"].includes(
+    !["create", "stamp", "redeem", "undo", "update", "replace", "delete"].includes(
       action,
     ) ||
     !validId(operationId)

@@ -283,3 +283,8 @@ body:has(.loyalty) {
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+.loyalty button.loyalty-danger {
+  color: #ffc4bb;
+  border-color: #ae6459;
+}

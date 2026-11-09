@@ -118,5 +118,20 @@ test(
     const sitemap = await (await fetch(base + "/sitemap.xml")).text();
     assert.ok(!sitemap.includes("/vip/"));
     assert.ok(!sitemap.includes("/admin"));
+    const deletion = {
+      action: "delete", operationId: randomUUID(), id: result.id, revision: 0,
+    };
+    assert.equal((await post(deletion)).status, 401);
+    assert.equal((await post(deletion, await cookie("unapproved@example.test"))).status, 401);
+    assert.equal((await post(deletion, auth, "https://evil.test")).status, 403);
+    assert.equal((await post(deletion, auth)).status, 200);
+    assert.equal((await post(deletion, auth)).status, 200);
+    assert.equal((await post({ action: "detail", id: result.id }, auth)).status, 404);
+    const unavailable = await fetch(base + "/api/loyalty/card", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+    assert.equal(unavailable.status, 404);
   },
 );

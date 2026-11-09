@@ -128,7 +128,7 @@ export async function mutateCard(value: unknown, actor: string) {
   const ref = db.collection("loyaltyCards").doc(cardId);
   const operation = db.collection("loyaltyOperations").doc(operationId);
   const signature = fingerprint({ input, actor });
-  return db.runTransaction(async (tx) => {
+  const result = await db.runTransaction(async (tx) => {
     const receipt = await tx.get(operation);
     if (receipt.exists) {
       if (receipt.get("signature") !== signature)
@@ -142,6 +142,13 @@ export async function mutateCard(value: unknown, actor: string) {
     if (before && before.revision !== revision)
       return fail(409, "La tarjeta ha cambiado. Actualiza antes de continuar.");
     const at = new Date().toISOString();
+    if (action === "delete") {
+      tx.delete(db.collection("loyaltyTokens").doc(before!.tokenHash));
+      tx.delete(ref);
+      const result = { id: cardId, revision: before!.revision + 1 };
+      tx.set(operation, { signature, result, at });
+      return result;
+    }
     const next: DocumentData = before
       ? { ...before, revision: before.revision + 1, updatedAt: at }
       : {
@@ -203,4 +210,8 @@ export async function mutateCard(value: unknown, actor: string) {
     tx.set(operation, { signature, result, at });
     return result;
   });
+  // The transaction invalidates access first. Replays resume unfinished cleanup.
+  // Keep hashed retry receipts so old create requests cannot resurrect a card.
+  if (action === "delete") await db.recursiveDelete(ref);
+  return result;
 }

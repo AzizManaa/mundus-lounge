@@ -362,3 +362,81 @@ test("retry state survives blocked browser storage and rejects corrupt commands"
     else Reflect.deleteProperty(globalThis, "sessionStorage");
   }
 });
+
+test("permanent deletion removes card, token and large history; retries cannot recreate it", async () => {
+  const c = await create("Cliente Eliminar", "+34 600 000 099");
+  await action(c.id, "stamp");
+  const replacement = token();
+  await action(c.id, "replace", { token: replacement });
+  const ref = loyaltyDb().collection("loyaltyCards").doc(c.id);
+  // A long-lived card can exceed a single transaction's write limit.
+  for (let offset = 0; offset < 600; offset += 300) {
+    const batch = loyaltyDb().batch();
+    for (let i = offset; i < offset + 300; i++) {
+      batch.set(ref.collection("activity").doc(`history-${i}`), {
+        action: "stamp", actor, at: new Date().toISOString(), before: 0, after: 1,
+      });
+    }
+    await batch.commit();
+  }
+  const { card } = await cardDetail(c.id);
+  const deletion: Command = {
+    action: "delete", operationId: operation(), id: c.id, revision: card.revision,
+  };
+  await assert.rejects(mutateCard({ ...deletion, revision: 0 }, actor), reject(409));
+  assert.equal((await ref.get()).exists, true);
+  const results = await Promise.all([
+    mutateCard(deletion, actor), mutateCard(deletion, actor),
+  ]);
+  assert.deepEqual(results[0], results[1]);
+  assert.equal((await ref.get()).exists, false);
+  assert.equal((await ref.collection("activity").get()).empty, true);
+  await assert.rejects(publicCard(c.token), reject(404));
+  await assert.rejects(publicCard(replacement), reject(404));
+  await assert.rejects(cardDetail(c.id), reject(404));
+  assert.equal((await listCards("Cliente Eliminar")).cards.length, 0);
+  await assert.rejects(action(c.id, "stamp"), reject(404));
+  // The original creation receipt must survive deletion to prevent resurrection.
+  assert.equal((await mutateCard(c.command, actor)).id, c.id);
+  assert.equal((await ref.get()).exists, false);
+  assert.deepEqual(await mutateCard(deletion, actor), results[0]);
+});
+
+test("delete and stamp racing cannot leave a partially deleted live card", async () => {
+  const c = await create("Carrera Eliminar");
+  const results = await Promise.allSettled([
+    mutateCard({ action: "delete", operationId: operation(), id: c.id, revision: 0 }, actor),
+    mutateCard({ action: "stamp", operationId: operation(), id: c.id, revision: 0 }, actor),
+  ]);
+  assert.equal(results.filter((r) => r.status === "fulfilled").length, 1);
+  if (results[0].status === "fulfilled") {
+    await assert.rejects(publicCard(c.token), reject(404));
+    assert.equal((await loyaltyDb().collection("loyaltyCards").doc(c.id).collection("activity").get()).empty, true);
+  } else {
+    assert.equal((await publicCard(c.token)).balance, 1);
+    await action(c.id, "delete");
+  }
+  const inactive = await create("Inactivo Eliminar");
+  await action(inactive.id, "update", { name: "Inactivo Eliminar", phone: "", active: false });
+  await action(inactive.id, "delete");
+  await assert.rejects(cardDetail(inactive.id), reject(404));
+});
+
+test("uncertain deletion resumes history cleanup on the same operation", async () => {
+  const c = await create("Reintento Eliminar");
+  const deletion: Command = {
+    action: "delete", operationId: operation(), id: c.id, revision: 0,
+  };
+  const db = loyaltyDb();
+  const recursiveDelete = db.recursiveDelete;
+  try {
+    db.recursiveDelete = async () => { throw new Error("Simulated cleanup failure"); };
+    await assert.rejects(mutateCard(deletion, actor), /Simulated cleanup failure/);
+    await assert.rejects(publicCard(c.token), reject(404));
+    assert.equal((await db.collection("loyaltyCards").doc(c.id).collection("activity").get()).size, 1);
+  } finally {
+    db.recursiveDelete = recursiveDelete;
+  }
+  await mutateCard(deletion, actor);
+  assert.equal((await db.collection("loyaltyCards").doc(c.id).collection("activity").get()).empty, true);
+});
