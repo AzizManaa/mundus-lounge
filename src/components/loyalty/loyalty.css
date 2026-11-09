@@ -60,7 +60,8 @@
 }
 .loyalty button:focus-visible,
 .loyalty a:focus-visible,
-.loyalty input:focus-visible {
+.loyalty input:focus-visible,
+.loyalty select:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
@@ -180,7 +181,8 @@
   align-items: center;
   margin: 20px 0;
 }
-.loyalty input {
+.loyalty input,
+.loyalty select {
   width: 100%;
   min-height: 48px;
   border: 1px solid #76644a;
@@ -199,7 +201,8 @@
   color: #b9ac98;
   font-size: 12px;
 }
-.loyalty label input {
+.loyalty label input,
+.loyalty label select {
   margin-top: 7px;
 }
 .loyalty fieldset {
