@@ -3,9 +3,9 @@ import { getMessages, type Locale } from "../i18n";
 import afterDarkImage from "../../public/images/mundus-moment-after-dark.webp";
 import cocktailImage from "../../public/images/mundus-moment-cocktail.webp";
 import foodImage from "../../public/images/mundus-moment-food.webp";
-import goodCompanyImage from "../../public/images/mundus-moment-good-company.webp";
-import loungeTableImage from "../../public/images/mundus-moment-lounge-table.jpg";
-import shishaImage from "../../public/images/mundus-moment-shisha.webp";
+import goodCompanyImage from "../../public/images/mundus-mikado-game.webp";
+import loungeInteriorImage from "../../public/images/mundus-lounge-bar-interior.webp";
+import shishaImage from "../../public/images/mundus-hookah-lounge-close-up.webp";
 
 const momentTiles = [
   {
@@ -18,7 +18,7 @@ const momentTiles = [
   },
   {
     className: "",
-    image: loungeTableImage,
+    image: loungeInteriorImage,
   },
   {
     className: "col-span-2",

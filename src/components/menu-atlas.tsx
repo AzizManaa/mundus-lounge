@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getMessages, type Locale } from "../i18n";
 import foodImage from "../../public/images/mundus-menu-food.webp";
 import shishaImage from "../../public/images/mundus-menu-shisha.webp";
-import drinksImage from "../../public/images/mundus-menu-drinks.webp";
+import drinksImage from "../../public/images/mundus-golden-mint-mojito.webp";
 
 const menuCards = [
   { image: shishaImage, chapter: "ritual" },
