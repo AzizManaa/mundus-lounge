@@ -16,7 +16,10 @@ export function failure(error: unknown) {
       );
 }
 export async function readBody(request: Request) {
-  if (!request.headers.get("content-type")?.startsWith("application/json"))
+  if (
+    request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !==
+    "application/json"
+  )
     throw new LoyaltyError(415, "Formato no válido.");
   // Bound the stream as well as Content-Length, which may be absent or inaccurate.
   const reader = request.body?.getReader();
@@ -37,7 +40,7 @@ export async function readBody(request: Request) {
     const body = JSON.parse(Buffer.concat(chunks).toString("utf8"));
     if (!body || typeof body !== "object" || Array.isArray(body))
       throw new Error();
-    return body;
+    return body as Record<string, unknown>;
   } catch {
     throw new LoyaltyError(400, "Solicitud no válida.");
   }

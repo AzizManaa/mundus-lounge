@@ -250,6 +250,7 @@
 .loyalty-video {
   width: 100%;
   max-height: 400px;
+  object-fit: contain;
   background: #080706;
   border-radius: 10px;
 }

@@ -1,4 +1,5 @@
-import { test } from "node:test";
+import { test, after } from "node:test";
+import { clearEmulator } from "./loyalty-emulator";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
 import { encode } from "next-auth/jwt";
@@ -13,6 +14,9 @@ if (
     !process.env.FIRESTORE_EMULATOR_HOST)
 )
   throw new Error("HTTP tests require the local demo emulator server.");
+after(async () => {
+  if (base) await clearEmulator();
+});
 async function cookie(email: string) {
   return (
     "next-auth.session-token=" +
@@ -50,6 +54,29 @@ test(
     assert.equal(
       (await post({ action: "list" }, auth, "https://evil.test")).status,
       403,
+    );
+    assert.equal(
+      (
+        await post(
+          { action: "stamp", operationId: randomUUID(), id: [], revision: 0 },
+          auth,
+        )
+      ).status,
+      400,
+    );
+    assert.equal(
+      (await post({ action: "detail", token: {} }, auth)).status,
+      404,
+    );
+    assert.equal(
+      (
+        await fetch(base + "/api/loyalty/card", {
+          method: "POST",
+          headers: { "Content-Type": "application/json-fake" },
+          body: "{}",
+        })
+      ).status,
+      415,
     );
     const token = randomBytes(32).toString("base64url");
     const cmd = {

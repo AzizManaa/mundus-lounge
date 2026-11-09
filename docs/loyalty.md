@@ -4,7 +4,7 @@ Spanish web cards; staff awards one stamp per paid order using the scanner or ma
 
 ## Local development and tests
 
-Requires Node 22+ and Java 21+ for the emulator. No Google credentials are required for tests.
+Requires Node 22+ and Java 21+ for the emulator. No Google credentials are required for tests. Test suites clear their loopback demo emulator data after completion; they never reset the production project.
 
 ```sh
 npm ci
@@ -39,9 +39,9 @@ Spark quotas can interrupt service; billing must remain unlinked. Paid backups, 
 
 ## Operations and security
 
-`/admin/loyalty` creates, finds and edits cards. `/vip/[token]` shows only the first name, balance and target. Staff API uses POST `/api/admin/loyalty` with `action`: list, detail, create, update, stamp, redeem, undo or replace. Public POST `/api/loyalty/card` takes the token in its JSON body. Mutation bodies include an operation UUID and expected card revision; create/replace also include a cryptographically random 256-bit token from the browser. Only SHA-256 token hashes are stored on the server.
+`/admin/loyalty` creates, finds and edits cards. `/vip/[token]` shows only the first name, balance and target. Staff API uses POST `/api/admin/loyalty` with `action`: list, detail, create, update, stamp, redeem, undo or replace. Public POST `/api/loyalty/card` takes the token in its JSON body. Mutation bodies include an operation UUID and expected card revision; create/replace also include a cryptographically random 256-bit token from the browser. Only SHA-256 token hashes are stored on the server. Requests are validated and reduced to the fields for their action before creating stable retry fingerprints.
 
-Operations are transactional and idempotent. Successful retry receipts are checked before revision checks; different payloads cannot reuse an operation ID. Unknown outcomes stay in tab-local session storage and require explicit retry. No offline queue. The authenticated staff scanner automatically submits one stamp per scan session, stops the camera on the first valid QR and opens the updated card. Unknown outcomes use the same operation ID for explicit retry; stale or inactive cards and cards at seven stamps are rejected by the server. Opening a QR URL with a normal camera only opens the read-only customer page; it never writes on navigation. Manual stamping and reward redemption still require confirmation.
+Operations are transactional and idempotent. Successful retry receipts are checked before revision checks; different payloads cannot reuse an operation ID. Unknown outcomes stay in tab-local session storage and require explicit retry. If storage is blocked, the current tab keeps its retry record in memory; avoid reloading until an uncertain action is resolved. No offline queue. The authenticated staff scanner automatically submits one stamp per scan session, stops the camera on the first valid QR and opens the updated card. Unknown outcomes use the same operation ID for explicit retry; stale or inactive cards and cards at seven stamps are rejected by the server. Opening a QR URL with a normal camera only opens the read-only customer page; it never writes on navigation. Manual stamping and reward redemption still require confirmation.
 
 When more than one camera is exposed by the browser, the staff scanner shows a camera selector. A successfully opened selection is remembered in localStorage for that browser/device. Missing saved cameras fall back to the default rear-facing camera. Camera names come from the browser; the app does not guess which lens is 1× or apply artificial zoom. Closing or switching stops the previous scan and camera stream.
 

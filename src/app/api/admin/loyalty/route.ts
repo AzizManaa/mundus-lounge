@@ -5,7 +5,7 @@ import {
   mutateCard,
 } from "../../../../lib/loyalty/store";
 import { failure, json, readBody } from "../../../../lib/loyalty/http";
-import { LoyaltyError, type Command } from "../../../../lib/loyalty/types";
+import { LoyaltyError } from "../../../../lib/loyalty/types";
 export const runtime = "nodejs";
 export async function POST(request: Request) {
   try {
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       return json(await cardDetail(body.id, body.token));
     if (typeof body.action !== "string")
       throw new LoyaltyError(400, "Operación no válida.");
-    return json(await mutateCard(body as Command, session.user!.email!));
+    return json(await mutateCard(body, session.user!.email!));
   } catch (error) {
     return failure(error);
   }

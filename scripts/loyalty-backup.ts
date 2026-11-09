@@ -1,5 +1,5 @@
 import { writeFile, readFile } from "node:fs/promises";
-import { resolve, relative } from "node:path";
+import { resolve, relative, isAbsolute } from "node:path";
 import { loyaltyDb } from "../src/lib/loyalty/db";
 const roots = ["loyaltyCards", "loyaltyTokens", "loyaltyOperations"];
 const [mode, file, confirmedProject] = process.argv.slice(2);
@@ -13,8 +13,11 @@ async function main() {
       "Usage: tsx scripts/loyalty-backup.ts export|restore /absolute/private/backup.json PROJECT_ID",
     );
   if (
-    !resolve(file).startsWith("/") ||
-    !relative(process.cwd(), resolve(file)).startsWith("..")
+    !isAbsolute(file) ||
+    !(
+      relative(process.cwd(), resolve(file)) === ".." ||
+      relative(process.cwd(), resolve(file)).startsWith("../")
+    )
   )
     throw new Error("Choose a backup path outside the repository.");
   const db = loyaltyDb();

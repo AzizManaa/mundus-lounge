@@ -35,7 +35,12 @@ export default function Scanner({
 
   useEffect(() => {
     let cancelled = false;
-    let stop: (() => void) | undefined;
+    let controls: { stop: () => void } | undefined;
+    let stream: MediaStream | undefined;
+    const release = () => {
+      controls?.stop();
+      stream?.getTracks().forEach((track) => track.stop());
+    };
     let found = false;
     import("@zxing/browser")
       .then(async ({ BrowserQRCodeReader }) => {
@@ -43,7 +48,37 @@ export default function Scanner({
         const preview = video.current;
         const reader = new BrowserQRCodeReader();
         const open = (id?: string) =>
-          reader.decodeFromVideoDevice(id, preview, (result, _, controls) => {
+          navigator.mediaDevices.getUserMedia({
+            video: id
+              ? { deviceId: { exact: id } }
+              : { facingMode: "environment" },
+            audio: false,
+          });
+        let preferred = requestedCamera || savedCamera();
+        try {
+          stream = await open(preferred);
+        } catch (e) {
+          if (
+            !preferred ||
+            !(e instanceof Error) ||
+            !["NotFoundError", "OverconstrainedError"].includes(e.name) ||
+            cancelled
+          )
+            throw e;
+          rememberCamera();
+          preferred = undefined;
+          stream = await open();
+        }
+        if (cancelled) {
+          release();
+          return;
+        }
+        const id =
+          stream.getVideoTracks()[0]?.getSettings().deviceId || preferred || "";
+        controls = await reader.decodeFromStream(
+          stream,
+          preview,
+          (result, _, scanControls) => {
             if (!result || cancelled || found) return;
             const token = scanToken(result.getText(), window.location.origin);
             if (!token) {
@@ -51,36 +86,15 @@ export default function Scanner({
               return;
             }
             found = true;
-            controls.stop();
+            scanControls.stop();
+            release();
             onScan(token);
-          });
-        let preferred = requestedCamera || savedCamera();
-        let controls;
-        try {
-          controls = await open(preferred);
-        } catch (e) {
-          // Device IDs may change after clearing permissions or removing a camera.
-          if (
-            !preferred ||
-            !(e instanceof Error || e instanceof DOMException) ||
-            !["NotFoundError", "OverconstrainedError"].includes(e.name) ||
-            cancelled
-          )
-            throw e;
-          rememberCamera();
-          preferred = undefined;
-          controls = await open();
-        }
-        stop = () => controls.stop();
+          },
+        );
         if (cancelled || found) {
-          stop();
+          release();
           return;
         }
-        const stream = preview.srcObject as MediaStream | null;
-        const id =
-          stream?.getVideoTracks()[0]?.getSettings().deviceId ||
-          preferred ||
-          "";
         setActiveCamera(id);
         if (preferred && id) rememberCamera(id);
         // Enumerate after permission, when browsers can expose camera names.
@@ -94,6 +108,7 @@ export default function Scanner({
         if (!cancelled && !found) setReady(true);
       })
       .catch(() => {
+        release();
         if (!cancelled)
           setError(
             "No se pudo abrir la cámara. Permite su uso o busca al cliente por nombre o teléfono.",
@@ -101,7 +116,7 @@ export default function Scanner({
       });
     return () => {
       cancelled = true;
-      stop?.();
+      release();
     };
   }, [onScan, requestedCamera]);
 

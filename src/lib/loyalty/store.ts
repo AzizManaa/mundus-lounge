@@ -11,14 +11,12 @@ import {
   normalizeName,
   normalizePhone,
   type Card,
-  type Command,
+  parseCommand,
+  validToken,
+  validId,
   type PublicCard,
   type Activity,
 } from "./types";
-const validToken = (s: unknown): s is string =>
-  typeof s === "string" && /^[A-Za-z0-9_-]{43}$/.test(s);
-const validId = (s: unknown): s is string =>
-  typeof s === "string" && /^[a-f0-9-]{36}$/.test(s);
 export const hashToken = (token: string) =>
   createHash("sha256").update(token).digest("hex");
 const fingerprint = (value: unknown) =>
@@ -69,20 +67,19 @@ export async function publicCard(token: unknown): Promise<PublicCard> {
     { readOnly: true },
   );
 }
-export async function cardDetail(id?: string, token?: string) {
+export async function cardDetail(id?: unknown, token?: unknown) {
   const db = loyaltyDb();
-  if (token) {
+  let tokenHash: string | undefined;
+  if (token !== undefined) {
     if (!validToken(token)) return fail(404, "Tarjeta no encontrada.");
-    const index = await db
-      .collection("loyaltyTokens")
-      .doc(hashToken(token))
-      .get();
+    tokenHash = hashToken(token);
+    const index = await db.collection("loyaltyTokens").doc(tokenHash).get();
     id = index.get("cardId");
   }
   if (!validId(id)) return fail(404, "Tarjeta no encontrada.");
   const ref = db.collection("loyaltyCards").doc(id);
   const snap = await ref.get();
-  if (!snap.exists || (token && snap.get("tokenHash") !== hashToken(token)))
+  if (!snap.exists || (tokenHash && snap.get("tokenHash") !== tokenHash))
     return fail(404, "Tarjeta no encontrada.");
   const history = await ref
     .collection("activity")
@@ -94,7 +91,7 @@ export async function cardDetail(id?: string, token?: string) {
     activity: history.docs.map((d) => ({ id: d.id, ...d.data() }) as Activity),
   };
 }
-export async function listCards(search = "", cursor = "") {
+export async function listCards(search: unknown = "", cursor: unknown = "") {
   const db = loyaltyDb();
   if (
     typeof search !== "string" ||
@@ -107,6 +104,7 @@ export async function listCards(search = "", cursor = "") {
   if (search.trim()) {
     const phone = /^[+\d\s().-]+$/.test(search);
     const value = phone ? normalizePhone(search) : normalizeName(search);
+    if (!value) return fail(400, "Búsqueda no válida.");
     query = query
       .orderBy(phone ? "phoneSearch" : "nameSearch")
       .startAt(value)
@@ -122,35 +120,9 @@ export async function listCards(search = "", cursor = "") {
     truncated: !!search.trim() && docs.length > 25,
   };
 }
-export async function mutateCard(input: Command, actor: string) {
+export async function mutateCard(value: unknown, actor: string) {
+  const input = parseCommand(value);
   const { action, operationId, id, revision } = input;
-  if (
-    !["create", "stamp", "redeem", "undo", "update", "replace"].includes(
-      action,
-    ) ||
-    !validId(operationId)
-  )
-    return fail(400, "Operación no válida.");
-  if (
-    action !== "create" &&
-    (!validId(id) || !Number.isSafeInteger(revision) || revision! < 0)
-  )
-    return fail(400, "Tarjeta no válida.");
-  if (["create", "replace"].includes(action) && !validToken(input.token))
-    return fail(400, "Enlace no válido.");
-  if (
-    ["create", "update"].includes(action) &&
-    (typeof input.name !== "string" ||
-      !input.name.trim() ||
-      input.name.length > 100 ||
-      typeof input.phone !== "string" ||
-      input.phone.length > 30 ||
-      (input.phone &&
-        (!/^\+?[\d\s().-]{3,30}$/.test(input.phone) ||
-          normalizePhone(input.phone).length < 3)) ||
-      (action === "update" && typeof input.active !== "boolean"))
-  )
-    return fail(400, "Revisa el nombre y el teléfono.");
   const db = loyaltyDb();
   const cardId = action === "create" ? randomUUID() : id!;
   const ref = db.collection("loyaltyCards").doc(cardId);

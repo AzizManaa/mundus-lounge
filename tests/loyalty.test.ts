@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { test } from "node:test";
+import { test, after } from "node:test";
+import { clearEmulator } from "./loyalty-emulator";
 import { randomBytes, randomUUID } from "node:crypto";
 import { loyaltyDb } from "../src/lib/loyalty/db";
 import {
@@ -21,6 +22,7 @@ if (
   process.env.LOYALTY_FIREBASE_PROJECT_ID !== "demo-mundus-loyalty"
 )
   throw new Error("Tests require the demo Firestore emulator.");
+after(() => clearEmulator());
 const actor = "staff@example.test";
 const token = () => randomBytes(32).toString("base64url");
 const operation = () => randomUUID();
@@ -264,6 +266,7 @@ test("private export and create-only recovery to an empty database", async () =>
     c.id,
   );
   assert.throws(() => run("restore", destination));
+  await clearEmulator(destination);
   await db.terminate();
 });
 
@@ -293,5 +296,69 @@ test("only one concurrent redemption succeeds and Preview fails closed", async (
   } finally {
     if (previous === undefined) delete process.env.VERCEL_ENV;
     else process.env.VERCEL_ENV = previous;
+  }
+});
+
+test("command validation rejects malformed input and normalizes retry payloads", async () => {
+  const { parseCommand } = await import("../src/lib/loyalty/types");
+  for (const value of [
+    null,
+    [],
+    {},
+    {
+      action: "stamp",
+      operationId: operation(),
+      id: "-".repeat(36),
+      revision: 0,
+    },
+  ]) {
+    assert.throws(() => parseCommand(value), reject(400));
+  }
+  const c = await create();
+  const operationId = operation();
+  const first = await mutateCard(
+    { action: "stamp", operationId, id: c.id, revision: 0 },
+    actor,
+  );
+  const reordered = {
+    revision: 0,
+    id: c.id,
+    operationId,
+    action: "stamp",
+    ignored: "not part of the operation",
+  };
+  assert.deepEqual(await mutateCard(reordered, actor), first);
+  await assert.rejects(listCards(123), reject(400));
+  await assert.rejects(cardDetail(undefined, {}), reject(404));
+});
+
+test("retry state survives blocked browser storage and rejects corrupt commands", async () => {
+  const pending = await import("../src/lib/loyalty/pending-operation");
+  const original = Object.getOwnPropertyDescriptor(
+    globalThis,
+    "sessionStorage",
+  );
+  Object.defineProperty(globalThis, "sessionStorage", {
+    configurable: true,
+    get() {
+      throw new Error("Storage disabled");
+    },
+  });
+  try {
+    const command: Command = {
+      action: "stamp",
+      operationId: operation(),
+      id: operation(),
+      revision: 0,
+    };
+    pending.setPending(command);
+    assert.deepEqual(pending.readPending(pending.pendingSnapshot()), command);
+    assert.equal(pending.readPending("{bad"), null);
+    assert.equal(pending.readPending('{"action":"stamp"}'), null);
+    pending.setPending(null);
+    assert.equal(pending.pendingSnapshot(), null);
+  } finally {
+    if (original) Object.defineProperty(globalThis, "sessionStorage", original);
+    else Reflect.deleteProperty(globalThis, "sessionStorage");
   }
 });

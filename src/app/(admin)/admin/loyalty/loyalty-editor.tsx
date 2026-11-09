@@ -3,6 +3,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import { signIn, signOut } from "next-auth/react";
+import {
+  subscribePending,
+  pendingSnapshot,
+  readPending,
+  setPending,
+} from "../../../../lib/loyalty/pending-operation";
 import Scanner from "../../../../components/loyalty/scanner";
 import {
   TARGET,
@@ -53,16 +59,6 @@ type Initial = {
   activity?: Activity[];
   error?: string;
 };
-const subscribePending = (notify: () => void) => {
-  window.addEventListener("loyalty-pending", notify);
-  return () => window.removeEventListener("loyalty-pending", notify);
-};
-function setPending(command: Command | null) {
-  if (command)
-    sessionStorage.setItem("mundus-loyalty-pending", JSON.stringify(command));
-  else sessionStorage.removeItem("mundus-loyalty-pending");
-  window.dispatchEvent(new Event("loyalty-pending"));
-}
 export default function LoyaltyEditor({
   email,
   initial,
@@ -74,6 +70,7 @@ export default function LoyaltyEditor({
   const [selected, setSelected] = useState<Card | null>(initial.card ?? null);
   const [activity, setActivity] = useState<Activity[]>(initial.activity ?? []);
   const [search, setSearch] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
   const [next, setNext] = useState<string | null>(initial.next ?? null);
   const [truncated, setTruncated] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -88,15 +85,10 @@ export default function LoyaltyEditor({
   const [issued, setIssued] = useState("");
   const pendingJson = useSyncExternalStore(
     subscribePending,
-    () => sessionStorage.getItem("mundus-loyalty-pending"),
+    pendingSnapshot,
     () => null,
   );
-  let pending: Command | null = null;
-  try {
-    pending = pendingJson ? JSON.parse(pendingJson) : null;
-  } catch {
-    /* A corrupt tab-local receipt must not crash the editor. */
-  }
+  const pending = readPending(pendingJson);
   const inFlight = useRef(false);
   const report = useCallback((e: unknown) => {
     if (e instanceof ApiError && e.status === 401) setExpired(true);
@@ -124,6 +116,7 @@ export default function LoyaltyEditor({
   const list = useCallback(async (query = "", cursor = "") => {
     const data = await call({ action: "list", search: query, cursor });
     setCards((current) => (cursor ? [...current, ...data.cards] : data.cards));
+    setAppliedSearch(query);
     setNext(data.next);
     setTruncated(data.truncated);
   }, []);
@@ -166,8 +159,9 @@ export default function LoyaltyEditor({
       }
       setPending(null);
       setCreating(false);
-      if (command.token)
-        setIssued(window.location.origin + "/vip/" + command.token);
+      setIssued(
+        command.token ? window.location.origin + "/vip/" + command.token : "",
+      );
       setNotice(labels[command.action]);
       try {
         await detail(result.id);
@@ -207,7 +201,9 @@ export default function LoyaltyEditor({
     (token: string) => {
       setScanning(false);
       if (busy || pending) {
-        setError("Termina la operación pendiente antes de escanear otra tarjeta.");
+        setError(
+          "Termina la operación pendiente antes de escanear otra tarjeta.",
+        );
         return;
       }
       setIssued("");
@@ -231,13 +227,14 @@ export default function LoyaltyEditor({
         await navigator.clipboard.writeText(issued);
         setNotice("Enlace copiado");
       }
-    } catch {
+    } catch (e) {
+      if (e instanceof DOMException && e.name === "AbortError") return;
       setError("No se pudo compartir. Copia el enlace del campo.");
     }
   }
   const locked = busy || !!pending;
   return (
-    <main className="loyalty staff-loyalty">
+    <main className="loyalty">
       <header className="loyalty-brand">
         <Image
           src="/brand/mundus-mark.svg"
@@ -336,6 +333,7 @@ export default function LoyaltyEditor({
               className="loyalty-primary"
               disabled={locked}
               onClick={() => {
+                setScanning(false);
                 setCreating(true);
                 setName("");
                 setPhone("");
@@ -355,6 +353,7 @@ export default function LoyaltyEditor({
             className="loyalty-actions"
             onSubmit={(e) => {
               e.preventDefault();
+              setScanning(false);
               void perform(() => list(search));
             }}
           >
@@ -373,6 +372,7 @@ export default function LoyaltyEditor({
                 key={card.id}
                 disabled={locked}
                 onClick={() => {
+                  setScanning(false);
                   setIssued("");
                   void perform(() => detail(card.id));
                 }}
@@ -399,7 +399,7 @@ export default function LoyaltyEditor({
           {next && (
             <button
               disabled={locked}
-              onClick={() => void perform(() => list(search, next))}
+              onClick={() => void perform(() => list(appliedSearch, next))}
             >
               Ver más tarjetas
             </button>
@@ -415,6 +415,7 @@ export default function LoyaltyEditor({
               setCreating(false);
               setIssued("");
               window.history.replaceState(null, "", "/admin/loyalty");
+              setScanning(false);
               void perform(() => list(search));
             }}
           >
