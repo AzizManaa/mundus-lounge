@@ -10,7 +10,7 @@ import {
   setPending,
 } from "../../../../lib/loyalty/pending-operation";
 import Scanner from "../../../../components/loyalty/scanner";
-import StaffIcon from "../../../../components/loyalty/staff-icon";
+import AdminIcon from "../../../../components/admin-icon";
 import ShareDialog from "../../../../components/loyalty/share-dialog";
 import {
   TARGET,
@@ -351,13 +351,13 @@ export default function LoyaltyEditor({
         </div>
         <details className="staff-account">
           <summary aria-label="Cuenta y navegación">
-            <StaffIcon name="more" />
+            <AdminIcon name="more" />
           </summary>
           <div className="staff-account-menu">
             <small>Sesión iniciada</small>
             <p>{email}</p>
             <Link href="/admin" prefetch={false}>
-              Gestión de carta <span aria-hidden="true">↗</span>
+              Gestión de carta <AdminIcon name="book" />
             </Link>
             <button
               disabled={locked}
@@ -370,7 +370,7 @@ export default function LoyaltyEditor({
       </header>
       {(selected || creating || scanning) && (
         <button className="staff-back" disabled={locked} onClick={backToCards}>
-          <StaffIcon name="back" /> Todas las tarjetas
+          <AdminIcon name="back" /> Todas las tarjetas
         </button>
       )}
       {error && (
@@ -380,7 +380,7 @@ export default function LoyaltyEditor({
       )}
       {notice && (
         <div className="loyalty-notice" role="status">
-          <StaffIcon name="check" />
+          <AdminIcon name="check" />
           {notice}
         </div>
       )}
@@ -427,7 +427,7 @@ export default function LoyaltyEditor({
                   disabled={locked}
                   onClick={() => void perform(() => list(appliedSearch))}
                 >
-                  <StaffIcon name="refresh" />
+                  <AdminIcon name="refresh" />
                 </button>
               </div>
               <form
@@ -491,13 +491,13 @@ export default function LoyaltyEditor({
                       {card.balance}
                       <small>/{TARGET}</small>
                     </span>
-                    <StaffIcon name="chevron" />
+                    <AdminIcon name="chevron" />
                   </button>
                 ))}
               </div>
               {!cards.length && (
                 <div className="staff-empty">
-                  <StaffIcon name="qr" />
+                  <AdminIcon name="qr" />
                   <h2>
                     {appliedSearch
                       ? "Sin resultados"
@@ -558,7 +558,7 @@ export default function LoyaltyEditor({
                     aria-label="Actualizar tarjeta"
                     onClick={() => void perform(() => detail(selected.id))}
                   >
-                    <StaffIcon name="refresh" />
+                    <AdminIcon name="refresh" />
                   </button>
                 </div>
                 <h1>{selected.name}</h1>
@@ -583,7 +583,7 @@ export default function LoyaltyEditor({
                       className={i < selected.balance ? "is-filled" : ""}
                     >
                       {i < selected.balance ? (
-                        <StaffIcon name="check" />
+                        <AdminIcon name="check" />
                       ) : (
                         i + 1
                       )}
@@ -602,8 +602,8 @@ export default function LoyaltyEditor({
                   disabled={locked}
                   onClick={showShare}
                 >
-                  <StaffIcon name="qr" /> Mostrar QR y enlace{" "}
-                  <StaffIcon name="chevron" />
+                  <AdminIcon name="qr" /> Mostrar QR y enlace{" "}
+                  <AdminIcon name="chevron" />
                 </button>
               </section>
               <p className="staff-order-note">
@@ -629,7 +629,7 @@ export default function LoyaltyEditor({
                     <span>
                       Datos del cliente<small>Nombre, teléfono y estado</small>
                     </span>
-                    <StaffIcon name="chevron" />
+                    <AdminIcon name="chevron" />
                   </summary>
                   {customerForm}
                 </details>
@@ -641,7 +641,7 @@ export default function LoyaltyEditor({
                     <span>
                       Actividad reciente<small>Sellos, canjes y cambios</small>
                     </span>
-                    <StaffIcon name="chevron" />
+                    <AdminIcon name="chevron" />
                   </summary>
                   <div className="staff-history">
                     {activity.map((item) => (
@@ -649,7 +649,7 @@ export default function LoyaltyEditor({
                         <div>
                           <strong>{labels[item.action] || item.action}</strong>
                           <span>
-                            {item.before} → {item.after}
+                            {item.before} a {item.after}
                           </span>
                         </div>
                         <small>
@@ -674,7 +674,7 @@ export default function LoyaltyEditor({
                       Gestionar tarjeta
                       <small>Reemplazar enlace o eliminar</small>
                     </span>
-                    <StaffIcon name="chevron" />
+                    <AdminIcon name="chevron" />
                   </summary>
                   <div className="staff-management">
                     <h3>Reemplazar enlace</h3>
@@ -723,7 +723,7 @@ export default function LoyaltyEditor({
                   window.scrollTo({ top: 0 });
                 }}
               >
-                <StaffIcon name="scan" />
+                <AdminIcon name="scan" />
                 Escanear
               </button>
               <button
@@ -739,7 +739,7 @@ export default function LoyaltyEditor({
                   "Canjear bebida"
                 ) : (
                   <>
-                    <StaffIcon name="plus" /> Añadir sello
+                    <AdminIcon name="plus" /> Añadir sello
                   </>
                 )}
               </button>
@@ -751,7 +751,7 @@ export default function LoyaltyEditor({
                 disabled={locked}
                 onClick={startCreate}
               >
-                <StaffIcon name="plus" />
+                <AdminIcon name="plus" />
                 Nueva tarjeta
               </button>
               <button
@@ -762,7 +762,7 @@ export default function LoyaltyEditor({
                   window.scrollTo({ top: 0 });
                 }}
               >
-                <StaffIcon name="scan" />
+                <AdminIcon name="scan" />
                 Escanear QR
               </button>
             </>

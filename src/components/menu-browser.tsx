@@ -9,6 +9,25 @@ import shishaImage from "../../public/images/mundus-menu-shisha.webp";
 import drinksImage from "../../public/images/mundus-moment-cocktail.webp";
 import foodImage from "../../public/images/mundus-menu-food.webp";
 
+function MenuChevron({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m9 5 7 7-7 7" />
+    </svg>
+  );
+}
+
 type ChapterId = keyof MenuMessages["chapters"];
 
 const chapters = [
@@ -287,7 +306,7 @@ export function MenuBrowser({
       >
         <span>{categoryLabels[category.name] ?? category.displayName ?? category.name}</span>
         <span aria-hidden="true" className="night-atlas__sheet-category-mark">
-          {activeCategory.name === category.name ? "●" : "↗"}
+          {activeCategory.name === category.name ? "●" : <MenuChevron />}
         </span>
       </button>
     );
@@ -382,7 +401,7 @@ export function MenuBrowser({
                   <span className="night-atlas__chapter-title">{messages.chapters[chapter.id].title}</span>
                   <span className="night-atlas__chapter-description">{messages.chapters[chapter.id].description}</span>
                 </span>
-                <span aria-hidden="true" className="night-atlas__chapter-arrow">↗</span>
+                <MenuChevron className="night-atlas__chapter-arrow" />
               </button>
             );
           })}
@@ -404,7 +423,7 @@ export function MenuBrowser({
                 type="button"
               >
                 <span>{categoryLabels[category.name] ?? category.displayName ?? category.name}</span>
-                <span aria-hidden="true" className="night-atlas__category-arrow">↗</span>
+                <MenuChevron className="night-atlas__category-arrow" />
               </button>
             ))}
           </div>

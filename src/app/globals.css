@@ -395,6 +395,8 @@ a:focus-visible {
 }
 
 .night-atlas__sheet-category-mark {
+  display: inline-flex;
+  align-items: center;
   color: var(--color-honey);
   font-size: 1rem;
 }
@@ -483,7 +485,6 @@ a:focus-visible {
 .night-atlas__chapter-arrow {
   bottom: 0.75rem;
   color: var(--color-honey);
-  font-size: 1.1rem;
   position: absolute;
   right: 1rem;
   z-index: 2;
@@ -537,6 +538,7 @@ a:focus-visible {
 
 .night-atlas__category-arrow {
   color: var(--color-honey);
+  flex-shrink: 0;
 }
 
 .night-atlas__panel {

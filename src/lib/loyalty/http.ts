@@ -1,5 +1,5 @@
 import { LoyaltyError } from "./types";
-export const privateHeaders = {
+const privateHeaders = {
   "Cache-Control": "private, no-store, max-age=0",
   "X-Robots-Tag": "noindex, nofollow",
   "Referrer-Policy": "no-referrer",

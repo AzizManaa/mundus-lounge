@@ -173,13 +173,6 @@
   background: #25301b;
   color: #e2eccf;
 }
-.loyalty-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin: 20px 0;
-}
 .loyalty input,
 .loyalty select {
   width: 100%;
@@ -261,10 +254,6 @@
 body:has(.loyalty) {
   background: #100e0b;
 }
-.loyalty form.loyalty-actions input {
-  flex: 1;
-  min-width: 160px;
-}
 @media (max-width: 480px) {
   .loyalty {
     padding: 24px 16px 50px;
@@ -272,19 +261,12 @@ body:has(.loyalty) {
   .loyalty-panel {
     padding: 20px 16px;
   }
-  .loyalty-actions button {
-    flex: 1;
-  }
   .loyalty-panel > button {
     width: 100%;
   }
   .loyalty-pass h1 {
     font-size: 35px;
   }
-}
-.loyalty-list button > span:first-child {
-  min-width: 0;
-  overflow-wrap: anywhere;
 }
 
 .loyalty button.loyalty-danger {

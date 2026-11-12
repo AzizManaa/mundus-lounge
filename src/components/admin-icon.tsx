@@ -1,4 +1,5 @@
 type IconName =
+  | "book"
   | "back"
   | "scan"
   | "plus"
@@ -8,6 +9,7 @@ type IconName =
   | "check"
   | "more";
 const paths: Record<IconName, string> = {
+  book: "M12 5v16m0-16C9 3 5 3 2 4v15c3-1 7-1 10 2m0-16c3-2 7-2 10-1v15c-3-1-7-1-10 2",
   back: "M19 12H5m7-7-7 7 7 7",
   scan: "M8 3H4a1 1 0 0 0-1 1v4m13-5h4a1 1 0 0 1 1 1v4M3 16v4a1 1 0 0 0 1 1h4m8 0h4a1 1 0 0 0 1-1v-4M4 12h16",
   plus: "M12 5v14M5 12h14",
@@ -18,7 +20,7 @@ const paths: Record<IconName, string> = {
   check: "m5 12 4 4L19 6",
   more: "M5 11v2m7-2v2m7-2v2",
 };
-export default function StaffIcon({ name }: { name: IconName }) {
+export default function AdminIcon({ name }: { name: IconName }) {
   return (
     <svg
       width="20"

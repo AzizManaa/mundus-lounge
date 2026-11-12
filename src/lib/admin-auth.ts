@@ -1,7 +1,7 @@
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-export function isAdminEmail(email: unknown): email is string {
+function isAdminEmail(email: unknown): email is string {
   if (typeof email !== "string" || !email.trim()) return false;
   const allowed = (process.env.MENU_ADMIN_ALLOWED_EMAILS ?? "")
     .split(",")

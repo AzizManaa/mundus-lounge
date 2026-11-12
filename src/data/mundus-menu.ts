@@ -23,7 +23,7 @@ export type MenuCategory = {
   subcategories?: MenuSubcategory[];
 };
 
-export type MenuData = {
+type MenuData = {
   categories: MenuCategory[];
   currency: string;
 };
