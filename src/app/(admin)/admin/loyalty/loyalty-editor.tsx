@@ -10,6 +10,7 @@ import {
   setPending,
 } from "../../../../lib/loyalty/pending-operation";
 import Scanner from "../../../../components/loyalty/scanner";
+import Qr from "../../../../components/loyalty/qr";
 import {
   TARGET,
   type Card,
@@ -326,10 +327,15 @@ export default function LoyaltyEditor({
       )}
       {issued && (
         <section className="loyalty-panel">
-          <h2>Comparte este enlace ahora</h2>
+          <h2>Comparte la tarjeta ahora</h2>
           <p>
-            Solo se muestra al emitirlo. Para recuperarlo después tendrás que
-            reemplazarlo.
+            Muestra este QR al cliente para que lo escanee con la cámara de su
+            móvil y abra su tarjeta. También puedes compartir el enlace.
+          </p>
+          <Qr key={issued} value={issued} />
+          <p>
+            El QR y el enlace solo se muestran al emitirlos. Para recuperarlos
+            después tendrás que reemplazar el enlace.
           </p>
           <input
             aria-label="Enlace de la tarjeta"
