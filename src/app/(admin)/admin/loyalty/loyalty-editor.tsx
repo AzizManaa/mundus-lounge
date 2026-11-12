@@ -10,7 +10,7 @@ import {
   setPending,
 } from "../../../../lib/loyalty/pending-operation";
 import Scanner from "../../../../components/loyalty/scanner";
-import Qr from "../../../../components/loyalty/qr";
+import ShareDialog from "../../../../components/loyalty/share-dialog";
 import {
   TARGET,
   type Card,
@@ -236,18 +236,12 @@ export default function LoyaltyEditor({
     },
     [busy, pending, perform, detail, send],
   );
-  async function share() {
-    try {
-      if (navigator.share)
-        await navigator.share({ title: "Tu tarjeta VIP Mundus", url: issued });
-      else {
-        await navigator.clipboard.writeText(issued);
-        setNotice("Enlace copiado");
-      }
-    } catch (e) {
-      if (e instanceof DOMException && e.name === "AbortError") return;
-      setError("No se pudo compartir. Copia el enlace del campo.");
-    }
+  function showShare() {
+    if (!selected) return;
+    void perform(async () => {
+      const data = await call({ action: "share", id: selected.id });
+      setIssued(window.location.origin + "/vip/" + data.token);
+    });
   }
   const locked = busy || !!pending;
   return (
@@ -325,29 +319,7 @@ export default function LoyaltyEditor({
           </button>
         </section>
       )}
-      {issued && (
-        <section className="loyalty-panel loyalty-share">
-          <h2>Comparte la tarjeta ahora</h2>
-          <p>
-            Muestra este QR al cliente para que lo escanee con la cámara de su
-            móvil y abra su tarjeta. También puedes compartir el enlace.
-          </p>
-          <Qr key={issued} value={issued} />
-          <p>
-            El QR y el enlace solo se muestran al emitirlos. Para recuperarlos
-            después tendrás que reemplazar el enlace.
-          </p>
-          <input
-            aria-label="Enlace de la tarjeta"
-            readOnly
-            value={issued}
-            onFocus={(e) => e.target.select()}
-          />
-          <button onClick={() => void share()}>
-            Compartir / copiar enlace
-          </button>
-        </section>
-      )}
+      {issued && <ShareDialog url={issued} onClose={() => setIssued("")} />}
       {!selected && !creating && (
         <>
           <div className="loyalty-actions">
@@ -485,6 +457,9 @@ export default function LoyaltyEditor({
                   onClick={() => mutate("undo")}
                 >
                   Deshacer último sello
+                </button>
+                <button disabled={locked} onClick={showShare}>
+                  Mostrar QR y enlace
                 </button>
                 <button
                   disabled={locked}

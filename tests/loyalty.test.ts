@@ -9,6 +9,7 @@ import {
   listCards,
   publicCard,
   hashToken,
+  cardShare,
 } from "../src/lib/loyalty/store";
 import {
   LoyaltyError,
@@ -22,6 +23,7 @@ if (
   process.env.LOYALTY_FIREBASE_PROJECT_ID !== "demo-mundus-loyalty"
 )
   throw new Error("Tests require the demo Firestore emulator.");
+process.env.NEXTAUTH_SECRET ??= "emulator-only-test-secret-not-for-production";
 after(() => clearEmulator());
 const actor = "staff@example.test";
 const token = () => randomBytes(32).toString("base64url");
@@ -439,4 +441,38 @@ test("uncertain deletion resumes history cleanup on the same operation", async (
   }
   await mutateCard(deletion, actor);
   assert.equal((await db.collection("loyaltyCards").doc(c.id).collection("activity").get()).empty, true);
+});
+
+test("staff can reopen the same link without changing balance, revision or activity", async () => {
+  const c = await create("Compartir Privado", "+34 600 000 088");
+  await action(c.id, "stamp");
+  const before = await cardDetail(c.id);
+  assert.deepEqual(await cardShare(c.id), { token: c.token });
+  assert.deepEqual(await cardShare(c.id), { token: c.token });
+  assert.deepEqual(await cardDetail(c.id), before);
+  assert.ok(!JSON.stringify(before).includes("sealedToken"));
+  assert.ok(!JSON.stringify(await listCards("Compartir Privado")).includes("sealedToken"));
+  const replacement = token();
+  await action(c.id, "replace", { token: replacement });
+  assert.deepEqual(await cardShare(c.id), { token: replacement });
+  assert.equal((await publicCard(replacement)).balance, 1);
+  await assert.rejects(publicCard(c.token), reject(404));
+  await action(c.id, "delete");
+  await assert.rejects(cardShare(c.id), reject(404));
+  await assert.rejects(cardShare({}), reject(404));
+});
+
+test("older cards retain their links and stamps until staff explicitly replaces the link", async () => {
+  const c = await create("Anterior Compartir");
+  await action(c.id, "stamp");
+  const ref = loyaltyDb().collection("loyaltyCards").doc(c.id);
+  const raw = (await ref.get()).data()!;
+  delete raw.sealedToken;
+  await ref.set(raw);
+  await assert.rejects(cardShare(c.id), reject(409));
+  assert.equal((await publicCard(c.token)).balance, 1);
+  const replacement = token();
+  await action(c.id, "replace", { token: replacement });
+  assert.deepEqual(await cardShare(c.id), { token: replacement });
+  assert.equal((await publicCard(replacement)).balance, 1);
 });

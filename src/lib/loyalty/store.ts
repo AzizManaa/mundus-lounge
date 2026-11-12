@@ -5,6 +5,7 @@ import {
   type Query,
 } from "firebase-admin/firestore";
 import { loyaltyDb } from "./db";
+import { openToken, sealToken } from "./token-vault";
 import {
   TARGET,
   LoyaltyError,
@@ -91,6 +92,23 @@ export async function cardDetail(id?: unknown, token?: unknown) {
     activity: history.docs.map((d) => ({ id: d.id, ...d.data() }) as Activity),
   };
 }
+// Called only by the authenticated, same-origin staff endpoint.
+export async function cardShare(id: unknown) {
+  if (!validId(id)) return fail(404, "Tarjeta no encontrada.");
+  const card = await loyaltyDb().collection("loyaltyCards").doc(id).get();
+  if (!card.exists) return fail(404, "Tarjeta no encontrada.");
+  if (!card.get("sealedToken"))
+    return fail(409, "Esta tarjeta es anterior a la recuperación de enlaces. Reemplaza su enlace una vez; conservará todos sus sellos.");
+  let token: string;
+  try {
+    token = openToken(card.get("sealedToken"), id);
+  } catch {
+    return fail(503, "No se pudo recuperar el enlace. Reintenta o reemplázalo conservando los sellos.");
+  }
+  if (!validToken(token) || hashToken(token) !== card.get("tokenHash"))
+    return fail(503, "No se pudo recuperar el enlace. Reemplázalo conservando los sellos.");
+  return { token };
+}
 export async function listCards(search: unknown = "", cursor: unknown = "") {
   const db = loyaltyDb();
   if (
@@ -167,6 +185,7 @@ export async function mutateCard(value: unknown, actor: string) {
       if ((await tx.get(tokenRef)).exists)
         return fail(409, "El enlace ya existe.");
       next.tokenHash = tokenRef.id;
+      next.sealedToken = sealToken(input.token!, cardId);
     }
     if (["stamp", "redeem", "undo"].includes(action) && !next.active)
       return fail(409, "Esta tarjeta está desactivada.");

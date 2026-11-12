@@ -92,6 +92,17 @@ test(
     // Confirms this web server actually writes to the demo emulator before proceeding.
     assert.equal((await cardDetail(result.id)).card.name, "HTTP Privado");
     assert.deepEqual(await (await post(cmd, auth)).json(), result);
+    const share = { action: "share", id: result.id };
+    assert.equal((await post(share)).status, 401);
+    assert.equal((await post(share, await cookie("unapproved@example.test"))).status, 401);
+    assert.equal((await post(share, auth, "https://evil.test")).status, 403);
+    const shared = await post(share, auth);
+    assert.equal(shared.status, 200);
+    assert.match(shared.headers.get("cache-control")!, /no-store/);
+    assert.deepEqual(await shared.json(), { token });
+    const details = await (await post({ action: "detail", id: result.id }, auth)).json();
+    assert.ok(!JSON.stringify(details).includes("sealedToken"));
+    assert.ok(!JSON.stringify(details).includes(token));
     const publicResponse = await fetch(base + "/api/loyalty/card", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

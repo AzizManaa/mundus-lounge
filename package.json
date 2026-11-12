@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test:loyalty": "npx --yes firebase-tools@15.35.0 emulators:exec --only firestore --project demo-mundus-loyalty \"LOYALTY_FIREBASE_PROJECT_ID=demo-mundus-loyalty tsx --test tests/loyalty.test.ts\""
+    "test:loyalty": "npx --yes firebase-tools@15.35.0 emulators:exec --only firestore --project demo-mundus-loyalty \"LOYALTY_FIREBASE_PROJECT_ID=demo-mundus-loyalty tsx --test tests/loyalty.test.ts tests/loyalty-token.test.ts\""
   },
   "dependencies": {
     "@zxing/browser": "^0.1.5",
