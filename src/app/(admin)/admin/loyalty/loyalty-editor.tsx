@@ -10,6 +10,7 @@ import {
   setPending,
 } from "../../../../lib/loyalty/pending-operation";
 import Scanner from "../../../../components/loyalty/scanner";
+import StaffIcon from "../../../../components/loyalty/staff-icon";
 import ShareDialog from "../../../../components/loyalty/share-dialog";
 import {
   TARGET,
@@ -18,6 +19,7 @@ import {
   type Command,
 } from "../../../../lib/loyalty/types";
 import "../../../../components/loyalty/loyalty.css";
+import "../../../../components/loyalty/staff.css";
 const labels: Record<string, string> = {
   create: "Tarjeta creada",
   stamp: "Sello añadido",
@@ -175,7 +177,9 @@ export default function LoyaltyEditor({
         try {
           await list(appliedSearch);
         } catch {
-          setError("Tarjeta eliminada. No se pudo actualizar la lista. Pulsa Actualizar.");
+          setError(
+            "Tarjeta eliminada. No se pudo actualizar la lista. Pulsa Actualizar.",
+          );
         }
         return;
       }
@@ -244,46 +248,131 @@ export default function LoyaltyEditor({
     });
   }
   const locked = busy || !!pending;
-  return (
-    <main className="loyalty">
-      <header className="loyalty-brand">
-        <Image
-          src="/brand/mundus-mark.svg"
-          width={42}
-          height={42}
-          alt=""
-          unoptimized
-        />
-        <span>
-          MUNDUS LOUNGE<small>GESTIÓN · FIDELIZACIÓN</small>
-        </span>
-      </header>
-      <nav className="loyalty-actions">
-        <Link href="/admin" prefetch={false}>
-          ← Carta
-        </Link>
-        <button
-          disabled={locked}
-          onClick={() => void signOut({ callbackUrl: "/admin" })}
-        >
-          Salir
+  function startCreate() {
+    setSelected(null);
+    setScanning(false);
+    setCreating(true);
+    setName("");
+    setPhone("");
+    setIssued("");
+    setError("");
+    setNotice("");
+    window.history.replaceState(null, "", "/admin/loyalty");
+    window.scrollTo({ top: 0 });
+  }
+  function backToCards() {
+    setSelected(null);
+    setCreating(false);
+    setIssued("");
+    setScanning(false);
+    window.history.replaceState(null, "", "/admin/loyalty");
+    window.scrollTo({ top: 0 });
+    void perform(() => list(search));
+  }
+  const customerForm = (
+    <form
+      className="staff-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (creating) {
+          if (!window.confirm("¿Crear esta tarjeta VIP?")) return;
+          void perform(() =>
+            send({
+              action: "create",
+              operationId: crypto.randomUUID(),
+              token: newToken(),
+              name,
+              phone,
+            }),
+          );
+        } else mutate("update");
+      }}
+    >
+      <fieldset disabled={locked}>
+        <label>
+          Nombre del cliente
+          <input
+            required
+            maxLength={100}
+            autoComplete="off"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Nombre y apellidos"
+          />
+        </label>
+        <label>
+          Teléfono <span className="staff-optional">Opcional</span>
+          <input
+            type="tel"
+            maxLength={30}
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="+34"
+          />
+          <small>No enviaremos mensajes.</small>
+        </label>
+        {selected && (
+          <label className="loyalty-checkbox staff-active-control">
+            <input
+              type="checkbox"
+              checked={active}
+              onChange={(e) => setActive(e.target.checked)}
+            />
+            <span>
+              Tarjeta activa
+              <small>Desactívala para pausar su uso sin perder sellos.</small>
+            </span>
+          </label>
+        )}
+        <button className="loyalty-primary staff-wide" type="submit">
+          {busy
+            ? "Guardando…"
+            : creating
+              ? "Crear y compartir tarjeta"
+              : "Guardar cambios"}
         </button>
-      </nav>
-      <p className="loyalty-muted">Sesión: {email}</p>
-      {!selected && !creating && (
-        <button
-          disabled={locked}
-          onClick={() => void perform(() => list(search))}
-        >
-          Actualizar tarjetas
+      </fieldset>
+    </form>
+  );
+  return (
+    <main className="loyalty loyalty-staff" aria-busy={busy}>
+      <header className="staff-header">
+        <div className="loyalty-brand">
+          <Image
+            src="/brand/mundus-mark.svg"
+            width={32}
+            height={32}
+            alt=""
+            unoptimized
+          />
+          <span>
+            MUNDUS LOUNGE<small>TARJETAS VIP</small>
+          </span>
+        </div>
+        <details className="staff-account">
+          <summary aria-label="Cuenta y navegación">
+            <StaffIcon name="more" />
+          </summary>
+          <div className="staff-account-menu">
+            <small>Sesión iniciada</small>
+            <p>{email}</p>
+            <Link href="/admin" prefetch={false}>
+              Gestión de carta <span aria-hidden="true">↗</span>
+            </Link>
+            <button
+              disabled={locked}
+              onClick={() => void signOut({ callbackUrl: "/admin" })}
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        </details>
+      </header>
+      {(selected || creating || scanning) && (
+        <button className="staff-back" disabled={locked} onClick={backToCards}>
+          <StaffIcon name="back" /> Todas las tarjetas
         </button>
       )}
-      <h1>
-        Buenos momentos.
-        <br />
-        Clientes que vuelven.
-      </h1>
-      <p>Un pedido, un sello. Siete sellos, una bebida de regalo.</p>
       {error && (
         <div className="loyalty-error" role="alert">
           {error}
@@ -291,6 +380,7 @@ export default function LoyaltyEditor({
       )}
       {notice && (
         <div className="loyalty-notice" role="status">
+          <StaffIcon name="check" />
           {notice}
         </div>
       )}
@@ -320,259 +410,367 @@ export default function LoyaltyEditor({
         </section>
       )}
       {issued && <ShareDialog url={issued} onClose={() => setIssued("")} />}
-      {!selected && !creating && (
+      {scanning ? (
+        <Scanner onScan={onScan} onClose={() => setScanning(false)} />
+      ) : (
         <>
-          <div className="loyalty-actions">
-            <button
-              className="loyalty-primary"
-              disabled={locked}
-              onClick={() => {
-                setScanning(false);
-                setCreating(true);
-                setName("");
-                setPhone("");
-                setIssued("");
-              }}
-            >
-              + Nueva tarjeta VIP
-            </button>
-            <button disabled={locked} onClick={() => setScanning(true)}>
-              Escanear y añadir sello
-            </button>
-          </div>
-          {scanning && (
-            <Scanner onScan={onScan} onClose={() => setScanning(false)} />
-          )}
-          <form
-            className="loyalty-actions"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setScanning(false);
-              void perform(() => list(search));
-            }}
-          >
-            <input
-              aria-label="Buscar por nombre o teléfono"
-              maxLength={100}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Nombre o teléfono (desde el inicio)"
-            />
-            <button disabled={locked}>Buscar</button>
-          </form>
-          <div className="loyalty-list">
-            {cards.map((card) => (
-              <button
-                key={card.id}
-                disabled={locked}
-                onClick={() => {
-                  setScanning(false);
-                  setIssued("");
-                  void perform(() => detail(card.id));
+          {!selected && !creating && (
+            <>
+              <div className="staff-page-title">
+                <div>
+                  <h1>Tarjetas VIP</h1>
+                  <p>Busca un cliente o escanea su tarjeta.</p>
+                </div>
+                <button
+                  className="staff-icon-button"
+                  aria-label="Actualizar tarjetas"
+                  disabled={locked}
+                  onClick={() => void perform(() => list(appliedSearch))}
+                >
+                  <StaffIcon name="refresh" />
+                </button>
+              </div>
+              <form
+                className="staff-search"
+                role="search"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void perform(() => list(search));
                 }}
               >
+                <input
+                  aria-label="Buscar por nombre o teléfono"
+                  maxLength={100}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Nombre o teléfono"
+                />
+                <button disabled={locked} type="submit">
+                  Buscar
+                </button>
+              </form>
+              <p className="staff-search-hint">
+                Escribe el principio del nombre o teléfono.
+              </p>
+              <div className="staff-section-heading">
+                <h2>Clientes</h2>
                 <span>
-                  <strong>{card.name}</strong>
-                  <small>
-                    {card.phone || "Sin teléfono"} ·{" "}
-                    {card.active ? "Activa" : "Desactivada"}
-                  </small>
+                  {cards.length}
+                  {next || truncated ? "+" : ""} tarjetas
                 </span>
-                <span>
-                  {card.balance}/{TARGET} →
-                </span>
-              </button>
-            ))}
-          </div>
-          {!cards.length && (
-            <p>No hay tarjetas que mostrar. Busca o crea la primera.</p>
+              </div>
+              <div className="loyalty-list staff-customers">
+                {cards.map((card) => (
+                  <button
+                    key={card.id}
+                    disabled={locked}
+                    onClick={() => {
+                      setIssued("");
+                      void perform(async () => {
+                        await detail(card.id);
+                        window.scrollTo({ top: 0 });
+                      });
+                    }}
+                  >
+                    <span className="staff-avatar" aria-hidden="true">
+                      {card.name.slice(0, 1).toUpperCase()}
+                    </span>
+                    <span className="staff-customer-name">
+                      <strong>{card.name}</strong>
+                      <small>
+                        {!card.active
+                          ? "Desactivada"
+                          : card.balance === TARGET
+                            ? "Bebida disponible"
+                            : card.phone || "Tarjeta VIP"}
+                      </small>
+                    </span>
+                    <span
+                      className={`staff-count${card.balance === TARGET ? " staff-count-ready" : ""}`}
+                    >
+                      {card.balance}
+                      <small>/{TARGET}</small>
+                    </span>
+                    <StaffIcon name="chevron" />
+                  </button>
+                ))}
+              </div>
+              {!cards.length && (
+                <div className="staff-empty">
+                  <StaffIcon name="qr" />
+                  <h2>
+                    {appliedSearch
+                      ? "Sin resultados"
+                      : "Crea la primera tarjeta"}
+                  </h2>
+                  <p>
+                    {appliedSearch
+                      ? "Prueba con otro nombre o teléfono."
+                      : "Crea una tarjeta y compártela con el cliente."}
+                  </p>
+                  {!appliedSearch && (
+                    <button disabled={locked} onClick={startCreate}>
+                      Crear primera tarjeta
+                    </button>
+                  )}
+                </div>
+              )}
+              {truncated && (
+                <p className="loyalty-muted">
+                  Hay más resultados. Escribe más letras o números.
+                </p>
+              )}
+              {next && (
+                <button
+                  className="staff-wide"
+                  disabled={locked}
+                  onClick={() => void perform(() => list(appliedSearch, next))}
+                >
+                  Ver más clientes
+                </button>
+              )}
+            </>
           )}
-          {truncated && (
-            <p>Hay más resultados. Escribe más letras o números.</p>
+          {creating && (
+            <section className="staff-create">
+              <div className="staff-page-title">
+                <div>
+                  <h1>Nueva tarjeta</h1>
+                  <p>Solo necesitas el nombre para empezar.</p>
+                </div>
+              </div>
+              {customerForm}
+            </section>
           )}
-          {next && (
-            <button
-              disabled={locked}
-              onClick={() => void perform(() => list(appliedSearch, next))}
-            >
-              Ver más tarjetas
-            </button>
-          )}
-        </>
-      )}
-      {(creating || selected) && (
-        <>
-          <button
-            disabled={locked}
-            onClick={() => {
-              setSelected(null);
-              setCreating(false);
-              setIssued("");
-              window.history.replaceState(null, "", "/admin/loyalty");
-              setScanning(false);
-              void perform(() => list(search));
-            }}
-          >
-            ← Volver a tarjetas
-          </button>
           {selected && (
-            <section className="loyalty-panel">
-              <p className="loyalty-eyebrow">
-                {selected.active ? "TARJETA ACTIVA" : "TARJETA DESACTIVADA"}
-              </p>
-              <h2>{selected.name}</h2>
-              <p className="loyalty-balance">
-                {selected.balance} / {TARGET} sellos
-              </p>
-              <p>
+            <>
+              <section className="staff-card" aria-label="Tarjeta del cliente">
+                <div className="staff-card-top">
+                  <span
+                    className={`staff-status${selected.active ? "" : " staff-status-paused"}`}
+                  >
+                    <span />
+                    {selected.active ? "Activa" : "Desactivada"}
+                  </span>
+                  <button
+                    className="staff-icon-button"
+                    disabled={locked}
+                    aria-label="Actualizar tarjeta"
+                    onClick={() => void perform(() => detail(selected.id))}
+                  >
+                    <StaffIcon name="refresh" />
+                  </button>
+                </div>
+                <h1>{selected.name}</h1>
+                {selected.phone && (
+                  <p className="staff-customer-phone">{selected.phone}</p>
+                )}
+                <div className="staff-progress-heading">
+                  <p>
+                    <strong>{selected.balance}</strong>
+                    <span> / {TARGET}</span>
+                  </p>
+                  <span>SELLOS</span>
+                </div>
+                <div
+                  className="staff-stamps"
+                  role="img"
+                  aria-label={`${selected.balance} de ${TARGET} sellos`}
+                >
+                  {Array.from({ length: TARGET }, (_, i) => (
+                    <span
+                      key={i}
+                      className={i < selected.balance ? "is-filled" : ""}
+                    >
+                      {i < selected.balance ? (
+                        <StaffIcon name="check" />
+                      ) : (
+                        i + 1
+                      )}
+                    </span>
+                  ))}
+                </div>
+                <p className="staff-reward-copy">
+                  {!selected.active
+                    ? "Reactiva la tarjeta en los datos del cliente."
+                    : selected.balance === TARGET
+                      ? "Una bebida de regalo lista para canjear."
+                      : `${TARGET - selected.balance} ${TARGET - selected.balance === 1 ? "sello para su próxima bebida" : "sellos para su próxima bebida"}.`}
+                </p>
+                <button
+                  className="staff-share-button"
+                  disabled={locked}
+                  onClick={showShare}
+                >
+                  <StaffIcon name="qr" /> Mostrar QR y enlace{" "}
+                  <StaffIcon name="chevron" />
+                </button>
+              </section>
+              <p className="staff-order-note">
                 {selected.balance === TARGET
-                  ? "Bebida gratis disponible. Confirma la entrega para canjear."
-                  : "Confirma la identidad y el pedido antes de añadir un sello."}
+                  ? "Entrega la bebida antes de confirmar el canje."
+                  : "Confirma el pedido pagado antes de añadir un sello."}
               </p>
-              <div className="loyalty-actions">
+              {selected.lastBalanceAction === "stamp" && selected.active && (
                 <button
-                  className="loyalty-primary"
-                  disabled={
-                    locked || !selected.active || selected.balance >= TARGET
-                  }
-                  onClick={() => mutate("stamp")}
-                >
-                  + Añadir sello
-                </button>
-                <button
-                  className="loyalty-primary"
-                  disabled={
-                    locked || !selected.active || selected.balance !== TARGET
-                  }
-                  onClick={() => mutate("redeem")}
-                >
-                  Canjear bebida
-                </button>
-                <button
-                  disabled={
-                    locked ||
-                    !selected.active ||
-                    selected.lastBalanceAction !== "stamp"
-                  }
+                  className="staff-undo"
+                  disabled={locked}
                   onClick={() => mutate("undo")}
                 >
                   Deshacer último sello
                 </button>
-                <button disabled={locked} onClick={showShare}>
-                  Mostrar QR y enlace
-                </button>
-                <button
-                  disabled={locked}
-                  onClick={() => void perform(() => detail(selected.id))}
-                >
-                  Actualizar
-                </button>
-              </div>
-            </section>
-          )}
-          <form
-            className="loyalty-panel"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (creating) {
-                if (!window.confirm("¿Crear esta tarjeta VIP?")) return;
-                void perform(() =>
-                  send({
-                    action: "create",
-                    operationId: crypto.randomUUID(),
-                    token: newToken(),
-                    name,
-                    phone,
-                  }),
-                );
-              } else mutate("update");
-            }}
-          >
-            <h2>{creating ? "Nueva tarjeta VIP" : "Datos del cliente"}</h2>
-            <fieldset disabled={locked}>
-              <label>
-                Nombre del cliente
-                <input
-                  required
-                  maxLength={100}
-                  autoComplete="off"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </label>
-              <label>
-                Teléfono <small>Opcional · sin mensajes ni verificación</small>
-                <input
-                  type="tel"
-                  maxLength={30}
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </label>
-              {selected && (
-                <label className="loyalty-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={active}
-                    onChange={(e) => setActive(e.target.checked)}
-                  />{" "}
-                  Tarjeta activa
-                </label>
               )}
-              <button className="loyalty-primary" type="submit">
-                {creating ? "Crear y compartir tarjeta" : "Guardar datos"}
-              </button>
-            </fieldset>
-          </form>
-          {selected && (
-            <>
-              <section className="loyalty-panel">
-                <h2>¿Ha perdido su enlace?</h2>
-                <p>
-                  El nuevo enlace conserva los sellos e invalida el anterior.
-                </p>
-                <button disabled={locked} onClick={() => mutate("replace")}>
-                  Reemplazar enlace
-                </button>
-              </section>
-              <section className="loyalty-panel">
-                <h2>Actividad reciente</h2>
-                {activity.map((item) => (
-                  <div className="loyalty-activity" key={item.id}>
-                    <strong>
-                      {labels[item.action] || item.action} · {item.before} →{" "}
-                      {item.after}
-                    </strong>
-                    <small>
-                      {new Date(item.at).toLocaleString("es-ES", {
-                        timeZone: "Europe/Madrid",
-                      })}{" "}
-                      · {item.actor}
-                    </small>
-                  </div>
-                ))}
-              </section>
-              <section className="loyalty-panel">
-                <h2>Eliminar tarjeta</h2>
-                <p>
-                  Borra los datos, los sellos y el historial de este cliente.
-                  Para una pausa temporal, desactiva la tarjeta en sus datos.
-                </p>
-                <button
-                  className="loyalty-danger"
-                  disabled={locked}
-                  onClick={() => mutate("delete")}
+              <div className="staff-disclosures">
+                <details
+                  className="staff-disclosure"
+                  key={`${selected.id}-details`}
                 >
-                  Eliminar tarjeta permanentemente
-                </button>
-              </section>
+                  <summary>
+                    <span>
+                      Datos del cliente<small>Nombre, teléfono y estado</small>
+                    </span>
+                    <StaffIcon name="chevron" />
+                  </summary>
+                  {customerForm}
+                </details>
+                <details
+                  className="staff-disclosure"
+                  key={`${selected.id}-activity`}
+                >
+                  <summary>
+                    <span>
+                      Actividad reciente<small>Sellos, canjes y cambios</small>
+                    </span>
+                    <StaffIcon name="chevron" />
+                  </summary>
+                  <div className="staff-history">
+                    {activity.map((item) => (
+                      <div className="loyalty-activity" key={item.id}>
+                        <div>
+                          <strong>{labels[item.action] || item.action}</strong>
+                          <span>
+                            {item.before} → {item.after}
+                          </span>
+                        </div>
+                        <small>
+                          {new Date(item.at).toLocaleString("es-ES", {
+                            timeZone: "Europe/Madrid",
+                          })}
+                        </small>
+                        <small>{item.actor}</small>
+                      </div>
+                    ))}
+                    {!activity.length && (
+                      <p className="loyalty-muted">Todavía no hay actividad.</p>
+                    )}
+                  </div>
+                </details>
+                <details
+                  className="staff-disclosure"
+                  key={`${selected.id}-manage`}
+                >
+                  <summary>
+                    <span>
+                      Gestionar tarjeta
+                      <small>Reemplazar enlace o eliminar</small>
+                    </span>
+                    <StaffIcon name="chevron" />
+                  </summary>
+                  <div className="staff-management">
+                    <h3>Reemplazar enlace</h3>
+                    <p>
+                      Solo si necesitas invalidar el anterior. Conserva todos
+                      los sellos.
+                    </p>
+                    <button
+                      className="staff-wide"
+                      disabled={locked}
+                      onClick={() => mutate("replace")}
+                    >
+                      Crear nuevo enlace
+                    </button>
+                    <div className="staff-danger-zone">
+                      <h3>Eliminar tarjeta</h3>
+                      <p>
+                        Borra los datos, los sellos y el historial. No se puede
+                        deshacer.
+                      </p>
+                      <button
+                        className="loyalty-danger staff-wide"
+                        disabled={locked}
+                        onClick={() => mutate("delete")}
+                      >
+                        Eliminar permanentemente
+                      </button>
+                    </div>
+                  </div>
+                </details>
+              </div>
             </>
           )}
         </>
       )}
-      <footer className="loyalty-terms">
-        Un sello por pedido pagado · Siete sellos = una bebida · Sin caducidad ·
-        Selección de bebidas a criterio del personal.
+      {!creating && !scanning && (
+        <nav className="staff-dock" aria-label="Acciones rápidas">
+          {selected ? (
+            <>
+              <button
+                className="staff-scan-secondary"
+                disabled={locked}
+                onClick={() => {
+                  setIssued("");
+                  setScanning(true);
+                  window.scrollTo({ top: 0 });
+                }}
+              >
+                <StaffIcon name="scan" />
+                Escanear
+              </button>
+              <button
+                className="loyalty-primary staff-main-action"
+                disabled={locked || !selected.active}
+                onClick={() =>
+                  mutate(selected.balance === TARGET ? "redeem" : "stamp")
+                }
+              >
+                {busy ? (
+                  "Procesando…"
+                ) : selected.balance === TARGET ? (
+                  "Canjear bebida"
+                ) : (
+                  <>
+                    <StaffIcon name="plus" /> Añadir sello
+                  </>
+                )}
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="staff-scan-secondary"
+                disabled={locked}
+                onClick={startCreate}
+              >
+                <StaffIcon name="plus" />
+                Nueva tarjeta
+              </button>
+              <button
+                className="loyalty-primary staff-main-action"
+                disabled={locked}
+                onClick={() => {
+                  setScanning(true);
+                  window.scrollTo({ top: 0 });
+                }}
+              >
+                <StaffIcon name="scan" />
+                Escanear QR
+              </button>
+            </>
+          )}
+        </nav>
+      )}
+      <footer className="staff-footer">
+        7 sellos · 1 bebida · Sin caducidad
       </footer>
     </main>
   );
