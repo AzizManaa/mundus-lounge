@@ -326,7 +326,7 @@ export default function LoyaltyEditor({
         </section>
       )}
       {issued && (
-        <section className="loyalty-panel">
+        <section className="loyalty-panel loyalty-share">
           <h2>Comparte la tarjeta ahora</h2>
           <p>
             Muestra este QR al cliente para que lo escanee con la cámara de su

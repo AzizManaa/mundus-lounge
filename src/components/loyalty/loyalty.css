@@ -138,6 +138,9 @@
   margin: 25px auto;
   color: #111;
 }
+.loyalty-share .loyalty-qr {
+  max-width: 320px;
+}
 .loyalty-qr svg {
   width: 100%;
   height: auto;
