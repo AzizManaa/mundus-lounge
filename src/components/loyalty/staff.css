@@ -309,7 +309,7 @@ body:has(.loyalty-staff) {
 }
 .staff-stamps {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 7px;
 }
 .staff-stamps > span {
@@ -323,13 +323,10 @@ body:has(.loyalty-staff) {
   font-variant-numeric: tabular-nums;
 }
 .staff-stamps > .is-filled {
+  font-size: 26px;
   background: var(--gold);
   border-color: var(--gold);
   color: #282014;
-}
-.staff-stamps svg {
-  width: 19px;
-  height: 19px;
 }
 .staff-reward-copy {
   margin: 14px 0 22px;
@@ -582,4 +579,44 @@ body:has(.loyalty-staff) {
   .staff-card {
     padding-top: 22px;
   }
+}
+
+.staff-stamps .reward-stamp {
+  border-style: dashed;
+}
+.staff-stamps .reward-stamp svg {
+  width: 28px;
+  height: 28px;
+}
+.staff-drink-reward {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 0;
+  margin-top: -10px;
+  border-top: 1px solid #d2b38025;
+}
+.staff-drink-reward > svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.staff-drink-reward > span {
+  flex: 1;
+  min-width: 0;
+}
+.staff-drink-reward strong,
+.staff-drink-reward small {
+  display: block;
+}
+.staff-drink-reward strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+.staff-drink-reward small {
+  font-size: 11px;
+  color: var(--staff-muted);
+}
+.staff-drink-reward button {
+  padding: 10px;
+  font-size: 12px;
 }

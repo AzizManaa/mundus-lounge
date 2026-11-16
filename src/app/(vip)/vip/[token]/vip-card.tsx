@@ -7,8 +7,14 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import StampGrid from "../../../../components/loyalty/stamp-grid";
+import RewardIcon from "../../../../components/loyalty/reward-icon";
 import Qr from "../../../../components/loyalty/qr";
-import { TARGET, type PublicCard } from "../../../../lib/loyalty/types";
+import {
+  TARGET,
+  DRINK_TARGET,
+  type PublicCard,
+} from "../../../../lib/loyalty/types";
 export default function VipCard({
   token,
   initialCard,
@@ -96,28 +102,46 @@ export default function VipCard({
         )}
         {card && (
           <>
-            <div
-              className="loyalty-stamps"
-              aria-label={`${card.balance} de ${TARGET} sellos`}
-            >
-              {Array.from({ length: TARGET }, (_, i) => (
-                <span
-                  key={i}
-                  className={i < card.balance ? "filled" : ""}
-                  aria-hidden="true"
-                >
-                  {i === TARGET - 1 ? "✦" : i < card.balance ? "✧" : i + 1}
-                </span>
-              ))}
-            </div>
+            <StampGrid balance={card.balance} />
             <p className="loyalty-balance">
               {card.balance} / {TARGET} sellos
             </p>
-            <h2>
-              {card.balance === TARGET
-                ? "Tu bebida gratis está lista"
-                : `A ${TARGET - card.balance} ${TARGET - card.balance === 1 ? "sello" : "sellos"} de tu bebida gratis`}
-            </h2>
+            <div className="loyalty-rewards">
+              <div
+                className={
+                  card.balance >= DRINK_TARGET && !card.drinkRedeemed
+                    ? "reward-ready"
+                    : ""
+                }
+              >
+                <RewardIcon reward="drink" />
+                <div>
+                  <strong>{DRINK_TARGET} sellos · Bebida gratis</strong>
+                  <small>
+                    {card.drinkRedeemed
+                      ? "Ya canjeada en esta tarjeta"
+                      : card.balance >= DRINK_TARGET
+                        ? "Disponible · Pídela al personal"
+                        : DRINK_TARGET - card.balance === 1
+                          ? "Falta 1 sello"
+                          : `Faltan ${DRINK_TARGET - card.balance} sellos`}
+                  </small>
+                </div>
+              </div>
+              <div className={card.balance === TARGET ? "reward-ready" : ""}>
+                <RewardIcon reward="shisha" />
+                <div>
+                  <strong>{TARGET} sellos · Shisha gratis</strong>
+                  <small>
+                    {card.balance === TARGET
+                      ? "Disponible · Pídela al personal"
+                      : TARGET - card.balance === 1
+                        ? "Falta 1 sello"
+                        : `Faltan ${TARGET - card.balance} sellos`}
+                  </small>
+                </div>
+              </div>
+            </div>
             <p>Muestra tu tarjeta al personal.</p>
             {url && <Qr value={url} />}
           </>
@@ -128,9 +152,11 @@ export default function VipCard({
       </section>
       <section className="loyalty-terms">
         <p>
-          Un sello por pedido pagado, confirmado por el personal. Con siete
-          sellos, una bebida gratis de la selección indicada por el personal.
-          Canjea tu bebida para empezar de nuevo. Sin caducidad.
+          Un sello por pedido pagado, confirmado por el personal. A los{" "}
+          {DRINK_TARGET} sellos, una bebida gratis y sigues sumando. A los{" "}
+          {TARGET} sellos, una shisha gratis. Canjea ambos premios para empezar
+          de nuevo. Una bebida y una shisha por tarjeta completa, de la
+          selección indicada por el personal. Sin caducidad.
         </p>
         <details>
           <summary>Guarda tu tarjeta en el móvil</summary>
@@ -145,7 +171,6 @@ export default function VipCard({
           uno nuevo al personal.
         </p>
       </section>
-
     </main>
   );
 }

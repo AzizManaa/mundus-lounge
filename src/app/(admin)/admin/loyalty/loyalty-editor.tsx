@@ -10,10 +10,13 @@ import {
   setPending,
 } from "../../../../lib/loyalty/pending-operation";
 import Scanner from "../../../../components/loyalty/scanner";
+import StampGrid from "../../../../components/loyalty/stamp-grid";
+import RewardIcon from "../../../../components/loyalty/reward-icon";
 import AdminIcon from "../../../../components/admin-icon";
 import ShareDialog from "../../../../components/loyalty/share-dialog";
 import {
   TARGET,
+  DRINK_TARGET,
   type Card,
   type Activity,
   type Command,
@@ -23,7 +26,8 @@ import "../../../../components/loyalty/staff.css";
 const labels: Record<string, string> = {
   create: "Tarjeta creada",
   stamp: "Sello añadido",
-  redeem: "Bebida canjeada",
+  redeem: "Premio canjeado",
+  redeemDrink: "Bebida canjeada · Sigue sumando sellos",
   undo: "Último sello deshecho",
   update: "Datos actualizados",
   replace: "Enlace reemplazado",
@@ -166,7 +170,11 @@ export default function LoyaltyEditor({
       setIssued(
         command.token ? window.location.origin + "/vip/" + command.token : "",
       );
-      setNotice(labels[command.action]);
+      setNotice(
+        command.action === "redeem"
+          ? "Shisha canjeada · Nueva tarjeta"
+          : labels[command.action],
+      );
       if (command.action === "delete") {
         setSelected(null);
         setActivity([]);
@@ -197,7 +205,8 @@ export default function LoyaltyEditor({
     if (!selected || pending || busy) return;
     const messages: Partial<Record<Command["action"], string>> = {
       stamp: `¿Añadir un sello a ${selected.name}? Confirma que corresponde a un pedido pagado.`,
-      redeem: `¿Has entregado la bebida gratis a ${selected.name}? El saldo volverá a cero.`,
+      redeem: `¿Has entregado la shisha gratis a ${selected.name}? El saldo volverá a cero y comenzará una nueva tarjeta.`,
+      redeemDrink: `¿Has entregado la bebida gratis a ${selected.name}? Mantendrá sus ${selected.balance} sellos para seguir sumando hasta la shisha.`,
       undo: "¿Deshacer el último sello?",
       delete: `¿Eliminar permanentemente la tarjeta de ${selected.name}? Se perderán sus ${selected.balance} sellos, sus datos y todo el historial. El enlace dejará de funcionar. Esta acción no se puede deshacer.`,
       replace: "El enlace anterior dejará de funcionar. ¿Crear uno nuevo?",
@@ -481,12 +490,15 @@ export default function LoyaltyEditor({
                         {!card.active
                           ? "Desactivada"
                           : card.balance === TARGET
-                            ? "Bebida disponible"
-                            : card.phone || "Tarjeta VIP"}
+                            ? "Shisha disponible"
+                            : card.balance >= DRINK_TARGET &&
+                                !card.drinkRedeemed
+                              ? "Bebida disponible"
+                              : card.phone || "Tarjeta VIP"}
                       </small>
                     </span>
                     <span
-                      className={`staff-count${card.balance === TARGET ? " staff-count-ready" : ""}`}
+                      className={`staff-count${card.balance === TARGET || (card.balance >= DRINK_TARGET && !card.drinkRedeemed) ? " staff-count-ready" : ""}`}
                     >
                       {card.balance}
                       <small>/{TARGET}</small>
@@ -572,31 +584,38 @@ export default function LoyaltyEditor({
                   </p>
                   <span>SELLOS</span>
                 </div>
-                <div
-                  className="staff-stamps"
-                  role="img"
-                  aria-label={`${selected.balance} de ${TARGET} sellos`}
-                >
-                  {Array.from({ length: TARGET }, (_, i) => (
-                    <span
-                      key={i}
-                      className={i < selected.balance ? "is-filled" : ""}
-                    >
-                      {i < selected.balance ? (
-                        <AdminIcon name="check" />
-                      ) : (
-                        i + 1
-                      )}
-                    </span>
-                  ))}
-                </div>
+                <StampGrid balance={selected.balance} staff />
                 <p className="staff-reward-copy">
                   {!selected.active
                     ? "Reactiva la tarjeta en los datos del cliente."
                     : selected.balance === TARGET
-                      ? "Una bebida de regalo lista para canjear."
-                      : `${TARGET - selected.balance} ${TARGET - selected.balance === 1 ? "sello para su próxima bebida" : "sellos para su próxima bebida"}.`}
+                      ? "Shisha gratis disponible."
+                      : selected.balance < DRINK_TARGET
+                        ? `${DRINK_TARGET - selected.balance} ${DRINK_TARGET - selected.balance === 1 ? "sello" : "sellos"} para una bebida gratis.`
+                        : `${TARGET - selected.balance} ${TARGET - selected.balance === 1 ? "sello" : "sellos"} para una shisha gratis.`}
                 </p>
+                <div className="staff-drink-reward">
+                  <RewardIcon reward="drink" />
+                  <span>
+                    <strong>Bebida · {DRINK_TARGET} sellos</strong>
+                    <small>
+                      {selected.drinkRedeemed
+                        ? "Ya canjeada"
+                        : selected.balance >= DRINK_TARGET
+                          ? "Disponible · Conserva sus sellos"
+                          : `Se desbloquea al llegar a ${DRINK_TARGET}`}
+                    </small>
+                  </span>
+                  {selected.balance >= DRINK_TARGET &&
+                    !selected.drinkRedeemed && (
+                      <button
+                        disabled={locked || !selected.active}
+                        onClick={() => mutate("redeemDrink")}
+                      >
+                        Canjear
+                      </button>
+                    )}
+                </div>
                 <button
                   className="staff-share-button"
                   disabled={locked}
@@ -608,7 +627,9 @@ export default function LoyaltyEditor({
               </section>
               <p className="staff-order-note">
                 {selected.balance === TARGET
-                  ? "Entrega la bebida antes de confirmar el canje."
+                  ? selected.drinkRedeemed
+                    ? "Entrega la shisha antes de confirmar el canje."
+                    : "Canjea primero la bebida pendiente; después, la shisha."
                   : "Confirma el pedido pagado antes de añadir un sello."}
               </p>
               {selected.lastBalanceAction === "stamp" && selected.active && (
@@ -647,7 +668,11 @@ export default function LoyaltyEditor({
                     {activity.map((item) => (
                       <div className="loyalty-activity" key={item.id}>
                         <div>
-                          <strong>{labels[item.action] || item.action}</strong>
+                          <strong>
+                            {item.reward === "shisha"
+                              ? "Shisha canjeada"
+                              : labels[item.action] || item.action}
+                          </strong>
                           <span>
                             {item.before} a {item.after}
                           </span>
@@ -728,7 +753,11 @@ export default function LoyaltyEditor({
               </button>
               <button
                 className="loyalty-primary staff-main-action"
-                disabled={locked || !selected.active}
+                disabled={
+                  locked ||
+                  !selected.active ||
+                  (selected.balance === TARGET && !selected.drinkRedeemed)
+                }
                 onClick={() =>
                   mutate(selected.balance === TARGET ? "redeem" : "stamp")
                 }
@@ -736,7 +765,7 @@ export default function LoyaltyEditor({
                 {busy ? (
                   "Procesando…"
                 ) : selected.balance === TARGET ? (
-                  "Canjear bebida"
+                  "Canjear shisha"
                 ) : (
                   <>
                     <AdminIcon name="plus" /> Añadir sello
@@ -770,7 +799,7 @@ export default function LoyaltyEditor({
         </nav>
       )}
       <footer className="staff-footer">
-        7 sellos · 1 bebida · Sin caducidad
+        {DRINK_TARGET} sellos · Bebida · {TARGET} sellos · Shisha
       </footer>
     </main>
   );

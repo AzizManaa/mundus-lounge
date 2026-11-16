@@ -59,7 +59,7 @@ export default function AdminLogin({
           </h1>
           <p>
             {loyalty
-              ? "Gestiona tarjetas VIP, añade sellos y canjea bebidas desde tu móvil."
+              ? "Gestiona tarjetas VIP, añade sellos y canjea bebidas y shishas desde tu móvil."
               : "Actualiza productos, precios y disponibilidad desde tu móvil."}
           </p>
           {(error || failed) && (

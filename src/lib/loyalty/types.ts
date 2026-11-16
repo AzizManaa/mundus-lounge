@@ -1,26 +1,42 @@
-export const TARGET = 7;
+export const TARGET = 10;
+export const DRINK_TARGET = 5;
 export type Card = {
   id: string;
   name: string;
   phone: string;
   active: boolean;
   balance: number;
+  drinkRedeemed: boolean;
   revision: number;
   createdAt: string;
   updatedAt: string;
   lastBalanceAction: string;
 };
-export type PublicCard = { firstName: string; balance: number; target: number };
+export type PublicCard = {
+  firstName: string;
+  balance: number;
+  target: number;
+  drinkRedeemed: boolean;
+};
 export type Activity = {
   id: string;
   action: string;
   actor: string;
+  reward?: "drink" | "shisha";
   at: string;
   before: number;
   after: number;
 };
 export type Command = {
-  action: "create" | "stamp" | "redeem" | "undo" | "update" | "replace" | "delete";
+  action:
+    | "create"
+    | "stamp"
+    | "redeemDrink"
+    | "redeem"
+    | "undo"
+    | "update"
+    | "replace"
+    | "delete";
   operationId: string;
   id?: string;
   revision?: number;
@@ -85,9 +101,16 @@ export function parseCommand(value: unknown): Command {
   const { action, operationId } = body;
   if (
     typeof action !== "string" ||
-    !["create", "stamp", "redeem", "undo", "update", "replace", "delete"].includes(
-      action,
-    ) ||
+    ![
+      "create",
+      "stamp",
+      "redeemDrink",
+      "redeem",
+      "undo",
+      "update",
+      "replace",
+      "delete",
+    ].includes(action) ||
     !validId(operationId)
   )
     return invalid();

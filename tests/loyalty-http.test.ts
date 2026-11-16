@@ -94,13 +94,18 @@ test(
     assert.deepEqual(await (await post(cmd, auth)).json(), result);
     const share = { action: "share", id: result.id };
     assert.equal((await post(share)).status, 401);
-    assert.equal((await post(share, await cookie("unapproved@example.test"))).status, 401);
+    assert.equal(
+      (await post(share, await cookie("unapproved@example.test"))).status,
+      401,
+    );
     assert.equal((await post(share, auth, "https://evil.test")).status, 403);
     const shared = await post(share, auth);
     assert.equal(shared.status, 200);
     assert.match(shared.headers.get("cache-control")!, /no-store/);
     assert.deepEqual(await shared.json(), { token });
-    const details = await (await post({ action: "detail", id: result.id }, auth)).json();
+    const details = await (
+      await post({ action: "detail", id: result.id }, auth)
+    ).json();
     assert.ok(!JSON.stringify(details).includes("sealedToken"));
     assert.ok(!JSON.stringify(details).includes(token));
     const publicResponse = await fetch(base + "/api/loyalty/card", {
@@ -111,7 +116,8 @@ test(
     assert.deepEqual(await publicResponse.json(), {
       firstName: "HTTP",
       balance: 0,
-      target: 7,
+      target: 10,
+      drinkRedeemed: false,
     });
     for (const r of [
       response,
@@ -129,15 +135,53 @@ test(
     const sitemap = await (await fetch(base + "/sitemap.xml")).text();
     assert.ok(!sitemap.includes("/vip/"));
     assert.ok(!sitemap.includes("/admin"));
+    let revision = result.revision;
+    for (let i = 0; i < 5; i++) {
+      const stamped = await post(
+        { action: "stamp", operationId: randomUUID(), id: result.id, revision },
+        auth,
+      );
+      assert.equal(stamped.status, 200);
+      revision = (await stamped.json()).revision;
+    }
+    const drink = {
+      action: "redeemDrink",
+      operationId: randomUUID(),
+      id: result.id,
+      revision,
+    };
+    assert.equal((await post(drink)).status, 401);
+    assert.equal(
+      (await post(drink, await cookie("unapproved@example.test"))).status,
+      401,
+    );
+    assert.equal((await post(drink, auth, "https://evil.test")).status, 403);
+    const redeemedDrink = await post(drink, auth);
+    assert.equal(redeemedDrink.status, 200);
+    const receipt = await redeemedDrink.json();
+    assert.deepEqual(await (await post(drink, auth)).json(), receipt);
+    revision = receipt.revision;
+    const current = await cardDetail(result.id);
+    assert.equal(current.card.balance, 5);
+    assert.equal(current.card.drinkRedeemed, true);
     const deletion = {
-      action: "delete", operationId: randomUUID(), id: result.id, revision: 0,
+      action: "delete",
+      operationId: randomUUID(),
+      id: result.id,
+      revision,
     };
     assert.equal((await post(deletion)).status, 401);
-    assert.equal((await post(deletion, await cookie("unapproved@example.test"))).status, 401);
+    assert.equal(
+      (await post(deletion, await cookie("unapproved@example.test"))).status,
+      401,
+    );
     assert.equal((await post(deletion, auth, "https://evil.test")).status, 403);
     assert.equal((await post(deletion, auth)).status, 200);
     assert.equal((await post(deletion, auth)).status, 200);
-    assert.equal((await post({ action: "detail", id: result.id }, auth)).status, 404);
+    assert.equal(
+      (await post({ action: "detail", id: result.id }, auth)).status,
+      404,
+    );
     const unavailable = await fetch(base + "/api/loyalty/card", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

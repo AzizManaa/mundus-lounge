@@ -68,7 +68,8 @@ test("loyalty lifecycle and public privacy", async () => {
   assert.deepEqual(await publicCard(c.token), {
     firstName: "Álvaro",
     balance: 0,
-    target: 7,
+    target: 10,
+    drinkRedeemed: false,
   });
   const raw = (
     await loyaltyDb().collection("loyaltyCards").doc(c.id).get()
@@ -76,13 +77,16 @@ test("loyalty lifecycle and public privacy", async () => {
   assert.equal(raw.tokenHash, hashToken(c.token));
   assert.ok(!JSON.stringify(raw).includes(c.token));
   await assert.rejects(action(c.id, "redeem"), reject(409));
-  for (let i = 0; i < 7; i++) await action(c.id, "stamp");
+  for (let i = 0; i < 10; i++) await action(c.id, "stamp");
   await assert.rejects(action(c.id, "stamp"), reject(409));
-  assert.equal((await publicCard(c.token)).balance, 7);
+  assert.equal((await publicCard(c.token)).balance, 10);
   await action(c.id, "undo");
-  assert.equal((await publicCard(c.token)).balance, 6);
+  assert.equal((await publicCard(c.token)).balance, 9);
   await assert.rejects(action(c.id, "undo"), reject(409));
   await action(c.id, "stamp");
+  await assert.rejects(action(c.id, "redeem"), reject(409));
+  await action(c.id, "redeemDrink");
+  assert.equal((await publicCard(c.token)).balance, 10);
   await action(c.id, "redeem");
   assert.equal((await publicCard(c.token)).balance, 0);
   await assert.rejects(action(c.id, "redeem"), reject(409));
@@ -274,7 +278,8 @@ test("private export and create-only recovery to an empty database", async () =>
 
 test("only one concurrent redemption succeeds and Preview fails closed", async () => {
   const c = await create();
-  for (let i = 0; i < 7; i++) await action(c.id, "stamp");
+  for (let i = 0; i < 10; i++) await action(c.id, "stamp");
+  await action(c.id, "redeemDrink");
   const { card } = await cardDetail(c.id);
   const results = await Promise.allSettled(
     [1, 2].map(() =>
@@ -376,19 +381,30 @@ test("permanent deletion removes card, token and large history; retries cannot r
     const batch = loyaltyDb().batch();
     for (let i = offset; i < offset + 300; i++) {
       batch.set(ref.collection("activity").doc(`history-${i}`), {
-        action: "stamp", actor, at: new Date().toISOString(), before: 0, after: 1,
+        action: "stamp",
+        actor,
+        at: new Date().toISOString(),
+        before: 0,
+        after: 1,
       });
     }
     await batch.commit();
   }
   const { card } = await cardDetail(c.id);
   const deletion: Command = {
-    action: "delete", operationId: operation(), id: c.id, revision: card.revision,
+    action: "delete",
+    operationId: operation(),
+    id: c.id,
+    revision: card.revision,
   };
-  await assert.rejects(mutateCard({ ...deletion, revision: 0 }, actor), reject(409));
+  await assert.rejects(
+    mutateCard({ ...deletion, revision: 0 }, actor),
+    reject(409),
+  );
   assert.equal((await ref.get()).exists, true);
   const results = await Promise.all([
-    mutateCard(deletion, actor), mutateCard(deletion, actor),
+    mutateCard(deletion, actor),
+    mutateCard(deletion, actor),
   ]);
   assert.deepEqual(results[0], results[1]);
   assert.equal((await ref.get()).exists, false);
@@ -407,19 +423,38 @@ test("permanent deletion removes card, token and large history; retries cannot r
 test("delete and stamp racing cannot leave a partially deleted live card", async () => {
   const c = await create("Carrera Eliminar");
   const results = await Promise.allSettled([
-    mutateCard({ action: "delete", operationId: operation(), id: c.id, revision: 0 }, actor),
-    mutateCard({ action: "stamp", operationId: operation(), id: c.id, revision: 0 }, actor),
+    mutateCard(
+      { action: "delete", operationId: operation(), id: c.id, revision: 0 },
+      actor,
+    ),
+    mutateCard(
+      { action: "stamp", operationId: operation(), id: c.id, revision: 0 },
+      actor,
+    ),
   ]);
   assert.equal(results.filter((r) => r.status === "fulfilled").length, 1);
   if (results[0].status === "fulfilled") {
     await assert.rejects(publicCard(c.token), reject(404));
-    assert.equal((await loyaltyDb().collection("loyaltyCards").doc(c.id).collection("activity").get()).empty, true);
+    assert.equal(
+      (
+        await loyaltyDb()
+          .collection("loyaltyCards")
+          .doc(c.id)
+          .collection("activity")
+          .get()
+      ).empty,
+      true,
+    );
   } else {
     assert.equal((await publicCard(c.token)).balance, 1);
     await action(c.id, "delete");
   }
   const inactive = await create("Inactivo Eliminar");
-  await action(inactive.id, "update", { name: "Inactivo Eliminar", phone: "", active: false });
+  await action(inactive.id, "update", {
+    name: "Inactivo Eliminar",
+    phone: "",
+    active: false,
+  });
   await action(inactive.id, "delete");
   await assert.rejects(cardDetail(inactive.id), reject(404));
 });
@@ -427,20 +462,41 @@ test("delete and stamp racing cannot leave a partially deleted live card", async
 test("uncertain deletion resumes history cleanup on the same operation", async () => {
   const c = await create("Reintento Eliminar");
   const deletion: Command = {
-    action: "delete", operationId: operation(), id: c.id, revision: 0,
+    action: "delete",
+    operationId: operation(),
+    id: c.id,
+    revision: 0,
   };
   const db = loyaltyDb();
   const recursiveDelete = db.recursiveDelete;
   try {
-    db.recursiveDelete = async () => { throw new Error("Simulated cleanup failure"); };
-    await assert.rejects(mutateCard(deletion, actor), /Simulated cleanup failure/);
+    db.recursiveDelete = async () => {
+      throw new Error("Simulated cleanup failure");
+    };
+    await assert.rejects(
+      mutateCard(deletion, actor),
+      /Simulated cleanup failure/,
+    );
     await assert.rejects(publicCard(c.token), reject(404));
-    assert.equal((await db.collection("loyaltyCards").doc(c.id).collection("activity").get()).size, 1);
+    assert.equal(
+      (
+        await db
+          .collection("loyaltyCards")
+          .doc(c.id)
+          .collection("activity")
+          .get()
+      ).size,
+      1,
+    );
   } finally {
     db.recursiveDelete = recursiveDelete;
   }
   await mutateCard(deletion, actor);
-  assert.equal((await db.collection("loyaltyCards").doc(c.id).collection("activity").get()).empty, true);
+  assert.equal(
+    (await db.collection("loyaltyCards").doc(c.id).collection("activity").get())
+      .empty,
+    true,
+  );
 });
 
 test("staff can reopen the same link without changing balance, revision or activity", async () => {
@@ -451,7 +507,11 @@ test("staff can reopen the same link without changing balance, revision or activ
   assert.deepEqual(await cardShare(c.id), { token: c.token });
   assert.deepEqual(await cardDetail(c.id), before);
   assert.ok(!JSON.stringify(before).includes("sealedToken"));
-  assert.ok(!JSON.stringify(await listCards("Compartir Privado")).includes("sealedToken"));
+  assert.ok(
+    !JSON.stringify(await listCards("Compartir Privado")).includes(
+      "sealedToken",
+    ),
+  );
   const replacement = token();
   await action(c.id, "replace", { token: replacement });
   assert.deepEqual(await cardShare(c.id), { token: replacement });
@@ -475,4 +535,87 @@ test("older cards retain their links and stamps until staff explicitly replaces 
   await action(c.id, "replace", { token: replacement });
   assert.deepEqual(await cardShare(c.id), { token: replacement });
   assert.equal((await publicCard(replacement)).balance, 1);
+});
+
+test("drink at five is redeemed once without resetting stamps, then shisha starts a new cycle", async () => {
+  const c = await create("Dos premios");
+  await assert.rejects(action(c.id, "redeemDrink"), reject(409));
+  for (let i = 0; i < 4; i++) await action(c.id, "stamp");
+  await assert.rejects(action(c.id, "redeemDrink"), reject(409));
+  await action(c.id, "stamp");
+  const { card } = await cardDetail(c.id);
+  const drink: Command = {
+    action: "redeemDrink",
+    operationId: operation(),
+    id: c.id,
+    revision: card.revision,
+  };
+  const [first, duplicate] = await Promise.all([
+    mutateCard(drink, actor),
+    mutateCard(drink, actor),
+  ]);
+  assert.deepEqual(first, duplicate);
+  assert.deepEqual(await publicCard(c.token), {
+    firstName: "Dos",
+    balance: 5,
+    target: 10,
+    drinkRedeemed: true,
+  });
+  await assert.rejects(action(c.id, "redeemDrink"), reject(409));
+  await assert.rejects(action(c.id, "undo"), reject(409));
+  await action(c.id, "stamp");
+  await action(c.id, "undo");
+  assert.equal((await publicCard(c.token)).balance, 5);
+  await assert.rejects(action(c.id, "undo"), reject(409));
+  for (let i = 5; i < 10; i++) await action(c.id, "stamp");
+  await action(c.id, "redeem");
+  assert.deepEqual(await publicCard(c.token), {
+    firstName: "Dos",
+    balance: 0,
+    target: 10,
+    drinkRedeemed: false,
+  });
+  const { activity } = await cardDetail(c.id);
+  assert.equal(activity.filter((a) => a.action === "redeemDrink").length, 1);
+  assert.equal(activity.find((a) => a.action === "redeem")?.reward, "shisha");
+  for (let i = 0; i < 5; i++) await action(c.id, "stamp");
+  await action(c.id, "redeemDrink");
+  assert.equal((await publicCard(c.token)).drinkRedeemed, true);
+});
+
+test("concurrent drink redemption only succeeds once and inactive cards cannot redeem", async () => {
+  const c = await create("Concurrencia premios");
+  for (let i = 0; i < 5; i++) await action(c.id, "stamp");
+  const { card } = await cardDetail(c.id);
+  const results = await Promise.allSettled(
+    [1, 2].map(() =>
+      mutateCard(
+        {
+          action: "redeemDrink",
+          operationId: operation(),
+          id: c.id,
+          revision: card.revision,
+        },
+        actor,
+      ),
+    ),
+  );
+  assert.equal(results.filter((r) => r.status === "fulfilled").length, 1);
+  assert.equal((await publicCard(c.token)).balance, 5);
+  await action(c.id, "update", {
+    name: "Concurrencia premios",
+    phone: "",
+    active: false,
+  });
+  await assert.rejects(action(c.id, "redeemDrink"), reject(409));
+  const legacy = await create("Tarjeta anterior");
+  const ref = loyaltyDb().collection("loyaltyCards").doc(legacy.id);
+  const raw = (await ref.get()).data()!;
+  delete raw.drinkRedeemed;
+  await ref.set({ ...raw, balance: 7 });
+  assert.equal((await cardDetail(legacy.id)).card.balance, 7);
+  assert.equal((await publicCard(legacy.token)).drinkRedeemed, false);
+  await action(legacy.id, "redeemDrink");
+  assert.equal((await publicCard(legacy.token)).balance, 7);
+  assert.equal((await publicCard(legacy.token)).drinkRedeemed, true);
 });

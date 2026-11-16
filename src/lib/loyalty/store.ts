@@ -8,6 +8,7 @@ import { loyaltyDb } from "./db";
 import { openToken, sealToken } from "./token-vault";
 import {
   TARGET,
+  DRINK_TARGET,
   LoyaltyError,
   normalizeName,
   normalizePhone,
@@ -32,6 +33,7 @@ function asCard(id: string, d: DocumentData): Card {
     phone: d.phone,
     active: d.active,
     balance: d.balance,
+    drinkRedeemed: d.drinkRedeemed === true,
     revision: d.revision,
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
@@ -63,6 +65,7 @@ export async function publicCard(token: unknown): Promise<PublicCard> {
         firstName: String(card.get("name")).trim().split(/\s+/)[0],
         balance: card.get("balance"),
         target: TARGET,
+        drinkRedeemed: card.get("drinkRedeemed") === true,
       };
     },
     { readOnly: true },
@@ -98,15 +101,24 @@ export async function cardShare(id: unknown) {
   const card = await loyaltyDb().collection("loyaltyCards").doc(id).get();
   if (!card.exists) return fail(404, "Tarjeta no encontrada.");
   if (!card.get("sealedToken"))
-    return fail(409, "Esta tarjeta es anterior a la recuperación de enlaces. Reemplaza su enlace una vez; conservará todos sus sellos.");
+    return fail(
+      409,
+      "Esta tarjeta es anterior a la recuperación de enlaces. Reemplaza su enlace una vez; conservará todos sus sellos.",
+    );
   let token: string;
   try {
     token = openToken(card.get("sealedToken"), id);
   } catch {
-    return fail(503, "No se pudo recuperar el enlace. Reintenta o reemplázalo conservando los sellos.");
+    return fail(
+      503,
+      "No se pudo recuperar el enlace. Reintenta o reemplázalo conservando los sellos.",
+    );
   }
   if (!validToken(token) || hashToken(token) !== card.get("tokenHash"))
-    return fail(503, "No se pudo recuperar el enlace. Reemplázalo conservando los sellos.");
+    return fail(
+      503,
+      "No se pudo recuperar el enlace. Reemplázalo conservando los sellos.",
+    );
   return { token };
 }
 export async function listCards(search: unknown = "", cursor: unknown = "") {
@@ -174,6 +186,7 @@ export async function mutateCard(value: unknown, actor: string) {
           phone: "",
           active: true,
           balance: 0,
+          drinkRedeemed: false,
           revision: 0,
           createdAt: at,
           updatedAt: at,
@@ -187,24 +200,43 @@ export async function mutateCard(value: unknown, actor: string) {
       next.tokenHash = tokenRef.id;
       next.sealedToken = sealToken(input.token!, cardId);
     }
-    if (["stamp", "redeem", "undo"].includes(action) && !next.active)
+    if (
+      ["stamp", "redeemDrink", "redeem", "undo"].includes(action) &&
+      !next.active
+    )
       return fail(409, "Esta tarjeta está desactivada.");
     if (action === "stamp") {
       if (next.balance >= TARGET)
-        return fail(409, "Canjea primero la bebida gratis.");
+        return fail(409, "Canjea primero la shisha gratis.");
       next.balance++;
+    }
+    if (action === "redeemDrink") {
+      if (next.balance < DRINK_TARGET || next.drinkRedeemed === true)
+        return fail(409, "No hay una bebida pendiente de canjear.");
+      next.drinkRedeemed = true;
     }
     if (action === "redeem") {
       if (next.balance !== TARGET)
-        return fail(409, "Todavía no hay una bebida disponible.");
+        return fail(409, "Todavía no hay una shisha disponible.");
+      if (next.drinkRedeemed !== true)
+        return fail(
+          409,
+          "Canjea la bebida pendiente antes de reiniciar la tarjeta.",
+        );
       next.balance = 0;
+      next.drinkRedeemed = false;
     }
     if (action === "undo") {
       if (next.lastBalanceAction !== "stamp" || next.balance < 1)
         return fail(409, "No se puede deshacer ese sello.");
+      if (next.balance === DRINK_TARGET && next.drinkRedeemed === true)
+        return fail(
+          409,
+          "No se puede quitar el sello de una bebida ya canjeada.",
+        );
       next.balance--;
     }
-    if (["stamp", "redeem", "undo"].includes(action)) {
+    if (["stamp", "redeemDrink", "redeem", "undo"].includes(action)) {
       next.lastBalanceAction = action;
     }
     if (action === "create" || action === "update") {
@@ -221,6 +253,11 @@ export async function mutateCard(value: unknown, actor: string) {
     tx.set(ref.collection("activity").doc(operationId), {
       action,
       actor,
+      ...(action === "redeem"
+        ? { reward: "shisha" }
+        : action === "redeemDrink"
+          ? { reward: "drink" }
+          : {}),
       at,
       before: before?.balance ?? 0,
       after: next.balance,
