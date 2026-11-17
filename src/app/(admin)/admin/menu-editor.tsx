@@ -36,13 +36,11 @@ export default function MenuEditor({
   email,
   categoryLabels,
   initialError = "",
-  showLoyaltyLink = true,
 }: {
   initialProducts: SheetProduct[];
   email: string;
   categoryLabels: Record<string, string>;
   initialError?: string;
-  showLoyaltyLink?: boolean;
 }) {
   const categoryName = (value: string) => categoryLabels[value] ?? value;
   const [products, setProducts] = useState(initialProducts);
@@ -212,17 +210,15 @@ export default function MenuEditor({
             <div className="menu-account-panel">
               <small>Sesión iniciada</small>
               <p>{email}</p>
-              {showLoyaltyLink && (
-                <Link
-                  href="/admin/loyalty"
-                  prefetch={false}
-                  onClick={(event) => {
-                    if (busy || !canLeave()) event.preventDefault();
-                  }}
-                >
-                  Tarjetas VIP <AdminIcon name="chevron" />
-                </Link>
-              )}
+              <Link
+                href="/admin/loyalty"
+                prefetch={false}
+                onClick={(event) => {
+                  if (busy || !canLeave()) event.preventDefault();
+                }}
+              >
+                Tarjetas VIP <AdminIcon name="chevron" />
+              </Link>
               <button
                 type="button"
                 onClick={() => {

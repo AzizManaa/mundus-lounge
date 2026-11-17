@@ -28,7 +28,6 @@ export default async function AdminPage({
       initialProducts={products}
       email={session.user!.email!}
       initialError={error}
-      showLoyaltyLink={process.env.VERCEL_ENV !== "production"}
     />
   );
 }
